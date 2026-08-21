@@ -213,14 +213,7 @@ Solutions should consider how the proposed technology could realistically operat
 
 Participants should provide short, constructive feedback based on their experience building the solution.
 
-Please answer:
-
-1. **What did you build on XRPL?**
-2. **Did you have any practical concerns or problems when building on XRPL?**
-3. **Did the [XRPL AI Starter Kit](https://ripple.com/insights/xrpl-ai-starter-kit/) actually save you time, or get in the way? How?**
-4. **Would you take your product to XRPL mainnet? If not, what is stopping you?**
-5. **If you have any additional comments or feedback, please provide your answer here.**
-
+Please submit using the google form link provided [Link]
 ---
 
 ## ✅ Features Checklist
