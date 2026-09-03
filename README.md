@@ -210,12 +210,12 @@ Solutions should consider how the proposed technology could realistically operat
 
 | Criteria                     | Weight | Description                                                                                                                                                       |
 | ---------------------------- | ------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Reachability**             | 25%    | Potential for broad adoption across customers, sectors, and use cases, including interoperability, developer accessibility, scalability, and compliance readiness |
+| **Reachability**             | 20%    | Potential for broad adoption across customers, sectors, and use cases, including interoperability, developer accessibility, scalability, and compliance readiness |
 | **Creativity**               | 20%    | Degree to which the solution introduces an innovative AI-native product, workflow, or business model through the use of the XRPL AI Starter Kit and x402          |
 | **Feasibility**              | 20%    | Realism of implementation in a production environment, including cost, performance, infrastructure readiness, reliability, and operational considerations         |
 | **Technical Depth**          | 20%    | Quality and sophistication of the XRPL, x402, and agent integrations, including architecture, security, autonomy, testing, and safeguards                         |
 | **User Experience & Design** | 10%    | Clarity, usability, and polish of the end-to-end experience, including how clearly agent actions, payments, and on-chain transactions are communicated            |
-| **Builder Feedback**         | 5%     | Completeness and usefulness of feedback on the XRPL development experience, including the AI Starter Kit, practical challenges, and mainnet readiness             |
+| **Builder Feedback**         | 10%     | Completeness and usefulness of feedback on the XRPL development experience, including the AI Starter Kit, practical challenges, and mainnet readiness             |
 
 ---
 
