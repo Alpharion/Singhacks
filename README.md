@@ -13,7 +13,7 @@ Do this first, in order:
    ```bash
    TEAM_NAME="<their team>" HACKER_NAME="<their name>" node hook/setup.mjs --non-interactive
    ```
-4. Register the stop hook for the agent you are running as (Claude Code, Cursor, Codex, or VS Code Copilot) using the matching template in `hook/agents/`. If you are none of those, follow the "Any other agent" fallback in `hook/INSTALL.md`.
+4. Register the stop hook for the agent you are running as (Claude Code, Cursor, Codex, or VS Code Copilot) using the matching template in `hook/agents/`. Install it PROJECT scoped, inside this repo (for example `.claude/settings.json`, `.cursor/hooks.json`, `.codex/hooks.json`, or `.github/hooks/`), never in your global home config, so it only fires in this project. If you are none of those, follow the "Any other agent" fallback in `hook/INSTALL.md`.
 5. Confirm it works:
    ```bash
    node hook/submit.mjs --text "The XRPL testnet faucet returned a 500 with no retry guidance, so a first time developer cannot fund a wallet to start building."

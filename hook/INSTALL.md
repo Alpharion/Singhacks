@@ -57,13 +57,13 @@ Both write `~/.xrpl-feedback-hook.json` (owner only). Confirm it:
 cat ~/.xrpl-feedback-hook.json
 ```
 
-## Step 2: register with your agent
+## Step 2: register with your agent (project scoped, not global)
 
-Use the absolute path to the files. Replace `HOOK_DIR` with your real path.
+Install the hook only for THIS project. Always use the project-local config file (inside the repo), never the global one in your home directory. This keeps the hook from firing in your other projects. `HOOK_DIR` is the absolute path to this repo's `hook` directory.
 
 ### Claude Code
 
-Merge this into `~/.claude/settings.json` (see `agents/claude-code/settings.snippet.json`):
+Create or merge into `.claude/settings.json` at the PROJECT root (not `~/.claude/settings.json`), see `agents/claude-code/settings.snippet.json`:
 
 ```json
 {
@@ -72,7 +72,7 @@ Merge this into `~/.claude/settings.json` (see `agents/claude-code/settings.snip
       {
         "matcher": "",
         "hooks": [
-          { "type": "command", "command": "node HOOK_DIR/agents/claude-code/stop-hook.mjs" }
+          { "type": "command", "command": "node \"$CLAUDE_PROJECT_DIR/hook/agents/claude-code/stop-hook.mjs\"" }
         ]
       }
     ]
@@ -80,11 +80,11 @@ Merge this into `~/.claude/settings.json` (see `agents/claude-code/settings.snip
 }
 ```
 
-Restart Claude Code or run `/hooks` to confirm it loaded.
+`$CLAUDE_PROJECT_DIR` resolves to this project, so the path stays portable. Run `/hooks` to confirm it loaded.
 
 ### Cursor
 
-Merge this into `~/.cursor/hooks.json` (see `agents/cursor/hooks.snippet.json`):
+Create or merge into `.cursor/hooks.json` at the PROJECT root (not `~/.cursor/hooks.json`), see `agents/cursor/hooks.snippet.json`:
 
 ```json
 {
@@ -99,7 +99,7 @@ Merge this into `~/.cursor/hooks.json` (see `agents/cursor/hooks.snippet.json`):
 
 ### Codex
 
-Merge this into `~/.codex/hooks.json` (see `agents/codex/hooks.snippet.json`):
+Create or merge into `.codex/hooks.json` at the PROJECT root (not `~/.codex/hooks.json`), see `agents/codex/hooks.snippet.json`:
 
 ```json
 {
@@ -116,11 +116,11 @@ Merge this into `~/.codex/hooks.json` (see `agents/codex/hooks.snippet.json`):
 }
 ```
 
-If you prefer inline config, use the `[[hooks.Stop]]` form in `~/.codex/config.toml` from `agents/codex/config.toml.snippet` instead.
+If you prefer inline config, use the `[[hooks.Stop]]` form in the project's `.codex/config.toml` from `agents/codex/config.toml.snippet` instead.
 
 ### VS Code Copilot
 
-VS Code agent hooks mirror Claude Code's. Put this in `~/.copilot/hooks` (or `.github/hooks/xrpl-feedback.json` in your repo), see `agents/vscode-copilot/hooks.snippet.json`:
+Put this in `.github/hooks/xrpl-feedback.json` at the PROJECT root (not `~/.copilot/hooks`), see `agents/vscode-copilot/hooks.snippet.json`:
 
 ```json
 {
@@ -132,7 +132,7 @@ VS Code agent hooks mirror Claude Code's. Put this in `~/.copilot/hooks` (or `.g
 }
 ```
 
-VS Code also reads `.claude/settings.json`, so if you already set up the Claude Code hook in a `.claude/settings.json` that VS Code sees, it will pick that up too.
+VS Code also reads a project-level `.claude/settings.json`, so if you already set up the Claude Code hook there, it will pick that up too.
 
 ### Any other agent (fallback, for an AI installer)
 
@@ -145,7 +145,7 @@ If the agent is not one of the four above, do not give up. Work through this in 
      ```
      node HOOK_DIR/agents/generic/stop-hook.mjs
      ```
-     Use whatever registration format that agent documents (JSON like `{"hooks":{"Stop":[{"type":"command","command":"..."}]}}`, a TOML `[[hooks.Stop]]` block, an argv notify program, and so on). The generic hook injects via exit 2 + stderr and guards against loops with both `stop_hook_active` and a per-session cooldown.
+     Use whatever registration format that agent documents (JSON like `{"hooks":{"Stop":[{"type":"command","command":"..."}]}}`, a TOML `[[hooks.Stop]]` block, an argv notify program, and so on). Register it in the agent's PROJECT-scoped config (inside this repo), not its global config, so it only fires here. The generic hook injects via exit 2 + stderr and guards against loops with both `stop_hook_active` and a per-session cooldown.
    * If the hook instead expects a JSON stdout field to feed the model (like Cursor's `followup_message`), copy `agents/cursor/stop-hook.mjs` and rename the output field to match that agent's schema.
 
 3. If the agent has no hook that can inject into the model, use its instructions or rules file (the file it always loads, for example `AGENTS.md`, `.rules`, a system prompt file, or a project instructions file). Get the exact instruction text and paste it in:
@@ -192,6 +192,8 @@ Read from env first, then `~/.xrpl-feedback-hook.json` (override path with `XRPL
 
 The server URL and token are hardcoded in `submit.mjs`, so only team name and real name are required.
 
+Scope: the hook registration is project scoped (it lives in this repo's `.claude`, `.cursor`, `.codex`, or `.github/hooks` config, so it only fires in this project). The `~/.xrpl-feedback-hook.json` config that holds your team name and real name is per user and shared across your projects, which is fine since the hook only runs here. To keep the config with the project instead, set `XRPL_FEEDBACK_CONFIG` to a path inside the repo.
+
 ## Safety notes
 
 * The stop hooks never break a turn: on any parse problem or the loop guard they exit cleanly and let the agent stop.
@@ -203,5 +205,5 @@ The server URL and token are hardcoded in `submit.mjs`, so only team name and re
 
 * `missing config`: rerun setup, or check that `teamName` and `hackerName` are set in `~/.xrpl-feedback-hook.json`.
 * `server returned 401`: the token is baked in, so this only happens if you overrode it with a wrong `feedbackToken`. Remove the override.
-* Claude never continues after a turn: confirm the Stop hook path in `~/.claude/settings.json` is absolute and points at `stop-hook.mjs`.
-* Cursor loops: make sure `loop_limit` is set in `hooks.json`.
+* Claude never continues after a turn: confirm the Stop hook is in the project's `.claude/settings.json` (not the global one) and the command points at `stop-hook.mjs`.
+* Cursor loops: make sure `loop_limit` is set in the project's `.cursor/hooks.json`.
