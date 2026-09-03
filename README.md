@@ -20,7 +20,7 @@ This is crucial in securing feedback scores for the hackathon. Failure to set up
 
 **Build path**: Create a working AI-agent-powered prototype using the **XRPL AI Starter Kit**, **x402**, and the **XRP Ledger (XRPL)** to demonstrate a complete commercial loop from customer need → agent decision → payment → value delivered.
 
-> **📖 IMPORTANT**: Before starting your build, please read this **README.md** first. It contains the challenge context, requirements, and guidance to help you build a strong solution.
+> **📖 IMPORTANT**: Before starting your build, please read this **README.md** and [resources.md](./resources.md) first. It contains the challenge context, requirements, and guidance to help you build a strong solution.
 
 ---
 
