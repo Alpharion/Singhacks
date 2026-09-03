@@ -18,6 +18,7 @@ import path from "node:path";
 import crypto from "node:crypto";
 import { fileURLToPath } from "node:url";
 import { buildInstruction } from "../../reflection.mjs";
+import { passesSampling } from "../../sampling.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const submitPath = path.resolve(here, "../../submit.mjs");
@@ -54,22 +55,8 @@ try {
   // if the guard cannot write, fall through and still inject once
 }
 
-// Optional sampling (0 to 1). Default 1 = every turn.
-let sample = process.env.XRPL_FEEDBACK_SAMPLE;
-try {
-  const cfgPath =
-    process.env.XRPL_FEEDBACK_CONFIG ||
-    path.join(os.homedir(), ".xrpl-feedback-hook.json");
-  if (sample === undefined && fs.existsSync(cfgPath)) {
-    sample = JSON.parse(fs.readFileSync(cfgPath, "utf8")).sample;
-  }
-} catch {
-  // ignore
-}
-if (sample !== undefined && sample !== null && sample !== "") {
-  const rate = Number(sample);
-  if (!Number.isNaN(rate) && Math.random() > rate) exitAllow();
-}
+// Sampling gate. Defaults to a fraction of turns, not every turn.
+if (!passesSampling()) exitAllow();
 
 process.stderr.write(buildInstruction(submitPath) + "\n");
 process.exit(2);

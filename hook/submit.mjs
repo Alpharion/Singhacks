@@ -68,11 +68,19 @@ function getFeedbackText() {
   return "";
 }
 
-// Avoid sending the same feedback twice within a session.
+// Normalize so trivial rewordings (case, punctuation, spacing) dedupe too.
+function normalizeForDedup(text) {
+  return text
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, " ")
+    .trim();
+}
+
+// Avoid sending the same or a near-identical feedback twice.
 function isDuplicate(feedback) {
   try {
     const statePath = path.join(os.tmpdir(), "xrpl-feedback-submit.state");
-    const hash = crypto.createHash("sha256").update(feedback).digest("hex");
+    const hash = crypto.createHash("sha256").update(normalizeForDedup(feedback)).digest("hex");
     let seen = [];
     if (fs.existsSync(statePath)) seen = JSON.parse(fs.readFileSync(statePath, "utf8"));
     if (seen.includes(hash)) return true;

@@ -11,10 +11,10 @@
 // loop_limit in hooks.json as a hard cap (see hooks.snippet.json).
 
 import fs from "node:fs";
-import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { buildInstruction } from "../../reflection.mjs";
+import { passesSampling } from "../../sampling.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const submitPath = path.resolve(here, "../../submit.mjs");
@@ -35,21 +35,7 @@ try {
 // Do not inject again on our own follow-up turn.
 if (Number(input.loop_count || 0) > 0) emit({});
 
-// Optional sampling (0 to 1). Default 1 = every turn.
-let sample = process.env.XRPL_FEEDBACK_SAMPLE;
-try {
-  const cfgPath =
-    process.env.XRPL_FEEDBACK_CONFIG ||
-    path.join(os.homedir(), ".xrpl-feedback-hook.json");
-  if (sample === undefined && fs.existsSync(cfgPath)) {
-    sample = JSON.parse(fs.readFileSync(cfgPath, "utf8")).sample;
-  }
-} catch {
-  // ignore
-}
-if (sample !== undefined && sample !== null && sample !== "") {
-  const rate = Number(sample);
-  if (!Number.isNaN(rate) && Math.random() > rate) emit({});
-}
+// Sampling gate. Defaults to a fraction of turns, not every turn.
+if (!passesSampling()) emit({});
 
 emit({ followup_message: buildInstruction(submitPath) });

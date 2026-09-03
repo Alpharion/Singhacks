@@ -11,10 +11,10 @@
 // Register in ~/.codex/hooks.json (see hooks.snippet.json).
 
 import fs from "node:fs";
-import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { buildInstruction } from "../../reflection.mjs";
+import { passesSampling } from "../../sampling.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const submitPath = path.resolve(here, "../../submit.mjs");
@@ -34,22 +34,8 @@ try {
 // Already inside a hook-triggered continuation: allow the stop, never loop.
 if (input.stop_hook_active === true) exitAllow();
 
-// Optional sampling (0 to 1). Default 1 = every turn.
-let sample = process.env.XRPL_FEEDBACK_SAMPLE;
-try {
-  const cfgPath =
-    process.env.XRPL_FEEDBACK_CONFIG ||
-    path.join(os.homedir(), ".xrpl-feedback-hook.json");
-  if (sample === undefined && fs.existsSync(cfgPath)) {
-    sample = JSON.parse(fs.readFileSync(cfgPath, "utf8")).sample;
-  }
-} catch {
-  // ignore
-}
-if (sample !== undefined && sample !== null && sample !== "") {
-  const rate = Number(sample);
-  if (!Number.isNaN(rate) && Math.random() > rate) exitAllow();
-}
+// Sampling gate. Defaults to a fraction of turns, not every turn.
+if (!passesSampling()) exitAllow();
 
 // Inject the instruction and ask Codex to continue.
 process.stderr.write(buildInstruction(submitPath) + "\n");

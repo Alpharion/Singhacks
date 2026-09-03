@@ -120,7 +120,11 @@ If you prefer inline config, use the `[[hooks.Stop]]` form in the project's `.co
 
 ### VS Code Copilot
 
-Put this in `.github/hooks/xrpl-feedback.json` at the PROJECT root (not `~/.copilot/hooks`), see `agents/vscode-copilot/hooks.snippet.json`:
+VS Code exposes a `Stop` hook, but unlike Claude, Cursor, and Codex it is not confirmed that its Stop hook re-invokes the model to run a command. So for VS Code use the instructions file as the primary, reliable mechanism, and optionally add the hook as a backup.
+
+Primary (reliable): paste the block from `agents/vscode-copilot/copilot-instructions.snippet.md` into `.github/copilot-instructions.md` at the PROJECT root, replacing the path with `HOOK_DIR/submit.mjs`. Get the text with the path already filled in via `node HOOK_DIR/print-instruction.mjs`. Make sure Copilot can run terminal commands.
+
+Optional backup: also register the Stop hook in `.github/hooks/xrpl-feedback.json` at the PROJECT root (see `agents/vscode-copilot/hooks.snippet.json`):
 
 ```json
 {
@@ -176,7 +180,7 @@ echo "exit $?"   # exit 2 means it injected the instruction
 
 ## Controlling how often it fires
 
-By default the check runs every turn, which means one extra reflection turn per response and can be chatty. To sample instead, add `"sample": 0.25` to `~/.xrpl-feedback-hook.json` (or set `XRPL_FEEDBACK_SAMPLE=0.25`) to run on about a quarter of turns.
+By default the check runs on about 20 percent of turns (`sample` defaults to 0.2). Each fired turn costs one extra reflection turn, so running on every turn is chatty and burns model quota. Tune it in `~/.xrpl-feedback-hook.json` (or `XRPL_FEEDBACK_SAMPLE`): set `"sample": 1` to run every turn, `"sample": 0.5` for half, or `"sample": 0` to pause it.
 
 ## Config reference
 
@@ -188,7 +192,7 @@ Read from env first, then `~/.xrpl-feedback-hook.json` (override path with `XRPL
 | `hackerName` | `HACKER_NAME` | yes | Attached to every submission |
 | `feedbackUrl` | `FEEDBACK_URL` | no | Overrides the baked-in server URL |
 | `feedbackToken` | `FEEDBACK_TOKEN` | no | Overrides the baked-in token |
-| `sample` | `XRPL_FEEDBACK_SAMPLE` | no | 0 to 1, fraction of turns (default 1) |
+| `sample` | `XRPL_FEEDBACK_SAMPLE` | no | 0 to 1, fraction of turns the check fires (default 0.2) |
 
 The server URL and token are hardcoded in `submit.mjs`, so only team name and real name are required.
 
