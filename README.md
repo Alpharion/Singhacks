@@ -223,7 +223,7 @@ Solutions should consider how the proposed technology could realistically operat
 
 Participants should provide short, constructive feedback based on their experience building the solution.
 
-Please submit using the google form link provided [Link]
+Please submit using the google form link provided [https://forms.gle/FZckiEAMU8oWXVbX7]
 ---
 
 ## ✅ Features Checklist
