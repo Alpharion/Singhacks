@@ -12,7 +12,7 @@ customer need -> agent discovery -> agent decision -> payment -> value delivered
 
 The payment must be economically meaningful, not a normal checkout triggered by a human. The user should define a goal, budget, and restrictions, while the AI decides which services are worth purchasing within that authority.
 
-All blockchain activity must use the XRP Ledger. The prototype must complete at least one real XRPL Testnet transaction and show its validated transaction hash or explorer link. The current challenge requires the XRPL AI Starter Kit, x402, and XRPL in the core product experience; this project uses all three.
+All blockchain activity must use the XRP Ledger. The prototype must complete at least one successful XRPL transaction and show its validated transaction hash or explorer link. The XRPL AI Starter Kit and agentic payment standards such as x402 or MPP are recommended rather than required. SurplusFlow deliberately uses the Starter Kit guidance and x402 because they fit its autonomous procurement flow; it does not use MPP.
 
 Judges primarily care about:
 

@@ -31,14 +31,22 @@ Customer need
 - The prototype must execute at least one successful XRPL transaction.
 - The final submission must include the validated transaction hash or explorer link.
 
-### Required challenge components
+### Required and selected components
+
+The challenge requires:
+
+- XRP Ledger settlement or transaction activity
+- At least one successful XRPL transaction
+- XRPL-only blockchain activity; the XRPL EVM Sidechain does not qualify
+
+The challenge recommends, but does not require:
 
 - XRPL AI Starter Kit and its agent wallet/payment patterns
-- x402 machine-to-machine payments
-- XRP Ledger settlement
-- XRPL Testnet during development
+- An agentic payment standard such as x402 or MPP
 
-The current upstream challenge instructions require the XRPL AI Starter Kit, x402, and XRPL in the core product experience. SurplusFlow uses all three directly.
+SurplusFlow deliberately selects the XRPL AI Starter Kit guidance, x402, XRP,
+and XRPL Testnet because they fit its autonomous procurement flow. It does not
+use MPP or every tool listed in the challenge resources.
 
 The XRPL AI Starter Kit is a curated collection of agent-payment tools, documentation, wallet/payment skills, and integrations rather than a single application framework that the whole product must import. SurplusFlow uses its intended build path through:
 
@@ -47,7 +55,10 @@ The XRPL AI Starter Kit is a curated collection of agent-payment tools, document
 - x402 payments using XRP on XRPL
 - Transaction confirmation and attribution through hashes, invoice IDs, and source tags
 
-The project must describe these concrete integrations in the submission; it must not claim that an unspecified package called "the Starter Kit" powers the application.
+Because SurplusFlow chooses these recommended components, the submission should
+describe their concrete use. It must not imply that the Starter Kit or x402 was
+mandatory, or claim that an unspecified package called "the Starter Kit" powers
+the application.
 
 ### Product requirements
 
