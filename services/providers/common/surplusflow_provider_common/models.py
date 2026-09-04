@@ -8,7 +8,7 @@ from __future__ import annotations
 
 from datetime import datetime
 
-from sqlalchemy import JSON, Boolean, Float, ForeignKey, Integer, String
+from sqlalchemy import JSON, Float, ForeignKey, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column
 
 from .db import Base
@@ -50,7 +50,6 @@ class CourierProviderRow(Base):
     provider_name: Mapped[str] = mapped_column(String(100))
     pay_to: Mapped[str] = mapped_column(String(40))
     base_url: Mapped[str] = mapped_column(String(200))
-    simulate_failure: Mapped[bool] = mapped_column(Boolean, default=False)
 
 
 class DeliveryQuoteRow(Base):

@@ -14,6 +14,7 @@ buyer agent has a real dietary-incompatible offer to reject.
 
 from __future__ import annotations
 
+import os
 from datetime import timedelta
 
 from sqlalchemy.orm import Session
@@ -21,43 +22,56 @@ from sqlalchemy.orm import Session
 from .models import CourierProviderRow, DeliveryQuoteRow, FoodOfferRow, SellerRow
 from .time_utils import now_utc
 
-SELLERS: list[dict] = [
-    {
-        "seller_id": "seller_bakery_001",
-        "seller_name": "Green Oven Bakery",
-        "pay_to": "rFoodA1111111111111111111111111",
-        "base_url": "http://localhost:8011",
-    },
-    {
-        "seller_id": "seller_hotel_001",
-        "seller_name": "Harbour Hotel Kitchen",
-        "pay_to": "rFoodB1111111111111111111111111",
-        "base_url": "http://localhost:8012",
-    },
-    {
-        "seller_id": "seller_grill_001",
-        "seller_name": "Central Grill",
-        "pay_to": "rFoodC1111111111111111111111111",
-        "base_url": "http://localhost:8013",
-    },
-]
 
-COURIERS: list[dict] = [
-    {
-        "provider_id": "courier_fast_001",
-        "provider_name": "FastRoute Courier",
-        "pay_to": "rRideA1111111111111111111111111",
-        "base_url": "http://localhost:8021",
-        "simulate_failure": False,
-    },
-    {
-        "provider_id": "courier_economy_001",
-        "provider_name": "Economy Van",
-        "pay_to": "rRideB1111111111111111111111111",
-        "base_url": "http://localhost:8022",
-        "simulate_failure": True,
-    },
-]
+def _pay_to(env_var: str, fixture_placeholder: str) -> str:
+    """Prefer a real funded Testnet address from `.env.example` over the
+    synthetic fixture placeholder, per `packages/contracts/README.md`:
+    "The XRPL addresses... in fixtures are synthetic shape-valid examples,
+    not funded accounts... Real Testnet values must come from ignored
+    environment configuration."
+    """
+
+    return os.environ.get(env_var) or fixture_placeholder
+
+
+def _sellers() -> list[dict]:
+    return [
+        {
+            "seller_id": "seller_bakery_001",
+            "seller_name": "Green Oven Bakery",
+            "pay_to": _pay_to("XRPL_BAKERY_PAY_TO", "rFoodA1111111111111111111111111"),
+            "base_url": "http://localhost:8011",
+        },
+        {
+            "seller_id": "seller_hotel_001",
+            "seller_name": "Harbour Hotel Kitchen",
+            "pay_to": _pay_to("XRPL_HOTEL_PAY_TO", "rFoodB1111111111111111111111111"),
+            "base_url": "http://localhost:8012",
+        },
+        {
+            "seller_id": "seller_grill_001",
+            "seller_name": "Central Grill",
+            "pay_to": _pay_to("XRPL_GRILL_PAY_TO", "rFoodC1111111111111111111111111"),
+            "base_url": "http://localhost:8013",
+        },
+    ]
+
+
+def _couriers() -> list[dict]:
+    return [
+        {
+            "provider_id": "courier_fast_001",
+            "provider_name": "FastRoute Courier",
+            "pay_to": _pay_to("XRPL_FAST_COURIER_PAY_TO", "rRideA1111111111111111111111111"),
+            "base_url": "http://localhost:8021",
+        },
+        {
+            "provider_id": "courier_economy_001",
+            "provider_name": "Economy Van",
+            "pay_to": _pay_to("XRPL_ECONOMY_COURIER_PAY_TO", "rRideB1111111111111111111111111"),
+            "base_url": "http://localhost:8022",
+        },
+    ]
 
 
 def _offer_defs(now):  # noqa: ANN001
@@ -161,9 +175,9 @@ def ensure_seed_data(session: Session) -> None:
 
     # Two commits: parent rows (sellers, couriers) must exist before the
     # foreign-key-bearing child rows (offers, quotes) are inserted.
-    for seller in SELLERS:
+    for seller in _sellers():
         session.add(SellerRow(**seller))
-    for courier in COURIERS:
+    for courier in _couriers():
         session.add(CourierProviderRow(**courier))
     session.commit()
 
