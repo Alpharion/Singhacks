@@ -30,9 +30,9 @@ Then invoke it in your agent by typing `/xrpl-agentic-resources`, or just start 
 
 ## Challenge Summary
 
-**Goal**: Design an AI-native product or service that solves a real customer problem and demonstrates how autonomous machine-to-machine payments can enable a new or significantly better business experience.
+**Goal**: Design an AI-native product or service that solves a real customer problem and demonstrates how autonomous agentic payments can enable a new or significantly better business experience.
 
-**Build path**: Create a working AI-agent-powered prototype using the **XRPL AI Starter Kit**, **x402**, and the **XRP Ledger (XRPL)** to demonstrate a complete commercial loop from customer need → agent decision → payment → value delivered.
+**Build path**: Create a working AI-agent-powered prototype using the **XRPL AI Starter Kit**, **x402**, the **XRP Ledger (XRPL)**, and all resources specified in [resources.md](./resources.md) to demonstrate a complete commercial loop from customer need → agent decision → payment → value delivered.
 
 > **📖 IMPORTANT**: Before starting your build, please read this **README.md** and [resources.md](./resources.md) first. It contains the challenge context, requirements, and guidance to help you build a strong solution.
 
