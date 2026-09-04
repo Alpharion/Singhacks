@@ -32,7 +32,7 @@ Then invoke it in your agent by typing `/xrpl-agentic-resources`, or just start 
 
 **Goal**: Design an AI-native product or service that solves a real customer problem and demonstrates how autonomous agentic payments can enable a new or significantly better business experience.
 
-**Build path**: Create a working AI-agent-powered prototype using the **XRPL AI Starter Kit**, **x402**, the **XRP Ledger (XRPL)**, and all resources specified in [resources.md](./resources.md) to demonstrate a complete commercial loop from customer need → agent decision → payment → value delivered.
+**Build path**: Create a working AI-agent-powered prototype using the **XRP Ledger**, **XRPL AI Starter Kit**, **x402**, **MPP**, and all other resources specified in [resources.md](./resources.md) to demonstrate a complete commercial loop from customer need → payment → value delivered.
 
 > **📖 IMPORTANT**: Before starting your build, please read this **README.md** and [resources.md](./resources.md) first. It contains the challenge context, requirements, and guidance to help you build a strong solution.
 
@@ -126,7 +126,7 @@ Recommended: use an agentic payment standard such as **x402**, **MPP**, or anoth
 
 ### 5. XRPL Integration
 
-Use the **XRPL AI Starter Kit** to enable the agent to interact with XRPL-related functionality and execute at least one successful XRPL transaction.
+Enable the agent to interact with XRPL-related functionality and execute at least one successful XRPL transaction. The **XRPL AI Starter Kit** is recommended for this, but not required.
 
 ### 6. Commercial Loop
 
@@ -199,12 +199,14 @@ Agent autonomy should create a better product experience without sacrificing app
 
 Participants may use **any technology stack, APIs, AI models, frameworks, software, or hardware** suitable for their solution.
 
-The following components must be incorporated into the core product experience:
+The only required component is the **XRP Ledger (XRPL)**, as long as the submission pertains to agentic payment:
 
-* **XRPL AI Starter Kit**
-* **XRP Ledger (XRPL)**
+* **XRP Ledger (XRPL)** (required)
 
-Agentic payment standards such as **x402**, **MPP**, and other agentic standards are recommended. Use them where machine-to-machine payments fit your solution, but they are not a hard requirement.
+The following are recommended and encouraged where they fit your solution, but they are not hard requirements:
+
+* **XRPL AI Starter Kit** (recommended)
+* Agentic payment standards such as **x402**, **MPP**, and other agentic standards (recommended)
 
 The prototype must demonstrate at least **one successful XRPL transaction**.
 
@@ -262,7 +264,7 @@ In short: let the hooks push feedback continuously during the build, then submit
 
 * Working AI-agent workflow
 * Agent discovery or decision-making
-* XRPL AI Starter Kit integration
+* XRPL AI Starter Kit integration (recommended)
 * Agentic payment standard such as x402 or MPP (recommended)
 * At least one successful XRPL transaction
 * Product, service, or value delivered after the transaction
@@ -275,7 +277,7 @@ In short: let the hooks push feedback continuously during the build, then submit
 * Product overview
 * Architecture diagram
 * XRPL transaction hashes or explorer references
-* Explanation of the XRPL AI Starter Kit integration
+* Explanation of the XRPL AI Starter Kit integration if used (recommended)
 * Explanation of the agentic payment flow if a recommended agentic payment standard such as x402 or MPP is used
 * Builder feedback completed
 
@@ -293,7 +295,7 @@ Your final submission should include:
 * Demonstration of the core customer journey
 * Demonstration of the agentic transaction flow
 * At least one successful XRPL transaction
-* Explanation of the XRPL AI Starter Kit integration
+* Explanation of the XRPL AI Starter Kit integration if used (recommended)
 * Explanation of how any recommended agentic payment standard such as x402 or MPP is used, if applicable
 * Architecture diagram
 * Transaction hashes or explorer references
