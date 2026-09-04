@@ -207,6 +207,8 @@ The following components must be incorporated into the core product experience:
 
 The prototype must demonstrate at least **one successful XRPL transaction**.
 
+> **⛔ XRPL only for the blockchain part.** All on-chain functionality must run on the XRP Ledger (Mainnet, Testnet, or Devnet). The **XRPL EVM Sidechain is not an option** for this challenge. Any smart contract or blockchain logic built on the EVM Sidechain, or on any other EVM or non-XRPL chain, does not count toward the requirements and will not be judged as valid XRPL integration.
+
 Solutions should consider how the proposed technology could realistically operate beyond the prototype, including:
 
 * Security
@@ -237,7 +239,12 @@ Solutions should consider how the proposed technology could realistically operat
 
 Participants should provide short, constructive feedback based on their experience building the solution.
 
-Please submit using the google form link provided [https://forms.gle/FZckiEAMU8oWXVbX7]
+There are two things you need to do here, and they work together:
+
+1. **Keep the feedback hooks running throughout the build.** Set up the feedback hook (see the top of this README) and leave it on for the whole hackathon. It pushes your builder feedback automatically and consistently as you work, so your feedback reflects the real development experience instead of a single end-of-event recollection. Consistent automated feedback is what secures your feedback score.
+2. **Submit the Google form near the end of the hackathon.** Once your build is mostly done and you have a full picture of the XRPL development experience, submit the final feedback form: [https://forms.gle/FZckiEAMU8oWXVbX7]
+
+In short: let the hooks push feedback continuously during the build, then submit the Google form as your final wrap-up near the end.
 ---
 
 ## ✅ Features Checklist
