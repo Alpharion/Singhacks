@@ -59,7 +59,7 @@ The solution should demonstrate:
 * A clear customer problem
 * A meaningful role for an AI agent
 * Agent discovery or decision-making
-* Autonomous agentic payments (x402, MPP, or other agentic payment standards are optional)
+* Autonomous agentic payments (x402, MPP, or other agentic payment standards are recommended)
 * XRPL settlement or transaction activity
 * Delivery of a useful product, service, or outcome
 * A credible business or commercial model
@@ -95,7 +95,7 @@ to:
                              ↓
 ┌──────────────────────────────────────────────────────────────┐
 │                  Agentic Transaction Layer                   │
-│      XRPL AI Starter Kit • XRPL • x402 / MPP (optional)      │
+│    XRPL AI Starter Kit • XRPL • x402 / MPP (recommended)     │
 └────────────────────────────┬─────────────────────────────────┘
                              ↓
 ┌──────────────────────────────────────────────────────────────┐
@@ -120,9 +120,9 @@ Enable the agent to discover or select relevant products, services, APIs, data s
 
 Allow the agent to compare available options and make an autonomous or user-authorised economic decision.
 
-### 4. Machine-to-Machine Payments (optional)
+### 4. Machine-to-Machine Payments (recommended)
 
-Optionally use an agentic payment standard such as **x402**, **MPP**, or another agentic payment standard as part of the agent workflow to enable machine-to-machine payment for a product, service, API, resource, or other economically meaningful action. This is encouraged where it fits your solution, but it is not a hard requirement.
+Recommended: use an agentic payment standard such as **x402**, **MPP**, or another agentic payment standard as part of the agent workflow to enable machine-to-machine payment for a product, service, API, resource, or other economically meaningful action. This is recommended where it fits your solution, but it is not a hard requirement.
 
 ### 5. XRPL Integration
 
@@ -166,7 +166,7 @@ Discover / Compare Services
       ↓
 Agent Selects an Appropriate Option
       ↓
-Agentic Payment (x402 / MPP optional)
+Agentic Payment (x402 / MPP recommended)
       ↓
 XRPL Transaction / Settlement
       ↓
@@ -204,7 +204,7 @@ The following components must be incorporated into the core product experience:
 * **XRPL AI Starter Kit**
 * **XRP Ledger (XRPL)**
 
-Agentic payment standards such as **x402**, **MPP**, and other agentic standards are optional. Use them if machine-to-machine payments fit your solution, but they are not a hard requirement.
+Agentic payment standards such as **x402**, **MPP**, and other agentic standards are recommended. Use them where machine-to-machine payments fit your solution, but they are not a hard requirement.
 
 The prototype must demonstrate at least **one successful XRPL transaction**.
 
@@ -228,7 +228,7 @@ Solutions should consider how the proposed technology could realistically operat
 | Criteria                     | Weight | Description                                                                                                                                                       |
 | ---------------------------- | ------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Reachability**             | 20%    | Potential for broad adoption across customers, sectors, and use cases, including interoperability, developer accessibility, scalability, and compliance readiness |
-| **Creativity**               | 20%    | Degree to which the solution introduces an innovative AI-native product, workflow, or business model through the use of the XRPL AI Starter Kit and, optionally, agentic payment standards such as x402 or MPP          |
+| **Creativity**               | 20%    | Degree to which the solution introduces an innovative AI-native product, workflow, or business model through the use of the XRPL AI Starter Kit and, where it fits, recommended agentic payment standards such as x402 or MPP          |
 | **Feasibility**              | 20%    | Realism of implementation in a production environment, including cost, performance, infrastructure readiness, reliability, and operational considerations         |
 | **Technical Depth**          | 20%    | Quality and sophistication of the XRPL and agent integrations (and any agentic payment standards such as x402 or MPP, where used), including architecture, security, autonomy, testing, and safeguards                         |
 | **User Experience & Design** | 10%    | Clarity, usability, and polish of the end-to-end experience, including how clearly agent actions, payments, and on-chain transactions are communicated            |
@@ -263,7 +263,7 @@ In short: let the hooks push feedback continuously during the build, then submit
 * Working AI-agent workflow
 * Agent discovery or decision-making
 * XRPL AI Starter Kit integration
-* Agentic payment standard such as x402 or MPP (optional)
+* Agentic payment standard such as x402 or MPP (recommended)
 * At least one successful XRPL transaction
 * Product, service, or value delivered after the transaction
 
@@ -276,7 +276,7 @@ In short: let the hooks push feedback continuously during the build, then submit
 * Architecture diagram
 * XRPL transaction hashes or explorer references
 * Explanation of the XRPL AI Starter Kit integration
-* Explanation of the agentic payment flow if an agentic payment standard such as x402 or MPP is used (optional)
+* Explanation of the agentic payment flow if a recommended agentic payment standard such as x402 or MPP is used
 * Builder feedback completed
 
 ---
@@ -294,7 +294,7 @@ Your final submission should include:
 * Demonstration of the agentic transaction flow
 * At least one successful XRPL transaction
 * Explanation of the XRPL AI Starter Kit integration
-* Explanation of how any agentic payment standard such as x402 or MPP is used, if applicable (optional)
+* Explanation of how any recommended agentic payment standard such as x402 or MPP is used, if applicable
 * Architecture diagram
 * Transaction hashes or explorer references
 
