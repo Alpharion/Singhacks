@@ -159,13 +159,16 @@ def ensure_seed_data(session: Session) -> None:
 
     now = now_utc()
 
+    # Two commits: parent rows (sellers, couriers) must exist before the
+    # foreign-key-bearing child rows (offers, quotes) are inserted.
     for seller in SELLERS:
         session.add(SellerRow(**seller))
-    for offer in _offer_defs(now):
-        session.add(FoodOfferRow(**offer))
     for courier in COURIERS:
         session.add(CourierProviderRow(**courier))
+    session.commit()
+
+    for offer in _offer_defs(now):
+        session.add(FoodOfferRow(**offer))
     for quote in _quote_defs(now):
         session.add(DeliveryQuoteRow(**quote))
-
     session.commit()

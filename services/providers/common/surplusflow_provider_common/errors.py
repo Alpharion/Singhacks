@@ -73,7 +73,7 @@ def register_error_handlers(app: FastAPI) -> None:
             request_id=request_id,
             details={"errors": exc.errors()},
         ).model_dump(mode="json", by_alias=True, exclude_none=True)
-        return JSONResponse(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, content=body)
+        return JSONResponse(status_code=422, content=body)
 
     @app.exception_handler(Exception)
     async def _handle_unexpected_error(_request: Request, _exc: Exception) -> JSONResponse:

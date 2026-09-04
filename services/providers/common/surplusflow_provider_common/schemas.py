@@ -11,8 +11,20 @@ from __future__ import annotations
 from datetime import datetime
 from typing import Annotated, Literal
 
-from pydantic import BaseModel, ConfigDict, Field, StringConstraints
+from pydantic import AfterValidator, BaseModel, ConfigDict, Field, PlainSerializer, StringConstraints
 from pydantic.alias_generators import to_camel
+
+from .time_utils import ensure_aware, to_iso
+
+# SQLite drops tzinfo on round-trip and the contract requires ISO 8601 UTC
+# strings with a trailing "Z" (see packages/contracts/fixtures/*.json), so
+# every timestamp field normalizes to aware-UTC on the way in and serializes
+# with "Z" on the way out instead of relying on Pydantic's default "+00:00".
+Iso8601 = Annotated[
+    datetime,
+    AfterValidator(ensure_aware),
+    PlainSerializer(to_iso, return_type=str),
+]
 
 Identifier = Annotated[str, StringConstraints(pattern=r"^[a-z][a-z0-9_-]{2,63}$")]
 Drops = Annotated[str, StringConstraints(pattern=r"^(0|[1-9][0-9]*)$")]
@@ -64,8 +76,8 @@ class Location(ContractModel):
 
 
 class TimeWindow(ContractModel):
-    start: datetime
-    end: datetime
+    start: Iso8601
+    end: Iso8601
 
 
 class FoodOffer(ContractModel):
@@ -80,17 +92,17 @@ class FoodOffer(ContractModel):
     quantity_available: int = Field(ge=0, le=10000)
     unit_price_drops: PositiveDrops
     location: Location
-    prepared_at: datetime
-    expires_at: datetime
+    prepared_at: Iso8601
+    expires_at: Iso8601
     pickup_window: TimeWindow
     reliability_score: float = Field(ge=0, le=1)
     status: OfferStatus
-    updated_at: datetime
+    updated_at: Iso8601
 
 
 class FoodOffersResponse(ContractModel):
     offers: list[FoodOffer]
-    generated_at: datetime
+    generated_at: Iso8601
 
 
 class DeliveryQuote(ContractModel):
@@ -103,16 +115,16 @@ class DeliveryQuote(ContractModel):
     destination_zone: Annotated[str, StringConstraints(min_length=1, max_length=80)]
     capacity_meals: int = Field(ge=1, le=10000)
     price_drops: PositiveDrops
-    pickup_eta: datetime
-    delivery_eta: datetime
-    valid_until: datetime
+    pickup_eta: Iso8601
+    delivery_eta: Iso8601
+    valid_until: Iso8601
     reliability_score: float = Field(ge=0, le=1)
     status: QuoteStatus
 
 
 class DeliveryQuotesResponse(ContractModel):
     quotes: list[DeliveryQuote]
-    generated_at: datetime
+    generated_at: Iso8601
 
 
 class DeliveryPickup(ContractModel):
@@ -126,7 +138,7 @@ class DeliveryQuoteRequest(ContractModel):
     goal_id: Identifier
     pickups: list[DeliveryPickup] = Field(min_length=1)
     destination: Location
-    delivery_deadline: datetime
+    delivery_deadline: Iso8601
 
 
 class PolicySnapshot(ContractModel):
@@ -151,7 +163,7 @@ class PurchaseIntent(ContractModel):
     asset: Literal["XRP"]
     invoice_id: IdempotencyKeyStr
     idempotency_key: IdempotencyKeyStr
-    expires_at: datetime
+    expires_at: Iso8601
     rationale: Annotated[str, StringConstraints(min_length=1, max_length=1000)]
     policy_snapshot: PolicySnapshot
 
@@ -165,7 +177,7 @@ class PaymentReceipt(ContractModel):
     amount_drops: PositiveDrops
     invoice_id: IdempotencyKeyStr
     validated: Literal[True]
-    validated_at: datetime
+    validated_at: Iso8601
     explorer_url: str
 
 
@@ -179,8 +191,8 @@ class Reservation(ContractModel):
     pickup_window: TimeWindow
     pickup_token: PickupToken | None = None
     payment_receipt: PaymentReceipt
-    created_at: datetime
-    expires_at: datetime
+    created_at: Iso8601
+    expires_at: Iso8601
 
 
 class DeliveryBooking(ContractModel):
@@ -189,11 +201,11 @@ class DeliveryBooking(ContractModel):
     provider_id: Identifier
     quote_id: Identifier
     status: BookingStatus
-    pickup_eta: datetime
-    delivery_eta: datetime
+    pickup_eta: Iso8601
+    delivery_eta: Iso8601
     tracking_code: TrackingCode
     payment_receipt: PaymentReceipt
-    created_at: datetime
+    created_at: Iso8601
 
 
 class PaymentRequirementExtra(BaseModel):
