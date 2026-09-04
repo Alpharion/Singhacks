@@ -14,6 +14,7 @@ exact Person 4 adapter interface."
 from __future__ import annotations
 
 import base64
+import hashlib
 import json
 import os
 import secrets
@@ -49,8 +50,13 @@ class PaymentAdapter(Protocol):
     def verify_and_settle(self, payment_signature: str, pending: PendingPayment) -> PaymentReceipt: ...
 
 
-def generate_source_tag() -> int:
-    return secrets.randbelow(4_294_967_295) + 1
+def source_tag_from_invoice(invoice_id: str) -> int:
+    """Deterministic sourceTag so a re-issued 402 challenge for the same
+    invoice (e.g. the client retries before it has a PAYMENT-SIGNATURE
+    ready) always carries the same `extra.sourceTag` value."""
+
+    digest = hashlib.sha256(invoice_id.encode("utf-8")).digest()
+    return int.from_bytes(digest[:4], "big") % 4_294_967_295
 
 
 def encode_header(payload: dict) -> str:
