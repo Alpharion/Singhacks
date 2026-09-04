@@ -268,6 +268,12 @@ Unified wallet SDK for XRPL applications.
 
 Useful for applications that want to support multiple wallet providers through a common integration layer.
 
+### `xrpl-mpp-sdk`
+
+**[GitHub — xrpl-mpp-sdk](https://github.com/ripple/xrpl-mpp-sdk)**
+
+XRPL SDK for MPP-related functionality.
+
 ---
 
 ## 🏗️ Scaffolding & Developer Tools
