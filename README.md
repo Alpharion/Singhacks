@@ -12,6 +12,20 @@ This is crucial in securing feedback scores for the hackathon. Failure to set up
 
 ---
 
+## Load the XRPL agentic-resources skill (recommended)
+
+This repo ships an agent skill that loads a curated set of XRPL AI and agent resources into your coding agent: agent wallets, x402 pay-per-call, agent credit, RLUSD, live amendment and fee status, and the XLS specs. It works in Claude Code, Cursor, and Codex.
+
+From the repo root:
+
+```
+bash skills/install.sh
+```
+
+Then invoke it in your agent by typing `/xrpl-agentic-resources`, or just start XRPL agent work and the agent loads it by description. On first use, run `bash skills/xrpl-agentic-resources/scripts/refresh.sh` to pull the vendored repos and fresh docs indexes. See [skills/README.md](./skills/README.md) for per-agent details.
+
+---
+
 > **Build an AI-Native Business on XRPL with the XRPL AI Starter Kit and x402** — Design a credible product or service that could only exist, or operate significantly better, because AI agents can discover, decide, transact, and deliver value autonomously.
 
 ## Challenge Summary

@@ -16,6 +16,27 @@ If you're new to XRPL or the challenge stack, we recommend starting with:
 
 ---
 
+## Agent skill: xrpl-agentic-resources
+
+This repo ships an installable agent skill that pre-loads the resources below into your coding agent so it can fetch exactly what a task needs. It covers agent wallets, x402 pay-per-call, agent credit, RLUSD, and the XLS specs, and it keeps live amendment and fee status current.
+
+It works in Claude Code, Cursor, and Codex (all read the same `SKILL.md` format). From the repo root:
+
+```
+bash skills/install.sh
+```
+
+Then invoke `/xrpl-agentic-resources` in your agent. On first use run `bash skills/xrpl-agentic-resources/scripts/refresh.sh` to clone the vendored repos (Open Wallet Standard, t54 x402-secure, t54 rlusd-skills, XRPL dev-portal skills, XRPL-Standards) and re-crawl the live docs. What it bundles:
+
+* `resources/xrpl-llms.txt` the full xrpl.org page index
+* `resources/xrpl-amendments.json` live amendment status (check `enabled` before asserting a feature is on mainnet)
+* `resources/xrpl-fee-settings.json` live reserves and base fee (cite these, never hardcode)
+* fresh docs indexes for t54, XRPL x402, and claw.credit
+
+See [skills/README.md](./skills/README.md) for per-agent install details.
+
+---
+
 ## 📖 Core References
 
 ### XRPL Developer Portal
