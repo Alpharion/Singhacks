@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://surplusflow.local/contracts/delivery-booking.schema.json",
+  "title": "DeliveryBooking",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "bookingId",
+    "runId",
+    "providerId",
+    "quoteId",
+    "status",
+    "pickupEta",
+    "deliveryEta",
+    "trackingCode",
+    "paymentReceipt",
+    "createdAt"
+  ],
+  "properties": {
+    "bookingId": {"$ref": "common.schema.json#/$defs/Identifier"},
+    "runId": {"$ref": "common.schema.json#/$defs/Identifier"},
+    "providerId": {"$ref": "common.schema.json#/$defs/Identifier"},
+    "quoteId": {"$ref": "common.schema.json#/$defs/Identifier"},
+    "status": {"type": "string", "enum": ["confirmed", "collecting", "in_transit", "delivered", "cancelled", "failed"]},
+    "pickupEta": {"type": "string", "format": "date-time"},
+    "deliveryEta": {"type": "string", "format": "date-time"},
+    "trackingCode": {"type": "string", "pattern": "^[A-Za-z0-9_-]{8,64}$"},
+    "paymentReceipt": {"$ref": "payment-receipt.schema.json"},
+    "createdAt": {"type": "string", "format": "date-time"}
+  }
+}

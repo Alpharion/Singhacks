@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://surplusflow.local/contracts/purchase-intent.schema.json",
+  "title": "PurchaseIntent",
+  "description": "Validated application intent. It is not a signed XRPL transaction.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "intentId",
+    "runId",
+    "goalId",
+    "resourceType",
+    "providerId",
+    "resourceId",
+    "targetUrl",
+    "amountDrops",
+    "payTo",
+    "network",
+    "asset",
+    "invoiceId",
+    "idempotencyKey",
+    "expiresAt",
+    "rationale",
+    "policySnapshot"
+  ],
+  "properties": {
+    "intentId": {"$ref": "common.schema.json#/$defs/Identifier"},
+    "runId": {"$ref": "common.schema.json#/$defs/Identifier"},
+    "goalId": {"$ref": "common.schema.json#/$defs/Identifier"},
+    "resourceType": {"$ref": "common.schema.json#/$defs/ResourceType"},
+    "providerId": {"$ref": "common.schema.json#/$defs/Identifier"},
+    "resourceId": {"$ref": "common.schema.json#/$defs/Identifier"},
+    "targetUrl": {"type": "string", "format": "uri"},
+    "quantity": {"type": "integer", "minimum": 1},
+    "amountDrops": {"$ref": "common.schema.json#/$defs/PositiveDrops"},
+    "payTo": {"$ref": "common.schema.json#/$defs/XrplAddress"},
+    "network": {"$ref": "common.schema.json#/$defs/Network"},
+    "asset": {"$ref": "common.schema.json#/$defs/Asset"},
+    "invoiceId": {"type": "string", "pattern": "^[A-Za-z0-9._:-]{8,128}$"},
+    "idempotencyKey": {"type": "string", "pattern": "^[A-Za-z0-9._:-]{8,128}$"},
+    "expiresAt": {"type": "string", "format": "date-time"},
+    "rationale": {"type": "string", "minLength": 1, "maxLength": 1000},
+    "policySnapshot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["walletPolicyId", "maxOrderSpendDrops", "maxTransactionSpendDrops", "allowedPayees"],
+      "properties": {
+        "walletPolicyId": {"$ref": "common.schema.json#/$defs/Identifier"},
+        "maxOrderSpendDrops": {"$ref": "common.schema.json#/$defs/PositiveDrops"},
+        "maxTransactionSpendDrops": {"$ref": "common.schema.json#/$defs/PositiveDrops"},
+        "allowedPayees": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"$ref": "common.schema.json#/$defs/XrplAddress"}
+        }
+      }
+    }
+  }
+}

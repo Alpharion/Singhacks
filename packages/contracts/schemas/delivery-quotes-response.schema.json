@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://surplusflow.local/contracts/delivery-quotes-response.schema.json",
+  "title": "DeliveryQuotesResponse",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["quotes", "generatedAt"],
+  "properties": {
+    "quotes": {"type": "array", "items": {"$ref": "delivery-quote.schema.json"}},
+    "generatedAt": {"type": "string", "format": "date-time"}
+  }
+}

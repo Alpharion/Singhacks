@@ -1,0 +1,62 @@
+{
+  "offers": [
+    {
+      "offerId": "offer_bakery_001",
+      "sellerId": "seller_bakery_001",
+      "sellerName": "Green Oven Bakery",
+      "reservationEndpoint": "http://localhost:8011/api/sellers/seller_bakery_001/offers/offer_bakery_001/reserve",
+      "payTo": "rFoodA1111111111111111111111111",
+      "title": "Vegetarian bakery meal boxes",
+      "description": "Assorted vegetarian sandwiches, fruit, and pastry boxes.",
+      "dietaryTags": ["vegetarian", "nut_free"],
+      "quantityAvailable": 60,
+      "unitPriceDrops": "600000",
+      "location": {"zone": "Queenstown", "latitude": 1.2942, "longitude": 103.7861},
+      "preparedAt": "2026-09-05T03:00:00Z",
+      "expiresAt": "2026-09-05T10:00:00Z",
+      "pickupWindow": {"start": "2026-09-05T07:00:00Z", "end": "2026-09-05T08:30:00Z"},
+      "reliabilityScore": 0.94,
+      "status": "available",
+      "updatedAt": "2026-09-05T06:00:00Z"
+    },
+    {
+      "offerId": "offer_hotel_001",
+      "sellerId": "seller_hotel_001",
+      "sellerName": "Harbour Hotel Kitchen",
+      "reservationEndpoint": "http://localhost:8012/api/sellers/seller_hotel_001/offers/offer_hotel_001/reserve",
+      "payTo": "rFoodB1111111111111111111111111",
+      "title": "Vegetarian rice and vegetable bowls",
+      "description": "Chilled same-day surplus buffet bowls.",
+      "dietaryTags": ["vegetarian", "halal"],
+      "quantityAvailable": 60,
+      "unitPriceDrops": "650000",
+      "location": {"zone": "Tanjong Pagar", "latitude": 1.2764, "longitude": 103.8432},
+      "preparedAt": "2026-09-05T02:30:00Z",
+      "expiresAt": "2026-09-05T10:30:00Z",
+      "pickupWindow": {"start": "2026-09-05T07:30:00Z", "end": "2026-09-05T09:00:00Z"},
+      "reliabilityScore": 0.91,
+      "status": "available",
+      "updatedAt": "2026-09-05T06:00:00Z"
+    },
+    {
+      "offerId": "offer_grill_001",
+      "sellerId": "seller_grill_001",
+      "sellerName": "Central Grill",
+      "reservationEndpoint": "http://localhost:8013/api/sellers/seller_grill_001/offers/offer_grill_001/reserve",
+      "payTo": "rFoodC1111111111111111111111111",
+      "title": "Chicken meal boxes",
+      "description": "Low-cost chicken meals that do not satisfy the vegetarian goal.",
+      "dietaryTags": ["halal", "nut_free"],
+      "quantityAvailable": 100,
+      "unitPriceDrops": "400000",
+      "location": {"zone": "Outram", "latitude": 1.2819, "longitude": 103.8392},
+      "preparedAt": "2026-09-05T02:00:00Z",
+      "expiresAt": "2026-09-05T09:30:00Z",
+      "pickupWindow": {"start": "2026-09-05T07:00:00Z", "end": "2026-09-05T08:00:00Z"},
+      "reliabilityScore": 0.97,
+      "status": "available",
+      "updatedAt": "2026-09-05T06:00:00Z"
+    }
+  ],
+  "generatedAt": "2026-09-05T06:00:00Z"
+}

@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://surplusflow.local/contracts/agent-decision.schema.json",
+  "title": "AgentDecision",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "decisionId",
+    "runId",
+    "decisionType",
+    "objective",
+    "alternativesConsidered",
+    "reasons",
+    "rejectedAlternatives",
+    "remainingBudgetDrops",
+    "walletPolicyId",
+    "createdAt"
+  ],
+  "properties": {
+    "decisionId": {"$ref": "common.schema.json#/$defs/Identifier"},
+    "runId": {"$ref": "common.schema.json#/$defs/Identifier"},
+    "decisionType": {
+      "type": "string",
+      "enum": ["reject_offer", "select_plan", "authorize_payment", "replan", "stop"]
+    },
+    "objective": {"type": "string", "minLength": 1, "maxLength": 500},
+    "selectedOptionId": {"$ref": "common.schema.json#/$defs/Identifier"},
+    "alternativesConsidered": {
+      "type": "array",
+      "items": {"$ref": "common.schema.json#/$defs/Identifier"}
+    },
+    "reasons": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"type": "string", "minLength": 1, "maxLength": 300}
+    },
+    "rejectedAlternatives": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["optionId", "reasons"],
+        "properties": {
+          "optionId": {"$ref": "common.schema.json#/$defs/Identifier"},
+          "reasons": {
+            "type": "array",
+            "minItems": 1,
+            "items": {"type": "string", "minLength": 1, "maxLength": 300}
+          }
+        }
+      }
+    },
+    "remainingBudgetDrops": {"$ref": "common.schema.json#/$defs/Drops"},
+    "walletPolicyId": {"$ref": "common.schema.json#/$defs/Identifier"},
+    "transactionHash": {"$ref": "common.schema.json#/$defs/TransactionHash"},
+    "createdAt": {"type": "string", "format": "date-time"}
+  }
+}

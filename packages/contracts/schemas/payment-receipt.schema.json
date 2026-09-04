@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://surplusflow.local/contracts/payment-receipt.schema.json",
+  "title": "PaymentReceipt",
+  "description": "Normalized validated settlement receipt derived from PAYMENT-RESPONSE.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "success",
+    "transaction",
+    "network",
+    "payer",
+    "payee",
+    "amountDrops",
+    "invoiceId",
+    "validated",
+    "validatedAt",
+    "explorerUrl"
+  ],
+  "properties": {
+    "success": {"const": true},
+    "transaction": {"$ref": "common.schema.json#/$defs/TransactionHash"},
+    "network": {"$ref": "common.schema.json#/$defs/Network"},
+    "payer": {"$ref": "common.schema.json#/$defs/XrplAddress"},
+    "payee": {"$ref": "common.schema.json#/$defs/XrplAddress"},
+    "amountDrops": {"$ref": "common.schema.json#/$defs/PositiveDrops"},
+    "invoiceId": {"type": "string", "pattern": "^[A-Za-z0-9._:-]{8,128}$"},
+    "validated": {"const": true},
+    "validatedAt": {"type": "string", "format": "date-time"},
+    "explorerUrl": {"type": "string", "format": "uri"}
+  }
+}

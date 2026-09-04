@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://surplusflow.local/contracts/procurement-request.schema.json",
+  "title": "ProcurementRequest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["buyerId", "requestText", "walletPolicyId"],
+  "properties": {
+    "buyerId": {"$ref": "common.schema.json#/$defs/Identifier"},
+    "requestText": {"type": "string", "minLength": 10, "maxLength": 1000},
+    "walletPolicyId": {"$ref": "common.schema.json#/$defs/Identifier"}
+  }
+}

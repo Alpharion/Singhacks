@@ -1,0 +1,23 @@
+{
+  "bookingId": "booking_fast_001",
+  "runId": "run_demo_001",
+  "providerId": "courier_fast_001",
+  "quoteId": "quote_fast_001",
+  "status": "confirmed",
+  "pickupEta": "2026-09-05T08:00:00Z",
+  "deliveryEta": "2026-09-05T09:35:00Z",
+  "trackingCode": "track_fast_demo_001",
+  "paymentReceipt": {
+    "success": true,
+    "transaction": "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB",
+    "network": "xrpl:1",
+    "payer": "rBuyer1111111111111111111111111",
+    "payee": "rRideA1111111111111111111111111",
+    "amountDrops": "12000000",
+    "invoiceId": "inv:run_demo_001:quote_fast_001:v1",
+    "validated": true,
+    "validatedAt": "2026-09-05T06:04:30Z",
+    "explorerUrl": "https://testnet.xrpl.org/transactions/BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"
+  },
+  "createdAt": "2026-09-05T06:04:31Z"
+}

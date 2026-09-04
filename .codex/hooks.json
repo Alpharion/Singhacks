@@ -1,0 +1,17 @@
+{
+  "description": "Project-scoped XRPL feedback Stop hook for SingHacks.",
+  "hooks": {
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node /Users/jimmyli/Projects/SingHacks/Singhacks/hook/agents/codex/stop-hook.mjs",
+            "timeout": 60
+          }
+        ]
+      }
+    ]
+  }
+}

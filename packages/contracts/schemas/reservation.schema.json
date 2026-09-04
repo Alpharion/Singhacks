@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://surplusflow.local/contracts/reservation.schema.json",
+  "title": "Reservation",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "reservationId",
+    "runId",
+    "sellerId",
+    "offerId",
+    "quantity",
+    "status",
+    "pickupWindow",
+    "paymentReceipt",
+    "createdAt",
+    "expiresAt"
+  ],
+  "properties": {
+    "reservationId": {"$ref": "common.schema.json#/$defs/Identifier"},
+    "runId": {"$ref": "common.schema.json#/$defs/Identifier"},
+    "sellerId": {"$ref": "common.schema.json#/$defs/Identifier"},
+    "offerId": {"$ref": "common.schema.json#/$defs/Identifier"},
+    "quantity": {"type": "integer", "minimum": 1},
+    "status": {"type": "string", "enum": ["confirmed", "expired", "cancelled", "failed"]},
+    "pickupWindow": {"$ref": "common.schema.json#/$defs/TimeWindow"},
+    "pickupToken": {"type": "string", "pattern": "^[A-Za-z0-9_-]{12,256}$"},
+    "paymentReceipt": {"$ref": "payment-receipt.schema.json"},
+    "createdAt": {"type": "string", "format": "date-time"},
+    "expiresAt": {"type": "string", "format": "date-time"}
+  }
+}

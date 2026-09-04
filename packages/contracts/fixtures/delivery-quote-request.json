@@ -1,0 +1,19 @@
+{
+  "goalId": "goal_demo_001",
+  "pickups": [
+    {
+      "sellerId": "seller_bakery_001",
+      "offerId": "offer_bakery_001",
+      "quantity": 60,
+      "location": {"zone": "Queenstown", "latitude": 1.2942, "longitude": 103.7861}
+    },
+    {
+      "sellerId": "seller_hotel_001",
+      "offerId": "offer_hotel_001",
+      "quantity": 40,
+      "location": {"zone": "Tanjong Pagar", "latitude": 1.2764, "longitude": 103.8432}
+    }
+  ],
+  "destination": {"zone": "Queenstown", "addressLine": "Demo Community Kitchen"},
+  "deliveryDeadline": "2026-09-05T10:00:00Z"
+}

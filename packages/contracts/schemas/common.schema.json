@@ -1,0 +1,85 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://surplusflow.local/contracts/common.schema.json",
+  "title": "SurplusFlow Common Types",
+  "$defs": {
+    "Identifier": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_-]{2,63}$"
+    },
+    "Drops": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "description": "Integer amount in XRP drops. One XRP equals 1,000,000 drops."
+    },
+    "PositiveDrops": {
+      "type": "string",
+      "pattern": "^[1-9][0-9]*$"
+    },
+    "XrplAddress": {
+      "type": "string",
+      "pattern": "^r[1-9A-HJ-NP-Za-km-z]{24,34}$"
+    },
+    "TransactionHash": {
+      "type": "string",
+      "pattern": "^[A-Fa-f0-9]{64}$"
+    },
+    "Network": {
+      "const": "xrpl:1"
+    },
+    "Asset": {
+      "const": "XRP"
+    },
+    "DietaryTag": {
+      "type": "string",
+      "enum": [
+        "vegetarian",
+        "vegan",
+        "halal",
+        "kosher",
+        "gluten_free",
+        "nut_free",
+        "dairy_free"
+      ]
+    },
+    "Location": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["zone"],
+      "properties": {
+        "zone": {"type": "string", "minLength": 1, "maxLength": 80},
+        "addressLine": {"type": "string", "minLength": 1, "maxLength": 200},
+        "latitude": {"type": "number", "minimum": -90, "maximum": 90},
+        "longitude": {"type": "number", "minimum": -180, "maximum": 180}
+      }
+    },
+    "TimeWindow": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["start", "end"],
+      "properties": {
+        "start": {"type": "string", "format": "date-time"},
+        "end": {"type": "string", "format": "date-time"}
+      }
+    },
+    "ResourceType": {
+      "type": "string",
+      "enum": ["food_reservation", "delivery_booking"]
+    },
+    "RunStatus": {
+      "type": "string",
+      "enum": [
+        "queued",
+        "parsing",
+        "discovering",
+        "planning",
+        "awaiting_payment",
+        "reserving",
+        "replanning",
+        "fulfilled",
+        "failed",
+        "cancelled"
+      ]
+    }
+  }
+}

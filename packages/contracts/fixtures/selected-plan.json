@@ -1,0 +1,32 @@
+{
+  "planId": "plan_final_001",
+  "goalId": "goal_demo_001",
+  "foodAllocations": [
+    {
+      "sellerId": "seller_bakery_001",
+      "offerId": "offer_bakery_001",
+      "quantity": 60,
+      "unitPriceDrops": "600000",
+      "lineTotalDrops": "36000000",
+      "reliabilityScore": 0.94
+    },
+    {
+      "sellerId": "seller_hotel_001",
+      "offerId": "offer_hotel_001",
+      "quantity": 40,
+      "unitPriceDrops": "650000",
+      "lineTotalDrops": "26000000",
+      "reliabilityScore": 0.91
+    }
+  ],
+  "deliveryQuoteId": "quote_fast_001",
+  "totalMeals": 100,
+  "foodCostDrops": "62000000",
+  "deliveryCostDrops": "12000000",
+  "totalCostDrops": "74000000",
+  "expectedDeliveryAt": "2026-09-05T09:35:00Z",
+  "validUntil": "2026-09-05T06:15:00Z",
+  "riskScore": 14.5,
+  "feasible": true,
+  "rejectionReasons": []
+}

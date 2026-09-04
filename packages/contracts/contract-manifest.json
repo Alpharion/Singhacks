@@ -1,0 +1,50 @@
+[
+  {
+    "fixture": "fixtures/procurement-request.json",
+    "schema": "https://surplusflow.local/contracts/procurement-request.schema.json"
+  },
+  {
+    "fixture": "fixtures/food-offers.json",
+    "schema": "https://surplusflow.local/contracts/food-offers-response.schema.json"
+  },
+  {
+    "fixture": "fixtures/delivery-quote-request.json",
+    "schema": "https://surplusflow.local/contracts/delivery-quote-request.schema.json"
+  },
+  {
+    "fixture": "fixtures/delivery-quotes.json",
+    "schema": "https://surplusflow.local/contracts/delivery-quotes-response.schema.json"
+  },
+  {
+    "fixture": "fixtures/selected-plan.json",
+    "schema": "https://surplusflow.local/contracts/procurement-plan.schema.json"
+  },
+  {
+    "fixture": "fixtures/purchase-intent.json",
+    "schema": "https://surplusflow.local/contracts/purchase-intent.schema.json"
+  },
+  {
+    "fixture": "fixtures/payment-requirement.json",
+    "schema": "https://surplusflow.local/contracts/payment-requirement.schema.json"
+  },
+  {
+    "fixture": "fixtures/payment-receipt.json",
+    "schema": "https://surplusflow.local/contracts/payment-receipt.schema.json"
+  },
+  {
+    "fixture": "fixtures/reservation.json",
+    "schema": "https://surplusflow.local/contracts/reservation.schema.json"
+  },
+  {
+    "fixture": "fixtures/delivery-booking.json",
+    "schema": "https://surplusflow.local/contracts/delivery-booking.schema.json"
+  },
+  {
+    "fixture": "fixtures/provider-failure.json",
+    "schema": "https://surplusflow.local/contracts/api-error.schema.json"
+  },
+  {
+    "fixture": "fixtures/agent-run.json",
+    "schema": "https://surplusflow.local/contracts/agent-run.schema.json"
+  }
+]

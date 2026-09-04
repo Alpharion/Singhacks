@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://surplusflow.local/contracts/delivery-quote-request.schema.json",
+  "title": "DeliveryQuoteRequest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["goalId", "pickups", "destination", "deliveryDeadline"],
+  "properties": {
+    "goalId": {"$ref": "common.schema.json#/$defs/Identifier"},
+    "pickups": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["sellerId", "offerId", "quantity", "location"],
+        "properties": {
+          "sellerId": {"$ref": "common.schema.json#/$defs/Identifier"},
+          "offerId": {"$ref": "common.schema.json#/$defs/Identifier"},
+          "quantity": {"type": "integer", "minimum": 1},
+          "location": {"$ref": "common.schema.json#/$defs/Location"}
+        }
+      }
+    },
+    "destination": {"$ref": "common.schema.json#/$defs/Location"},
+    "deliveryDeadline": {"type": "string", "format": "date-time"}
+  }
+}

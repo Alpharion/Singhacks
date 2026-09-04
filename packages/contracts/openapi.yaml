@@ -1,0 +1,332 @@
+openapi: 3.1.0
+info:
+  title: SurplusFlow API Contract
+  version: 1.0.0
+  license:
+    name: MIT
+    identifier: MIT
+  description: |
+    Contract Freeze v1 for the SurplusFlow buyer agent, marketplace, seller,
+    courier, and payment-boundary APIs. JSON field names are camelCase. XRP
+    values are integer strings in drops.
+  x-contract-status: frozen
+  x-contract-owner: person-4
+servers:
+  - url: http://localhost:8001
+    description: Buyer agent
+  - url: http://localhost:8002
+    description: Marketplace
+security: []
+tags:
+  - name: Agent
+    description: Buyer-agent run creation, state, and decision timeline.
+  - name: Discovery
+    description: Free food-offer and courier-quote discovery.
+  - name: Providers
+    description: x402-protected reservations, bookings, and fulfilment state.
+  - name: Payments
+    description: Normalized XRPL settlement receipt lookup.
+paths:
+  /health:
+    get:
+      tags: [Discovery]
+      operationId: getHealth
+      summary: Check service health
+      responses:
+        "200":
+          description: Service is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                required: [status]
+                properties:
+                  status:
+                    const: ok
+  /api/procure:
+    post:
+      tags: [Agent]
+      operationId: startProcurement
+      summary: Start an autonomous procurement run
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ./schemas/procurement-request.schema.json
+      responses:
+        "202":
+          description: Procurement run accepted
+          headers:
+            Location:
+              description: URL of the created run
+              schema: {type: string, format: uri-reference}
+          content:
+            application/json:
+              schema:
+                $ref: ./schemas/agent-run.schema.json
+        "409":
+          $ref: "#/components/responses/Conflict"
+        "422":
+          $ref: "#/components/responses/InvalidRequest"
+  /api/runs/{runId}:
+    get:
+      tags: [Agent]
+      operationId: getProcurementRun
+      summary: Read the latest agent state and timeline
+      parameters:
+        - $ref: "#/components/parameters/RunId"
+      responses:
+        "200":
+          description: Current procurement run
+          content:
+            application/json:
+              schema:
+                $ref: ./schemas/agent-run.schema.json
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /api/offers:
+    get:
+      tags: [Discovery]
+      operationId: listFoodOffers
+      summary: Discover food offers without payment
+      parameters:
+        - name: dietaryTag
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [vegetarian, vegan, halal, kosher, gluten_free, nut_free, dairy_free]
+        - name: availableAt
+          in: query
+          required: false
+          schema: {type: string, format: date-time}
+        - name: minQuantity
+          in: query
+          required: false
+          schema: {type: integer, minimum: 1}
+      responses:
+        "200":
+          description: Available and recently unavailable offers
+          content:
+            application/json:
+              schema:
+                $ref: ./schemas/food-offers-response.schema.json
+        "422":
+          $ref: "#/components/responses/InvalidRequest"
+  /api/delivery/quotes:
+    post:
+      tags: [Discovery]
+      operationId: listDeliveryQuotes
+      summary: Get delivery quotes for a proposed set of pickups
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ./schemas/delivery-quote-request.schema.json
+      responses:
+        "200":
+          description: Delivery quotes
+          content:
+            application/json:
+              schema:
+                $ref: ./schemas/delivery-quotes-response.schema.json
+        "422":
+          $ref: "#/components/responses/InvalidRequest"
+  /api/sellers/{sellerId}/offers/{offerId}/reserve:
+    post:
+      tags: [Providers]
+      operationId: reserveFoodOffer
+      summary: Purchase an exclusive food reservation
+      description: |
+        The first request normally returns HTTP 402 with a PAYMENT-REQUIRED
+        header. The x402 buyer retries the same request with PAYMENT-SIGNATURE.
+        The provider returns the reservation only after validated settlement.
+      parameters:
+        - $ref: "#/components/parameters/SellerId"
+        - $ref: "#/components/parameters/OfferId"
+        - $ref: "#/components/parameters/IdempotencyKey"
+        - $ref: "#/components/parameters/PaymentSignature"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ./schemas/purchase-intent.schema.json
+      responses:
+        "201":
+          description: Paid reservation created
+          headers:
+            PAYMENT-RESPONSE:
+              $ref: "#/components/headers/PaymentResponse"
+          content:
+            application/json:
+              schema:
+                $ref: ./schemas/reservation.schema.json
+        "402":
+          $ref: "#/components/responses/PaymentRequired"
+        "409":
+          $ref: "#/components/responses/Conflict"
+        "422":
+          $ref: "#/components/responses/InvalidRequest"
+        "503":
+          $ref: "#/components/responses/ProviderUnavailable"
+  /api/delivery/{providerId}/book:
+    post:
+      tags: [Providers]
+      operationId: bookDelivery
+      summary: Purchase a courier booking
+      description: Uses the same x402 challenge, settlement, and retry flow as food reservations.
+      parameters:
+        - $ref: "#/components/parameters/ProviderId"
+        - $ref: "#/components/parameters/IdempotencyKey"
+        - $ref: "#/components/parameters/PaymentSignature"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ./schemas/purchase-intent.schema.json
+      responses:
+        "201":
+          description: Paid delivery booking created
+          headers:
+            PAYMENT-RESPONSE:
+              $ref: "#/components/headers/PaymentResponse"
+          content:
+            application/json:
+              schema:
+                $ref: ./schemas/delivery-booking.schema.json
+        "402":
+          $ref: "#/components/responses/PaymentRequired"
+        "409":
+          $ref: "#/components/responses/Conflict"
+        "422":
+          $ref: "#/components/responses/InvalidRequest"
+        "503":
+          $ref: "#/components/responses/ProviderUnavailable"
+  /api/reservations/{reservationId}:
+    get:
+      tags: [Providers]
+      operationId: getReservation
+      summary: Read a reservation
+      parameters:
+        - $ref: "#/components/parameters/ReservationId"
+      responses:
+        "200":
+          description: Reservation state
+          content:
+            application/json:
+              schema:
+                $ref: ./schemas/reservation.schema.json
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /api/transactions/{transactionHash}:
+    get:
+      tags: [Payments]
+      operationId: getTransactionReceipt
+      summary: Read a normalized validated XRPL settlement receipt
+      parameters:
+        - $ref: "#/components/parameters/TransactionHash"
+      responses:
+        "200":
+          description: Validated payment receipt
+          content:
+            application/json:
+              schema:
+                $ref: ./schemas/payment-receipt.schema.json
+        "404":
+          $ref: "#/components/responses/NotFound"
+components:
+  parameters:
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: true
+      description: Stable key reused only when retrying the same logical request.
+      schema:
+        type: string
+        pattern: "^[A-Za-z0-9._:-]{8,128}$"
+    PaymentSignature:
+      name: PAYMENT-SIGNATURE
+      in: header
+      required: false
+      description: Base64-encoded x402 v2 signed payment payload, generated by x402-xrpl.
+      schema: {type: string, minLength: 1}
+    RunId:
+      name: runId
+      in: path
+      required: true
+      schema: {$ref: ./schemas/common.schema.json#/$defs/Identifier}
+    SellerId:
+      name: sellerId
+      in: path
+      required: true
+      schema: {$ref: ./schemas/common.schema.json#/$defs/Identifier}
+    OfferId:
+      name: offerId
+      in: path
+      required: true
+      schema: {$ref: ./schemas/common.schema.json#/$defs/Identifier}
+    ProviderId:
+      name: providerId
+      in: path
+      required: true
+      schema: {$ref: ./schemas/common.schema.json#/$defs/Identifier}
+    ReservationId:
+      name: reservationId
+      in: path
+      required: true
+      schema: {$ref: ./schemas/common.schema.json#/$defs/Identifier}
+    TransactionHash:
+      name: transactionHash
+      in: path
+      required: true
+      schema: {$ref: ./schemas/common.schema.json#/$defs/TransactionHash}
+  headers:
+    PaymentRequired:
+      description: Base64-encoded x402 v2 payment challenge. Decode to PaymentRequirement.
+      required: true
+      schema: {type: string, minLength: 1}
+    PaymentResponse:
+      description: Base64-encoded x402 v2 settlement result. Decode and normalize to PaymentReceipt.
+      required: true
+      schema: {type: string, minLength: 1}
+  responses:
+    PaymentRequired:
+      description: An XRPL payment is required before the provider returns value.
+      headers:
+        PAYMENT-REQUIRED:
+          $ref: "#/components/headers/PaymentRequired"
+      content:
+        application/json:
+          schema:
+            $ref: ./schemas/api-error.schema.json
+    InvalidRequest:
+      description: Request does not satisfy the frozen contract.
+      content:
+        application/json:
+          schema:
+            $ref: ./schemas/api-error.schema.json
+    NotFound:
+      description: Requested resource does not exist.
+      content:
+        application/json:
+          schema:
+            $ref: ./schemas/api-error.schema.json
+    Conflict:
+      description: Resource state or idempotency conflict.
+      content:
+        application/json:
+          schema:
+            $ref: ./schemas/api-error.schema.json
+    ProviderUnavailable:
+      description: Provider cannot fulfil the request; the agent may replan.
+      content:
+        application/json:
+          schema:
+            $ref: ./schemas/api-error.schema.json

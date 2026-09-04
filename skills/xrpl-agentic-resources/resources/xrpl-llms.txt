@@ -24,8 +24,8 @@ Real-world applications and business scenarios for the XRP Ledger.
  - [Smart Contracts](https://xrpl.org/docs/use-cases/payments/smart-contracts-uc.md): Transactions allow accounts to modify the XRP Ledger.
  - [Authorized Minter](https://xrpl.org/docs/use-cases/tokenization/authorized-minter.md): Minting and selling NFTs for another account.
  - [Digital Artist](https://xrpl.org/docs/use-cases/tokenization/digital-artist.md): Creating an NFT Marketplace for buying and selling NFTs.
- - [NFT Marketplace Overview](https://xrpl.org/docs/use-cases/tokenization/nft-mkt-overview.md): Overview of NFT Marketplace use cases.
  - [Institutional Credit Facilities](https://xrpl.org/docs/use-cases/defi/institutional-credit-facilities.md): The XRPL's Lending Protocol, combined with Single Asset Vaults, Credentials, and Permissioned Domains, enable institutional credit facilities.
+ - [NFT Marketplace Overview](https://xrpl.org/docs/use-cases/tokenization/nft-mkt-overview.md): Overview of NFT Marketplace use cases.
  - [NFT Marketplace](https://xrpl.org/docs/use-cases/tokenization/nftoken-marketplace.md): Creating an NFT Marketplace for buying and selling NFTs.
  - [List XRP as an Exchange](https://xrpl.org/docs/use-cases/defi/list-xrp-as-an-exchange.md): Run a digital asset exchange? Follow these steps to add XRP.
  - [Creating an Asset-backed Multi-purpose Token](https://xrpl.org/docs/use-cases/tokenization/creating-an-asset-backed-multi-purpose-token.md): Issue an asset-backed token such as a US Treasury bill using multi-purpose tokens.
@@ -40,9 +40,9 @@ XRPL AI Starter Kit to help autonomous agents discover, set up, and execute agen
 
  - [Track and Measure Agent Behavior on the XRP Ledger](https://xrpl.org/docs/agents/track-agent-behavior.md): Use SourceTag, Memos, and WebSocket monitoring to attribute, audit, and react to agent-generated transactions on the XRP Ledger. Applies to all XRPL agentic workflows — payments, trading, escrow, and more.
 
- - [The XRPL Payments Skill](https://xrpl.org/docs/agents/xrpl-payments-skill.md): The XRPL Payments skill gives Claude accurate, up-to-date knowledge of XRP Ledger payment operations — XRP and RLUSD payments, trust lines, cross-currency payments, escrow, agentic best practices, and error handling. Works with the XRPL Agent Wallet skill to sign and submit.
-
  - [The XRPL Agent Wallet Skill](https://xrpl.org/docs/agents/xrpl-agent-wallet-skill.md): Learn how the XRPL Agent Wallet skill gives a Claude agent wallet-grade signing discipline on the XRP Ledger — secure key loading, autofill, human-readable previews, explicit confirmation, and reliable submission via submitAndWait.
+
+ - [The XRPL Payments Skill](https://xrpl.org/docs/agents/xrpl-payments-skill.md): The XRPL Payments skill gives Claude accurate, up-to-date knowledge of XRP Ledger payment operations — XRP and RLUSD payments, trust lines, cross-currency payments, escrow, agentic best practices, and error handling. Works with the XRPL Agent Wallet skill to sign and submit.
 
 
 ## Concepts
@@ -52,26 +52,26 @@ Core concepts including accounts, tokens, transactions, consensus, and more.
  - [Configuring Accounts](https://xrpl.org/docs/concepts/accounts/configuring-accounts.md): Common configurations for an XRP Ledger account.
  - [Deleting Accounts](https://xrpl.org/docs/concepts/accounts/deleting-accounts.md): About deleting an XRP Ledger account.
  - [Deposit Authorization](https://xrpl.org/docs/concepts/accounts/depositauth.md): The DepositAuth setting lets an account block incoming payments by default.
- - [Consensus Protections Against Attacks and Failure Modes](https://xrpl.org/docs/concepts/consensus-protocol/consensus-protections.md): Learn how the XRP Ledger Consensus Protocol is protected against various problems and attacks that may occur in a decentralized financial system.
  - [Accounts](https://xrpl.org/docs/concepts/accounts.md): Learn about accounts in the XRP Ledger. Accounts can send transactions and hold XRP.
- - [Consensus Research](https://xrpl.org/docs/concepts/consensus-protocol/consensus-research.md): Scholarly articles on consensus algorithms and related research.
  - [Multi-Signing](https://xrpl.org/docs/concepts/accounts/multi-signing.md): Use multi-signing for greater security sending transactions.
  - [Permission Delegation](https://xrpl.org/docs/concepts/accounts/permission-delegation.md): Learn how XRPL Account Permission Delegation enables secure, granular control over your account transactions. Explore DelegateSet transactions for comprehensive permission and access management on the XRP Ledger.
- - [Pseudo-Accounts](https://xrpl.org/docs/concepts/accounts/pseudo-accounts.md): A pseudo-account is a special type of XRPL account that holds assets on behalf of an on-chain protocol.
- - [Reserves](https://xrpl.org/docs/concepts/accounts/reserves.md): XRP Ledger accounts require a reserve of XRP to reduce spam in ledger data.
  - [Account Types](https://xrpl.org/docs/concepts/accounts/account-types.md): Businesses sending transactions on the XRP Ledger automatically should set up separate addresses for different purposes to minimize risk.
  - [Addresses](https://xrpl.org/docs/concepts/accounts/addresses.md): Addresses uniquely identify XRP Ledger accounts, using base58 format.
+ - [Consensus Protections Against Attacks and Failure Modes](https://xrpl.org/docs/concepts/consensus-protocol/consensus-protections.md): Learn how the XRP Ledger Consensus Protocol is protected against various problems and attacks that may occur in a decentralized financial system.
+ - [Pseudo-Accounts](https://xrpl.org/docs/concepts/accounts/pseudo-accounts.md): A pseudo-account is a special type of XRPL account that holds assets on behalf of an on-chain protocol.
+ - [Consensus Research](https://xrpl.org/docs/concepts/consensus-protocol/consensus-research.md): Scholarly articles on consensus algorithms and related research.
+ - [Reserves](https://xrpl.org/docs/concepts/accounts/reserves.md): XRP Ledger accounts require a reserve of XRP to reduce spam in ledger data.
  - [Cryptographic Keys](https://xrpl.org/docs/concepts/accounts/cryptographic-keys.md): Use cryptographic keys to approve transactions so the XRP Ledger can execute them.
  - [Sponsored Fees and Reserves](https://xrpl.org/docs/concepts/accounts/sponsored-fees-and-reserves.md): Sponsors can pay transaction fees and reserve requirements on behalf of other accounts on the XRP Ledger.
  - [Consensus Principles and Rules](https://xrpl.org/docs/concepts/consensus-protocol/consensus-principles-and-rules.md): The rules and principles of the consensus algorithm that allow users to transfer funds (including fiat currencies, digital currencies and other forms of value) across national boundaries as seamlessly as sending an email.
  - [Tickets](https://xrpl.org/docs/concepts/accounts/tickets.md): Send transactions in non-sequential order.
- - [Consensus Structure](https://xrpl.org/docs/concepts/consensus-protocol/consensus-structure.md): Understand the role of consensus in the XRP Ledger.
- - [Fee Voting](https://xrpl.org/docs/concepts/consensus-protocol/fee-voting.md): How validators vote on fees (transaction cost and reserve requirements).
  - [Unique Node List (UNL)](https://xrpl.org/docs/concepts/consensus-protocol/unl.md)
+ - [Fee Voting](https://xrpl.org/docs/concepts/consensus-protocol/fee-voting.md): How validators vote on fees (transaction cost and reserve requirements).
+ - [Consensus Protocol](https://xrpl.org/docs/concepts/consensus-protocol.md): Consensus is how new blocks of transactions get confirmed by the XRP Ledger blockchain.
+ - [Consensus Structure](https://xrpl.org/docs/concepts/consensus-protocol/consensus-structure.md): Understand the role of consensus in the XRP Ledger.
  - [Ledger Close Times](https://xrpl.org/docs/concepts/ledgers/ledger-close-times.md): How the XRP Ledger calculates a unique close time value for each ledger version.
  - [Open, Closed, and Validated Ledgers](https://xrpl.org/docs/concepts/ledgers/open-closed-validated-ledgers.md): Ledger objects have one of three states — open, closed, or validated.
  - [Invariant Checking](https://xrpl.org/docs/concepts/consensus-protocol/invariant-checking.md): Understand what invariant checking is, why it exists, how it works, and what invariant checks are active.
- - [Consensus Protocol](https://xrpl.org/docs/concepts/consensus-protocol.md): Consensus is how new blocks of transactions get confirmed by the XRP Ledger blockchain.
  - [Credentials](https://xrpl.org/docs/concepts/decentralized-storage/credentials.md): Create and manage credentials on the blockchain, which can provide authorization for payments or other features, while respecting privacy and decentralization.
  - [Decentralized Identifiers](https://xrpl.org/docs/concepts/decentralized-storage/decentralized-identifiers.md): Decentralized identifiers enable verifiable, decentralized digital identities.
  - [Price Oracles](https://xrpl.org/docs/concepts/decentralized-storage/price-oracles.md): Price oracles gather real-world market prices and record them in the blockchain so that other tools and technology can access this data directly.
@@ -80,65 +80,65 @@ Core concepts including accounts, tokens, transactions, consensus, and more.
  - [Negative UNL](https://xrpl.org/docs/concepts/consensus-protocol/negative-unl.md): Understand how Negative UNL improves the ledger's resilience during partial outages.
  - [Clustering](https://xrpl.org/docs/concepts/networks-and-servers/clustering.md): Run xrpld servers in a cluster to share the load of cryptography between them.
  - [Networks and Servers](https://xrpl.org/docs/concepts/networks-and-servers.md): xrpld is the core peer-to-peer server that manages the XRP Ledger.
- - [Ledger History](https://xrpl.org/docs/concepts/networks-and-servers/ledger-history.md): xrpld servers store a variable amount of transaction and state history locally.
  - [Ledgers](https://xrpl.org/docs/concepts/ledgers.md): Ledgers are the data structure that holds data in the shared XRP Ledger network. A chain of ledgers records the history of transactions and state changes.
- - [Bouncing Payments](https://xrpl.org/docs/concepts/payment-types/bouncing-payments.md): When the purpose of a payment is unclear, return it to the sender.
+ - [Ledger History](https://xrpl.org/docs/concepts/networks-and-servers/ledger-history.md): xrpld servers store a variable amount of transaction and state history locally.
  - [Parallel Networks](https://xrpl.org/docs/concepts/networks-and-servers/parallel-networks.md): Understand how test networks and alternate ledger chains relate to the production XRP Ledger.
+ - [Bouncing Payments](https://xrpl.org/docs/concepts/payment-types/bouncing-payments.md): When the purpose of a payment is unclear, return it to the sender.
  - [Peer Protocol](https://xrpl.org/docs/concepts/networks-and-servers/peer-protocol.md): The peer protocol specifies the language xrpld servers speak to each other.
  - [The Clio Server](https://xrpl.org/docs/concepts/networks-and-servers/the-clio-server.md): Clio is an XRP Ledger server optimized for API calls.
  - [Transaction Censorship Detection](https://xrpl.org/docs/concepts/networks-and-servers/transaction-censorship-detection.md): XRP Ledger provides an automated transaction censorship detector that is available on all xrpld servers.
  - [xrpld Server Modes](https://xrpl.org/docs/concepts/networks-and-servers/xrpld-server-modes.md): Learn about xrpld server modes, including stock servers, validator servers, and xrpld servers run in stand-alone mode.
- - [Robustly Monitoring for Payments](https://xrpl.org/docs/concepts/payment-types/robustly-monitoring-for-payments.md): Recommendations for monitoring incoming payments for a variety of possible irregularities.
  - [Checks](https://xrpl.org/docs/concepts/payment-types/checks.md): Checks let users create deferred payments that can be canceled or cashed by the intended recipients.
  - [Cross-Currency Payments](https://xrpl.org/docs/concepts/payment-types/cross-currency-payments.md): Cross-currency payments atomically deliver a different currency than they send by converting through paths and order books.
+ - [Robustly Monitoring for Payments](https://xrpl.org/docs/concepts/payment-types/robustly-monitoring-for-payments.md): Recommendations for monitoring incoming payments for a variety of possible irregularities.
  - [Direct XRP Payments](https://xrpl.org/docs/concepts/payment-types/direct-xrp-payments.md): Direct XRP payments are the quickest and simplest way to send value on the XRP Ledger. Learn the basics of the direct XRP payment lifecycle now.
  - [Escrow](https://xrpl.org/docs/concepts/payment-types/escrow.md): Escrow holds funds until specified conditions are met.
  - [Partial Payments](https://xrpl.org/docs/concepts/payment-types/partial-payments.md): Partial payments subtract fees from the amount sent, delivering a flexible amount. Partial payments are useful for returning unwanted payments without incurring additional costs.
  - [Fees (Disambiguation)](https://xrpl.org/docs/concepts/transactions/fees.md): Learn about the types of fees allowed by the XRP Ledger, including neutral fees (payable to no one) that protect the ledger against abuse, as well as fees that users can collect from each other.
  - [Sending Payments to Customers](https://xrpl.org/docs/concepts/payment-types/sending-payments-to-customers.md): Construct payments carefully to thwart malicious actors.
  - [Tokens](https://xrpl.org/docs/concepts/tokens.md): Anyone can make tokens representing digital value on the XRP Ledger. Learn about types of tokens and how they are used.
- - [Batch Transactions](https://xrpl.org/docs/concepts/transactions/batch-transactions.md): Discover how XRPL Batch Transactions streamline multiple blockchain operations into a single secure transaction. Learn about batch modes, execution details, and security considerations.
  - [Payment Channels](https://xrpl.org/docs/concepts/payment-types/payment-channels.md): Payment Channels enable fast, asynchronous XRP payments that can be divided into very small increments and settled later.
+ - [Batch Transactions](https://xrpl.org/docs/concepts/transactions/batch-transactions.md): Discover how XRPL Batch Transactions streamline multiple blockchain operations into a single secure transaction. Learn about batch modes, execution details, and security considerations.
  - [Lending Protocol](https://xrpl.org/docs/concepts/tokens/lending-protocol.md): The XRPL Lending Protocol enables on-chain, uncollateralized fixed-term loans.
  - [Transactions](https://xrpl.org/docs/concepts/transactions.md): Transactions are the only way to change the XRP Ledger. Understand what forms they take and how to use them.
  - [Single Asset Vaults](https://xrpl.org/docs/concepts/tokens/single-asset-vaults.md): Single asset vaults aggregate assets from multiple depositors and make them available to other on-chain protocols.
  - [Source and Destination Tags](https://xrpl.org/docs/concepts/transactions/source-and-destination-tags.md): Use source and destination tags to indicate specific purposes for payments from and to multi-purpose addresses.
  - [Transaction Cost](https://xrpl.org/docs/concepts/transactions/transaction-cost.md): The transaction cost is a small amount of XRP destroyed to send a transaction, which protects the ledger from spam. Learn how the transaction cost applies.
  - [Cross-Chain Bridges](https://xrpl.org/docs/concepts/xrpl-sidechains/cross-chain-bridges.md): Cross-chain bridges for the XRP Ledger enable value in the form of XRP and other tokens (IOUs) to move efficiently between blockchains.
+ - [Reliable Transaction Submission](https://xrpl.org/docs/concepts/transactions/reliable-transaction-submission.md): Build a system that can submit transactions to the XRP Ledger and get their final results safely and quickly.
  - [XRPL Sidechains](https://xrpl.org/docs/concepts/xrpl-sidechains.md): An XRPL sidechain is an independent ledger with its own consensus algorithm, transaction types, and rules.
  - [Witness Servers](https://xrpl.org/docs/concepts/xrpl-sidechains/witness-servers.md): A witness server is a light-weight server that witnesses and signs transactions between the XRP Ledger and another chain.
- - [Reliable Transaction Submission](https://xrpl.org/docs/concepts/transactions/reliable-transaction-submission.md): Build a system that can submit transactions to the XRP Ledger and get their final results safely and quickly.
  - [Secure Signing](https://xrpl.org/docs/concepts/transactions/secure-signing.md): Set up an environment where you can submit transactions securely.
  - [Transaction Queue](https://xrpl.org/docs/concepts/transactions/transaction-queue.md): Transactions can be queued before being processed.
  - [Auto-Bridging](https://xrpl.org/docs/concepts/tokens/decentralized-exchange/autobridging.md): Auto-bridging automatically connects order books using XRP as an intermediary when it reduces costs.
- - [Automated Market Makers (AMMs)](https://xrpl.org/docs/concepts/tokens/decentralized-exchange/automated-market-makers.md): Automated Market Makers (AMMs) are an essential part of cryptocurrency, providing liquidity between asset pairs. Learn more about AMMs and the XRP Ledger.
- - [Offers](https://xrpl.org/docs/concepts/tokens/decentralized-exchange/offers.md): Offers are the XRP Ledger's form of currency trading orders. Understand their lifecycle and properties.
- - [Permissioned DEXes](https://xrpl.org/docs/concepts/tokens/decentralized-exchange/permissioned-dexes.md): The definition and details of a Permissioned Domain instance.
  - [Common Misunderstandings about Freezes](https://xrpl.org/docs/concepts/tokens/fungible-tokens/common-misconceptions-about-freezes.md): Clarify common misunderstandings about the XRP Ledger's freeze feature.
- - [Tick Size](https://xrpl.org/docs/concepts/tokens/decentralized-exchange/ticksize.md): Issuers can set custom tick sizes for currencies to reduce churn in order books over miniscule differences in exchange rates.
+ - [Automated Market Makers (AMMs)](https://xrpl.org/docs/concepts/tokens/decentralized-exchange/automated-market-makers.md): Automated Market Makers (AMMs) are an essential part of cryptocurrency, providing liquidity between asset pairs. Learn more about AMMs and the XRP Ledger.
  - [Demurrage](https://xrpl.org/docs/concepts/tokens/fungible-tokens/demurrage.md): (Obsolete) Some older XRP Ledger tools used to support currency codes with built-in interest and negative interest rates.
+ - [Permissioned DEXes](https://xrpl.org/docs/concepts/tokens/decentralized-exchange/permissioned-dexes.md): The definition and details of a Permissioned Domain instance.
+ - [Offers](https://xrpl.org/docs/concepts/tokens/decentralized-exchange/offers.md): Offers are the XRP Ledger's form of currency trading orders. Understand their lifecycle and properties.
+ - [Tick Size](https://xrpl.org/docs/concepts/tokens/decentralized-exchange/ticksize.md): Issuers can set custom tick sizes for currencies to reduce churn in order books over miniscule differences in exchange rates.
  - [Fungible Tokens](https://xrpl.org/docs/concepts/tokens/fungible-tokens.md): Fungible tokens are a way of representing currency or assets on the blockchain where each unit can be swapped for each other. Learn about the different fungible token standards on the XRP Ledger and which one to use.
  - [Authorized Trust Lines](https://xrpl.org/docs/concepts/tokens/fungible-tokens/authorized-trust-lines.md): Authorized trust lines is a setting to limit who can hold a token.
- - [Decentralized Exchange (DEX)](https://xrpl.org/docs/concepts/tokens/decentralized-exchange.md): Explore how the XRP Ledger powers its decentralized exchange (DEX) for seamless crypto trading. Learn how you can trade tokens securely on the XRP Ledger.
  - [Clawing Back Tokens](https://xrpl.org/docs/concepts/tokens/fungible-tokens/clawing-back-tokens.md): Issuers can claw back their tokens for compliance purposes if they enable the Clawback feature before issuing tokens.
- - [Permissioned Domains](https://xrpl.org/docs/concepts/tokens/decentralized-exchange/permissioned-domains.md): Learn how Permissioned Domains on the XRP Ledger enable controlled, secure blockchain environments. Explore their role in decentralized exchanges (DEXes) and lending protocols.
  - [Confidential Transfers](https://xrpl.org/docs/concepts/tokens/fungible-tokens/confidential-transfers.md): Confidential transfers keep MPT balances and transaction amounts private while maintaining public auditability of the total token supply.
  - [Deep Freeze](https://xrpl.org/docs/concepts/tokens/fungible-tokens/deep-freeze.md): Deep Freeze ensures that frozen token holders can neither send nor receive frozen funds until their trust line is unfrozen.
+ - [Decentralized Exchange (DEX)](https://xrpl.org/docs/concepts/tokens/decentralized-exchange.md): Explore how the XRP Ledger powers its decentralized exchange (DEX) for seamless crypto trading. Learn how you can trade tokens securely on the XRP Ledger.
+ - [Permissioned Domains](https://xrpl.org/docs/concepts/tokens/decentralized-exchange/permissioned-domains.md): Learn how Permissioned Domains on the XRP Ledger enable controlled, secure blockchain environments. Explore their role in decentralized exchanges (DEXes) and lending protocols.
  - [Freezing Tokens](https://xrpl.org/docs/concepts/tokens/fungible-tokens/freezes.md): Issuers can freeze their issued tokens for compliance purposes.
  - [Multi-Purpose Tokens (MPTs)](https://xrpl.org/docs/concepts/tokens/fungible-tokens/multi-purpose-tokens.md): Learn about multi-purpose tokens (MPTs) on XRP Ledger. MPTs are a flexible way to issue fungible tokens with built-in metadata, compliance, and transfer controls.
  - [Mutable MPTs](https://xrpl.org/docs/concepts/tokens/fungible-tokens/mutable-mpts.md): The DynamicMPT amendment lets issuers create an MPT with mutable properties, so they can be updated later as business needs evolve.
+ - [Rippling](https://xrpl.org/docs/concepts/tokens/fungible-tokens/rippling.md): Rippling is automatic multi-party net settlement of token balances.
  - [Authorizing Another Minter](https://xrpl.org/docs/concepts/tokens/nfts/authorizing-another-minter.md): You can assign another account to mint NFTs in your stead.
  - [Batch Minting](https://xrpl.org/docs/concepts/tokens/nfts/batch-minting.md): Minting NFTs in batches.
  - [Minting NFTs into Collections](https://xrpl.org/docs/concepts/tokens/nfts/collections.md): You can mint NFTs as collections using the NFT Taxon field.
- - [Rippling](https://xrpl.org/docs/concepts/tokens/fungible-tokens/rippling.md): Rippling is automatic multi-party net settlement of token balances.
  - [Guaranteeing a Fixed Supply of NFTs](https://xrpl.org/docs/concepts/tokens/nfts/guaranteeing-a-fixed-supply.md): Use a new account to mint a fixed number of NFTs, then blackhole the account.
+ - [Paths](https://xrpl.org/docs/concepts/tokens/fungible-tokens/paths.md): Payments of tokens must traverse paths of connected users and order books.
  - [Trust Line Tokens](https://xrpl.org/docs/concepts/tokens/fungible-tokens/trust-line-tokens.md): Learn about the properties and rationale of trust lines and fungible tokens.
  - [NFT Payload Storage](https://xrpl.org/docs/concepts/tokens/nfts/payload-storage.md): Storage options for the payload of your NFT.
+ - [Transfer Fees](https://xrpl.org/docs/concepts/tokens/fungible-tokens/transfer-fees.md): Token issuers can charge a fee for transferring their tokens.
  - [NFT Reserve Requirements](https://xrpl.org/docs/concepts/tokens/nfts/reserve-requirements.md): Understand reserve requirements for minting and holding NFTs.
- - [Paths](https://xrpl.org/docs/concepts/tokens/fungible-tokens/paths.md): Payments of tokens must traverse paths of connected users and order books.
  - [Running an NFT Auction](https://xrpl.org/docs/concepts/tokens/nfts/running-an-nft-auction.md): You can assign another account to mint NFTs in your stead.
  - [Dynamic Non-Fungible Tokens (dNFTs)](https://xrpl.org/docs/concepts/tokens/nfts/dynamic-nfts.md): Create NFTs with the option of changing the URI to update its referenced data object.
- - [Transfer Fees](https://xrpl.org/docs/concepts/tokens/fungible-tokens/transfer-fees.md): Token issuers can charge a fee for transferring their tokens.
  - [Non-Fungible Tokens](https://xrpl.org/docs/concepts/tokens/nfts.md): Introduction to XRPL NFTs.
  - [NFT APIs](https://xrpl.org/docs/concepts/tokens/nfts/nft-apis.md): Specialized APIs let you access useful NFT metadata.
  - [Non-Transferable Tokens](https://xrpl.org/docs/concepts/tokens/nfts/non-transferable-tokens.md): Create NFTs that can't be traded among users.
@@ -170,8 +170,8 @@ Step-by-step guides for building on the XRP Ledger in JavaScript, Python, Go, an
  - [Cancel a Check](https://xrpl.org/docs/tutorials/payments/cancel-a-check.md): Cancel a Check without sending money.
  - [Cancel an Expired Escrow](https://xrpl.org/docs/tutorials/payments/cancel-an-expired-escrow.md): Cancel an expired escrow.
  - [Cash a Check for a Flexible Amount](https://xrpl.org/docs/tutorials/payments/cash-a-check-for-a-flexible-amount.md): Cash a Check for as much as possible.
- - [Cash a Check for an Exact Amount](https://xrpl.org/docs/tutorials/payments/cash-a-check-for-an-exact-amount.md): Cash a Check for any exact amount up to the amount it specifies.
  - [Get Started Using JavaScript Library](https://xrpl.org/docs/tutorials/get-started/get-started-javascript.md): Build an entry-level JavaScript application for querying the XRP Ledger.
+ - [Cash a Check for an Exact Amount](https://xrpl.org/docs/tutorials/payments/cash-a-check-for-an-exact-amount.md): Cash a Check for any exact amount up to the amount it specifies.
  - [Get Started Using Python Library](https://xrpl.org/docs/tutorials/get-started/get-started-python.md): Build a Python app that interacts with the XRP Ledger.
  - [Get Started Using TypeScript Library](https://xrpl.org/docs/tutorials/get-started/get-started-typescript.md): Build an entry-level TypeScript application for querying the XRP Ledger.
  - [Look Up Checks](https://xrpl.org/docs/tutorials/payments/look-up-checks.md): Get a list of pending checks sent from or to an account.
@@ -179,12 +179,12 @@ Step-by-step guides for building on the XRP Ledger in JavaScript, Python, Go, an
  - [Send a Check](https://xrpl.org/docs/tutorials/payments/send-a-check.md): Send a Check whose intended recipient can cash it to be paid later.
  - [Set Up an IOU-IOU Bridge](https://xrpl.org/docs/tutorials/programmability/set-up-iou-iou-bridge.md): Steps to set up an IOU-IOU bridge.
  - [Set Up an XRP-XRP Bridge](https://xrpl.org/docs/tutorials/programmability/set-up-xrp-xrp-bridge.md): Steps to create an XRP-XRP bridge with a new sidechain.
- - [Submit Cross-chain Transactions](https://xrpl.org/docs/tutorials/programmability/submit-cross-chain-transaction.md): Steps to submit a cross-chain transaction, using a bridge.
  - [Send a Conditional Escrow](https://xrpl.org/docs/tutorials/payments/send-a-conditional-escrow.md): Create an escrow whose release is based on a condition being fulfilled.
+ - [Submit Cross-chain Transactions](https://xrpl.org/docs/tutorials/programmability/submit-cross-chain-transaction.md): Steps to submit a cross-chain transaction, using a bridge.
  - [Send a Timed Escrow](https://xrpl.org/docs/tutorials/payments/send-a-timed-escrow.md): Send an escrow whose only condition for release is that a specific time has passed.
  - [Send a Multi-Purpose Token (MPT)](https://xrpl.org/docs/tutorials/payments/send-an-mpt.md): Send a direct payment of a Multi-Purpose Token (MPT) on the XRP Ledger.
- - [Build a Desktop Wallet in JavaScript](https://xrpl.org/docs/tutorials/sample-apps/build-a-desktop-wallet-in-javascript.md): Build a graphical desktop wallet for the XRPL using JavaScript.
  - [Send Confidential MPT Payments](https://xrpl.org/docs/tutorials/payments/send-confidential-payments.md): Settle two confidential Multi-Purpose Token (MPT) payments atomically with a Batch transaction, then read the result as a holder and as an auditor.
+ - [Build a Desktop Wallet in JavaScript](https://xrpl.org/docs/tutorials/sample-apps/build-a-desktop-wallet-in-javascript.md): Build a graphical desktop wallet for the XRPL using JavaScript.
  - [Send Fungible Token Escrows](https://xrpl.org/docs/tutorials/payments/send-fungible-token-escrows.md): Create and finish escrows that hold fungible tokens (MPTs and trust line tokens) on the XRP Ledger.
  - [Send XRP](https://xrpl.org/docs/tutorials/payments/send-xrp.md): Learn how to send test payments right from your browser.
  - [Use Payment Channels](https://xrpl.org/docs/tutorials/payments/use-payment-channels.md): Payment Channels are an advanced feature for sending "asynchronous" XRP payments that can be divided into very small increments and settled later. This tutorial walks through the entire process of using a payment channel, with examples using the JSON-RPC API of a local xrpld server.
@@ -201,9 +201,9 @@ Step-by-step guides for building on the XRP Ledger in JavaScript, Python, Go, an
  - [Sponsor a Transaction with a Pre-funded Pool](https://xrpl.org/docs/tutorials/best-practices/account-management/sponsor-a-transaction-with-a-pre-funded-pool.md): Create a sponsorship pool that lets a sponsee submit sponsored transactions without the sponsor co-signing each one.
  - [Transfer a Reserve Sponsorship](https://xrpl.org/docs/tutorials/best-practices/account-management/transfer-a-reserve-sponsorship.md): Create, reassign, or end the reserve sponsorship on an existing ledger entry.
  - [Offline Account Setup Tutorial](https://xrpl.org/docs/tutorials/best-practices/key-management/offline-account-setup.md): Set up an XRP Ledger account using an air-gapped, offline machine to store its cryptographic keys.
- - [Add Assets to an AMM in JavaScript](https://xrpl.org/docs/tutorials/defi/dex/add-assets-to-amm-in-javascript.md)
  - [Assign a Regular Key Pair](https://xrpl.org/docs/tutorials/best-practices/key-management/assign-a-regular-key-pair.md): Authorize a regular key pair to sign transactions from your account. This key pair can be changed or removed later.
  - [Delete an Account](https://xrpl.org/docs/tutorials/best-practices/key-management/delete-an-account.md): Delete an account, sending its remaining XRP to another account.
+ - [Add Assets to an AMM in JavaScript](https://xrpl.org/docs/tutorials/defi/dex/add-assets-to-amm-in-javascript.md)
  - [Disable Master Key Pair](https://xrpl.org/docs/tutorials/best-practices/key-management/disable-master-key-pair.md): Disable the master key that is mathematically associated with an address.
  - [Remove a Regular Key Pair](https://xrpl.org/docs/tutorials/best-practices/key-management/remove-a-regular-key-pair.md): Remove a regular key pair already authorized by your account.
  - [Send a Multi-Signed Transaction](https://xrpl.org/docs/tutorials/best-practices/key-management/send-a-multi-signed-transaction.md): Send a transaction authorized with multiple signatures.
@@ -218,17 +218,17 @@ Step-by-step guides for building on the XRP Ledger in JavaScript, Python, Go, an
  - [Assign an Authorized Minter Using Python](https://xrpl.org/docs/tutorials/tokens/nfts/assign-an-authorized-minter-py.md): Authorize another account to mint NFTs for you.
  - [Batch Mint NFTs Using JavaScript](https://xrpl.org/docs/tutorials/tokens/nfts/batch-mint-nfts-js.md): Broker a sale between a sell offer and a buy offer.
  - [Batch Mint NFTs Using Python](https://xrpl.org/docs/tutorials/tokens/nfts/batch-mint-nfts-py.md): Mint multiple NFTs with the press of a button.
- - [Enable No Freeze](https://xrpl.org/docs/tutorials/tokens/fungible-tokens/enable-no-freeze.md): Permanently give up your account's ability to freeze tokens it issues.
  - [Broker an NFT Sale Using JavaScript](https://xrpl.org/docs/tutorials/tokens/nfts/broker-an-nft-sale-js.md): Broker a sale between a sell offer and a buy offer.
+ - [Enable No Freeze](https://xrpl.org/docs/tutorials/tokens/fungible-tokens/enable-no-freeze.md): Permanently give up your account's ability to freeze tokens it issues.
  - [Enact Global Freeze](https://xrpl.org/docs/tutorials/tokens/fungible-tokens/enact-global-freeze.md): Freeze all tokens issued by your address.
  - [Broker an NFT Sale Using Python](https://xrpl.org/docs/tutorials/tokens/nfts/broker-an-nft-sale-py.md): Broker a sale between a sell offer and a buy offer.
- - [Freeze a Trust Line](https://xrpl.org/docs/tutorials/tokens/fungible-tokens/freeze-a-trust-line.md): Freeze an individual holder of a token.
  - [Mint and Burn NFTs Using JavaScript](https://xrpl.org/docs/tutorials/tokens/nfts/mint-and-burn-nfts-js.md): Mint and burn NFTs.
- - [Mint and Burn NFTs Using Python](https://xrpl.org/docs/tutorials/tokens/nfts/mint-and-burn-nfts-py.md): Mint and burn NFTs.
+ - [Freeze a Trust Line](https://xrpl.org/docs/tutorials/tokens/fungible-tokens/freeze-a-trust-line.md): Freeze an individual holder of a token.
  - [Issue a Fungible Token](https://xrpl.org/docs/tutorials/tokens/fungible-tokens/issue-a-fungible-token.md): Create your own token and issue it on the XRP Ledger Testnet.
  - [Claw Back Confidential Balances](https://xrpl.org/docs/tutorials/tokens/mpts/claw-back-confidential-balances.md): Claw back a holder's entire confidential Multi-Purpose Token (MPT) balance as the issuer, then verify the result as the holder, the issuer, and the auditor.
  - [Issue a Multi-Purpose Token (MPT)](https://xrpl.org/docs/tutorials/tokens/mpts/issue-a-multi-purpose-token.md): Issue a Multi-Purpose Token (MPT) with arbitrary metadata on the XRP Ledger.
  - [Issue an MPT for Confidential Transfers](https://xrpl.org/docs/tutorials/tokens/mpts/issue-mpt-for-confidential-transfers.md): Issue a Multi-Purpose Token (MPT) that supports confidential transfers, register the issuer and auditor encryption keys, and mint confidential tokens.
+ - [Mint and Burn NFTs Using Python](https://xrpl.org/docs/tutorials/tokens/nfts/mint-and-burn-nfts-py.md): Mint and burn NFTs.
  - [Transfer NFTs Using JavaScript](https://xrpl.org/docs/tutorials/tokens/nfts/transfer-nfts-js.md): Use a JavaScript test harness to send XRP, trade currencies, and mint and trade NFTs.
  - [Transfer NFTs Using Python](https://xrpl.org/docs/tutorials/tokens/nfts/transfer-nfts-py.md): Use a Python test harness to create and accept NFT buy and sell offers.
  - [Create a Single Asset Vault](https://xrpl.org/docs/tutorials/defi/lending/use-single-asset-vaults/create-a-single-asset-vault.md): Create a single asset vault on the XRP Ledger.
@@ -253,22 +253,22 @@ Protocol specification, transaction types, ledger entries, and API methods.
  - [Compact Transaction Identifier](https://xrpl.org/docs/references/http-websocket-apis/api-conventions/ctid.md): A Compact Transaction Identifier (CTID) is a short string that uniquely identifies a validated transaction across any chain.
  - [Admin API Methods](https://xrpl.org/docs/references/http-websocket-apis/admin-api-methods.md): Administer an XRP Ledger server with these API methods.
  - [Error Formatting](https://xrpl.org/docs/references/http-websocket-apis/api-conventions/error-formatting.md): Error formats and common error codes for WebSocket, JSON-RPC, and Commandline interfaces.
+ - [Peer Port Methods](https://xrpl.org/docs/references/http-websocket-apis/peer-port-methods.md): Special API methods for sharing network topology and status metrics, served on the XRPL Peer Protocol port.
  - [Short Names of Ledger Entries](https://xrpl.org/docs/references/http-websocket-apis/api-conventions/ledger-entry-short-names.md)
  - [Markers and Pagination](https://xrpl.org/docs/references/http-websocket-apis/api-conventions/markers-and-pagination.md): Convention for paginating large queries into multiple responses.
  - [Rate Limiting](https://xrpl.org/docs/references/http-websocket-apis/api-conventions/rate-limiting.md): Information on how public APIs limit clients from making too many requests.
- - [Peer Port Methods](https://xrpl.org/docs/references/http-websocket-apis/peer-port-methods.md): Special API methods for sharing network topology and status metrics, served on the XRPL Peer Protocol port.
  - [Request Formatting](https://xrpl.org/docs/references/http-websocket-apis/api-conventions/request-formatting.md): Standard request format, with examples, for the WebSocket, JSON-RPC, and Commandline interfaces.
- - [Currency Formats](https://xrpl.org/docs/references/protocol/data-types/currency-formats.md): Precision and range for currency numbers, plus formats of custom currency codes.
  - [Response Formatting](https://xrpl.org/docs/references/http-websocket-apis/api-conventions/response-formatting.md): Standard response format, with examples, for the WebSocket, JSON-RPC, and Commandline interfaces.
  - [xrpld Server States](https://xrpl.org/docs/references/http-websocket-apis/api-conventions/xrpld-server-states.md): Definitions of state information reported in some API methods.
+ - [Currency Formats](https://xrpl.org/docs/references/protocol/data-types/currency-formats.md): Precision and range for currency numbers, plus formats of custom currency codes.
  - [Health Check](https://xrpl.org/docs/references/http-websocket-apis/peer-port-methods/health-check.md): Special API method for reporting server health.
  - [Public API Methods](https://xrpl.org/docs/references/http-websocket-apis/public-api-methods.md): Get data from the XRP Ledger and submit transactions using these public API methods.
  - [base58 Encodings](https://xrpl.org/docs/references/protocol/data-types/base58-encodings.md): Formats for representing cryptographic keys and related data in base58 format.
  - [Ledger Data Formats](https://xrpl.org/docs/references/protocol/ledger-data.md): Learn about individual entries that comprise the XRP Ledger's shared state data.
  - [Basic Data Types](https://xrpl.org/docs/references/protocol/data-types/basic-data-types.md): Format and meaning of fundamental data types like addresses, ledger index, and currency codes.
  - [NFToken](https://xrpl.org/docs/references/protocol/data-types/nftoken.md): Introduction to XRPL NFTs.
- - [Peer Crawler](https://xrpl.org/docs/references/http-websocket-apis/peer-port-methods/peer-crawler.md): Special API method for sharing network topology and status metrics.
  - [Permission Values](https://xrpl.org/docs/references/protocol/data-types/permission-values.md): Format for permissions that can be granted to other accounts.
+ - [Peer Crawler](https://xrpl.org/docs/references/http-websocket-apis/peer-port-methods/peer-crawler.md): Special API method for sharing network topology and status metrics.
  - [Validator List Method](https://xrpl.org/docs/references/http-websocket-apis/peer-port-methods/validator-list.md): Special API method for sharing recommended validator lists.
  - [Ledger Header](https://xrpl.org/docs/references/protocol/ledger-data/ledger-header.md): A unique header that describes the contents of a ledger version.
  - [Transaction Common Fields](https://xrpl.org/docs/references/protocol/transactions/common-fields.md): These common fields can be provided on any XRP Ledger transaction.
@@ -304,8 +304,8 @@ Protocol specification, transaction types, ledger entries, and API methods.
  - [account_info](https://xrpl.org/docs/references/http-websocket-apis/public-api-methods/account-methods/account_info.md): Get basic data about an account.
  - [account_nfts](https://xrpl.org/docs/references/http-websocket-apis/public-api-methods/account-methods/account_nfts.md): Get a list of all NFTs for an account.
  - [account_offers](https://xrpl.org/docs/references/http-websocket-apis/public-api-methods/account-methods/account_offers.md): Get info about an account's currency exchange offers.
- - [account_lines](https://xrpl.org/docs/references/http-websocket-apis/public-api-methods/account-methods/account_lines.md): Get info about an account's trust lines.
  - [account_tx](https://xrpl.org/docs/references/http-websocket-apis/public-api-methods/account-methods/account_tx.md): Get a list of transactions affecting an account.
+ - [account_lines](https://xrpl.org/docs/references/http-websocket-apis/public-api-methods/account-methods/account_lines.md): Get info about an account's trust lines.
  - [gateway_balances](https://xrpl.org/docs/references/http-websocket-apis/public-api-methods/account-methods/gateway_balances.md): Calculate total amounts issued by an account.
  - [account_objects](https://xrpl.org/docs/references/http-websocket-apis/public-api-methods/account-methods/account_objects.md): Get all ledger objects owned by an account.
  - [noripple_check](https://xrpl.org/docs/references/http-websocket-apis/public-api-methods/account-methods/noripple_check.md): Get recommended changes to an account's Default Ripple and No Ripple settings.
@@ -350,7 +350,6 @@ Protocol specification, transaction types, ledger entries, and API methods.
  - [ping](https://xrpl.org/docs/references/http-websocket-apis/public-api-methods/utility-methods/ping.md): Confirm connectivity with the server.
  - [tx](https://xrpl.org/docs/references/http-websocket-apis/public-api-methods/transaction-methods/tx.md): Retrieve info about a transaction from all the ledgers on hand.
  - [random](https://xrpl.org/docs/references/http-websocket-apis/public-api-methods/utility-methods/random.md): Generate a random number.
- - [vault_info](https://xrpl.org/docs/references/http-websocket-apis/public-api-methods/vault-methods/vault_info.md): Retrieve information about a vault, its owner, available assets, and details on issued shares.
  - [AccountRoot](https://xrpl.org/docs/references/protocol/ledger-data/ledger-entry-types/accountroot.md): The settings, XRP balance, and other metadata for one account.
  - [Amendments](https://xrpl.org/docs/references/protocol/ledger-data/ledger-entry-types/amendments.md): The status of enabled and pending amendments.
  - [AMM](https://xrpl.org/docs/references/protocol/ledger-data/ledger-entry-types/amm.md): The definition and details of an Automated Market Maker (AMM) instance.
@@ -360,8 +359,8 @@ Protocol specification, transaction types, ledger entries, and API methods.
  - [Delegate](https://xrpl.org/docs/references/protocol/ledger-data/ledger-entry-types/delegate.md): A record of which permissions have been granted to another account.
  - [DepositPreauth](https://xrpl.org/docs/references/protocol/ledger-data/ledger-entry-types/depositpreauth.md): A record of preauthorization for sending payments to an account that requires authorization.
  - [DID](https://xrpl.org/docs/references/protocol/ledger-data/ledger-entry-types/did.md): A Decentralized Identifier (DID).
- - [Escrow](https://xrpl.org/docs/references/protocol/ledger-data/ledger-entry-types/escrow.md): An escrow, which holds funds to be released when certain conditions are met.
  - [DirectoryNode](https://xrpl.org/docs/references/protocol/ledger-data/ledger-entry-types/directorynode.md): A set of links to other ledger entries, either objects owned by an account or trades in the decentralized exchange.
+ - [Escrow](https://xrpl.org/docs/references/protocol/ledger-data/ledger-entry-types/escrow.md): An escrow, which holds funds to be released when certain conditions are met.
  - [FeeSettings](https://xrpl.org/docs/references/protocol/ledger-data/ledger-entry-types/feesettings.md): The current base transaction cost and reserve requirements.
  - [LedgerHashes](https://xrpl.org/docs/references/protocol/ledger-data/ledger-entry-types/ledgerhashes.md): Lists of prior ledger versions' hashes for history lookup.
  - [Loan](https://xrpl.org/docs/references/protocol/ledger-data/ledger-entry-types/loan.md): A Loan ledger entry represents the terms of a loan between a borrower and loan issuer.
@@ -382,6 +381,7 @@ Protocol specification, transaction types, ledger entries, and API methods.
  - [Vault](https://xrpl.org/docs/references/protocol/ledger-data/ledger-entry-types/vault.md): A Vault object defines the state of a tokenized vault.
  - [XChainOwnedClaimID](https://xrpl.org/docs/references/protocol/ledger-data/ledger-entry-types/xchainownedclaimid.md): A cross-chain transfer of value.
  - [XChainOwnedCreateAccountClaimID](https://xrpl.org/docs/references/protocol/ledger-data/ledger-entry-types/xchainownedcreateaccountclaimid.md): A record of attestations for creating an account via a cross-chain transfer.
+ - [vault_info](https://xrpl.org/docs/references/http-websocket-apis/public-api-methods/vault-methods/vault_info.md): Retrieve information about a vault, its owner, available assets, and details on issued shares.
  - [EnableAmendment](https://xrpl.org/docs/references/protocol/transactions/pseudo-transaction-types/enableamendment.md): Enable a change in transaction processing.
  - [Pseudo-Transactions](https://xrpl.org/docs/references/protocol/transactions/pseudo-transaction-types.md): Formats of pseudo-transactions that validators sometimes apply to the XRP Ledger.
  - [SetFee](https://xrpl.org/docs/references/protocol/transactions/pseudo-transaction-types/setfee.md): Change global reserve and transaction cost settings.
@@ -401,10 +401,10 @@ Protocol specification, transaction types, ledger entries, and API methods.
  - [AMMDelete](https://xrpl.org/docs/references/protocol/transactions/types/ammdelete.md): Delete an Automated Market Maker with an empty asset pool.
  - [AMMVote](https://xrpl.org/docs/references/protocol/transactions/types/ammvote.md): Vote on the trading fee for an Automated Market Maker.
  - [AMMWithdraw](https://xrpl.org/docs/references/protocol/transactions/types/ammwithdraw.md): Return LPTokens to an Automated Market Maker in exchange for a share of the assets the pool holds.
+ - [AMMDeposit](https://xrpl.org/docs/references/protocol/transactions/types/ammdeposit.md): Deposit funds into an Automated Market Maker in exchange for LPTokens.
  - [Batch](https://xrpl.org/docs/references/protocol/transactions/types/batch.md): Create and submit a batch of up to 8 transactions that succeed or fail atomically.
  - [CheckCancel](https://xrpl.org/docs/references/protocol/transactions/types/checkcancel.md): Cancel a check.
  - [CheckCash](https://xrpl.org/docs/references/protocol/transactions/types/checkcash.md): Redeem a check.
- - [AMMDeposit](https://xrpl.org/docs/references/protocol/transactions/types/ammdeposit.md): Deposit funds into an Automated Market Maker in exchange for LPTokens.
  - [CheckCreate](https://xrpl.org/docs/references/protocol/transactions/types/checkcreate.md): Create a check.
  - [Clawback](https://xrpl.org/docs/references/protocol/transactions/types/clawback.md): Claw back tokens you've issued.
  - [ConfidentialMPTClawback](https://xrpl.org/docs/references/protocol/transactions/types/confidentialmptclawback.md): Claw back a holder's entire confidential balance, removing it from circulation.
@@ -569,8 +569,8 @@ Recent XRPL Blog posts (showing 2023 and newer).
  - [Introducing XRP Ledger version 2.0.1](https://xrpl.org/blog/2024/rippled-2.0.1.md)
  - [Introducing XRP Ledger version 2.1.0](https://xrpl.org/blog/2024/rippled-2.1.0.md)
  - [Introducing XRP Ledger version 2.1.1](https://xrpl.org/blog/2024/rippled-2.1.1.md)
- - [Introducing XRP Ledger version 2.2.1](https://xrpl.org/blog/2024/rippled-2.2.1.md): rippled version 2.2.1 is now available, addressing a critical bug when handling some types of RPC requests. Learn more about this release.
  - [Introducing XRP Ledger version 2.2.0](https://xrpl.org/blog/2024/rippled-2.2.0.md)
+ - [Introducing XRP Ledger version 2.2.1](https://xrpl.org/blog/2024/rippled-2.2.1.md): rippled version 2.2.1 is now available, addressing a critical bug when handling some types of RPC requests. Learn more about this release.
  - [Introducing XRP Ledger version 2.2.2](https://xrpl.org/blog/2024/rippled-2.2.2.md): rippled version 2.2.2 is now available, addressing a Mainnet issue that caused validators to stall during consensus. Learn more about this release.
  - [Introducing XRP Ledger version 2.2.3](https://xrpl.org/blog/2024/rippled-2.2.3.md): rippled version 2.2.3 is now available, addressing an issue that could cause full-history servers to run out of space in their SQLite databases. Learn more about this release.
  - [Introducing XRP Ledger version 2.3.0](https://xrpl.org/blog/2024/rippled-2.3.0.md): rippled version 2.3.0 is now available. This version introduces new features and stability fixes.
@@ -581,8 +581,8 @@ Recent XRPL Blog posts (showing 2023 and newer).
  - [Introducing Clio version 2.3.1](https://xrpl.org/blog/2025/clio-2.3.1.md): Version 2.3.1 of Clio, an XRP Ledger API server optimized for HTTP and WebSocket API calls, is now available. This release adds bug fixes.
  - [Introducing Clio version 2.4.0](https://xrpl.org/blog/2025/clio-2.4.0.md): Version 2.4.0 of Clio, an XRP Ledger API server optimized for HTTP and WebSocket API calls, is now available. This release adds bug fixes.
  - [Introducing Clio version 2.4.1](https://xrpl.org/blog/2025/clio-2.4.1.md): Version 2.4.1 of Clio, an XRP Ledger API server optimized for HTTP and WebSocket API calls, is now available. This release adds bug fixes.
- - [CoinPayments Case Study: XRPL-Powered Payment Processing](https://xrpl.org/blog/2025/coinpayments-xrpl-case-study-payment-processing.md): Learn how CoinPayments processes considerable crypto transaction volumes on the XRP Ledger (XRPL) from a real-world payment processing case study.
  - [Introducing Clio version 2.5.0](https://xrpl.org/blog/2025/clio-2.5.0.md): Version 2.5.0 of Clio, an XRP Ledger API server optimized for HTTP and WebSocket API calls, is now available. This release adds new features and bug fixes.
+ - [CoinPayments Case Study: XRPL-Powered Payment Processing](https://xrpl.org/blog/2025/coinpayments-xrpl-case-study-payment-processing.md): Learn how CoinPayments processes considerable crypto transaction volumes on the XRP Ledger (XRPL) from a real-world payment processing case study.
  - [Default UNL Migration](https://xrpl.org/blog/2025/default-unl-migration.md): If you run a rippled node that uses the default UNL, you must migrate your configuration to the new XRPL Foundation's list by 2025-09-30.
  - [DeFi Use Cases - Exploring the Potential](https://xrpl.org/blog/2025/defi-use-cases-exploring-the-potential.md): What is DeFi used for, and how is it reshaping industries? Explore the key DeFi use cases that are driving the future of finance.
  - [Upcoming Devnet Reset](https://xrpl.org/blog/2025/devnet-reset-oct.md): Devnet is scheduled to reset on Friday, October 3, 2025 to prevent validators from becoming amendment blocked when PermissionDelegation is temporarily disabled.
@@ -595,17 +595,17 @@ Recent XRPL Blog posts (showing 2023 and newer).
  - [Move to the New Foundation Commences](https://xrpl.org/blog/2025/move-to-the-new-xrpl-foundation-commences.md): With the new XRPL Foundation now incorporated in France, the Founding Members are migrating assets from the previous entity. Learn about the Unique Node List (UNL) transition and necessary actions for community members.
  - [Introducing XRP Ledger version 2.3.1](https://xrpl.org/blog/2025/rippled-2.3.1.md): rippled version 2.3.1 is now available. This version includes stability fixes.
  - [Introducing XRP Ledger version 2.4.0](https://xrpl.org/blog/2025/rippled-2.4.0.md): rippled version 2.4.0 is now available. This version introduces new features and stability fixes.
- - [Introducing XRP Ledger version 2.5.0](https://xrpl.org/blog/2025/rippled-2.5.0.md): rippled version 2.5.0 is now available. This version introduces new features and bug fixes.
  - [Introducing XRP Ledger version 2.5.1](https://xrpl.org/blog/2025/rippled-2.5.1.md): rippled version 2.5.1 is now available. This version fixes an issue with stalled consensus rounds.
+ - [Introducing XRP Ledger version 2.5.0](https://xrpl.org/blog/2025/rippled-2.5.0.md): rippled version 2.5.0 is now available. This version introduces new features and bug fixes.
  - [Introducing XRP Ledger version 2.6.0](https://xrpl.org/blog/2025/rippled-2.6.0.md): rippled version 2.6.0 is now available. This version contains various bug fixes and minor improvements.
  - [Introducing XRP Ledger version 2.6.1](https://xrpl.org/blog/2025/rippled-2.6.1.md): rippled version 2.6.1 is now available. This version contains various bug fixes and minor improvements.
  - [Introducing XRP Ledger version 2.6.2](https://xrpl.org/blog/2025/rippled-2.6.2.md): rippled version 2.6.2 is now available. This version contains a new amendment and a critical bug fix.
  - [Introducing XRP Ledger version 3.0.0](https://xrpl.org/blog/2025/rippled-3.0.0.md): rippled version 3.0.0 is now available. This version introduces new amendments and bug fixes.
- - [Malicious Supply Chain Compromise in xrpl.js npm Package](https://xrpl.org/blog/2025/vulnerabilitydisclosurereport-bug-apr2025.md): This disclosure report contains technical details of vulnerability of the XRP Ledger Javascript library package hosted at npmjs.com.
  - [Malicious transaction crashed network node(s) and paused new transactions momentarily](https://xrpl.org/blog/2025/vulnerabilitydisclosurereport-bug-nov2024.md): This vulnerability disclosure report contains technical details of the XRP Ledger bug reported on November 25, 2024.
+ - [Malicious Supply Chain Compromise in xrpl.js npm Package](https://xrpl.org/blog/2025/vulnerabilitydisclosurereport-bug-apr2025.md): This disclosure report contains technical details of vulnerability of the XRP Ledger Javascript library package hosted at npmjs.com.
  - [Vulnerability Disclosure Report: XRPL Permission Delegation](https://xrpl.org/blog/2025/vulnerabilitydisclosurereport-bug-sep2025.md): This vulnerability disclosure report contains technical details of the XRP Ledger bug reported on September 15, 2025.
- - [Introducing Clio version 2.7.1](https://xrpl.org/blog/2026/clio-2.7.1.md): Version 2.7.1 of Clio, an XRP Ledger API server optimized for HTTP and WebSocket API calls, is now available. This release adds support for the fixCleanup3_2_0 amendment and bug fixes.
  - [Introducing Clio version 2.7.0](https://xrpl.org/blog/2026/clio-2.7.0.md): Version 2.7.0 of Clio, an XRP Ledger API server optimized for HTTP and WebSocket API calls, is now available. This release adds new features and bug fixes.
+ - [Introducing Clio version 2.7.1](https://xrpl.org/blog/2026/clio-2.7.1.md): Version 2.7.1 of Clio, an XRP Ledger API server optimized for HTTP and WebSocket API calls, is now available. This release adds support for the fixCleanup3_2_0 amendment and bug fixes.
  - [GPG Key Rotation](https://xrpl.org/blog/2026/gpg-key-rotation.md): Ripple has rotated the GPG key used to sign rippled packages.
  - [Introducing Clio version 2.8.0](https://xrpl.org/blog/2026/clio-2.8.0.md): Version 2.8.0 of Clio, an XRP Ledger API server optimized for HTTP and WebSocket API calls, is now available. This release adds support for several new amendments alongside bug fixes and build improvements.
  - [Introducing XRP Ledger version 3.1.0](https://xrpl.org/blog/2026/rippled-3.1.0.md): rippled version 3.1.0 is now available. This version introduces new amendments and bug fixes.
@@ -615,8 +615,8 @@ Recent XRPL Blog posts (showing 2023 and newer).
  - [Vulnerability Disclosure Report: XRPL Batch Amendment – Unauthorized Inner Transaction Execution](https://xrpl.org/blog/2026/vulnerabilitydisclosurereport-bug-feb2026.md): This vulnerability disclosure report contains technical details of the XRP Ledger bug reported on February 19, 2026.
  - [Vulnerability Disclosure Report: XRPL Manifest Flood](https://xrpl.org/blog/2026/vulnerabilitydisclosurereport-bug-jul2026.md): This vulnerability disclosure report contains technical details of the XRP Ledger bug reported on July 30, 2026.
  - [Vulnerability Disclosure Report: Transaction Set Handling](https://xrpl.org/blog/2026/vulnerabilitydisclosurereport-bug-mar2026.md): This vulnerability disclosure report contains technical details of the XRP Ledger bug reported on June 9, 2025.
- - [Introducing XRP Ledger version 3.2.0](https://xrpl.org/blog/2026/xrpld-3.2.0.md): xrpld version 3.2.0 is now available. This version retires several long-active amendments, introduces a new cleanup amendment and bug fixes, and renames the rippled binary to xrpld.
  - [Introducing XRP Ledger version 3.2.1](https://xrpl.org/blog/2026/xrpld-3.2.1.md): xrpld version 3.2.1 is now available. This version contains fixes for security issues in validator manifest propagation. There are no new features or amendments.
+ - [Introducing XRP Ledger version 3.2.0](https://xrpl.org/blog/2026/xrpld-3.2.0.md): xrpld version 3.2.0 is now available. This version retires several long-active amendments, introduces a new cleanup amendment and bug fixes, and renames the rippled binary to xrpld.
  - [Introducing XRP Ledger version 3.3.0](https://xrpl.org/blog/2026/xrpld-3.3.0.md): xrpld version 3.3.0 is now available. This version introduces the BatchV1_1, ConfidentialTransfer, DynamicMPT, PermissionDelegationV1_1, Sponsor, and fixCleanup3_3_0 amendments, retires several long-active amendments, and includes assorted bug fixes.
 
 ## Resources

@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://surplusflow.local/contracts/food-offers-response.schema.json",
+  "title": "FoodOffersResponse",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["offers", "generatedAt"],
+  "properties": {
+    "offers": {"type": "array", "items": {"$ref": "food-offer.schema.json"}},
+    "generatedAt": {"type": "string", "format": "date-time"}
+  }
+}

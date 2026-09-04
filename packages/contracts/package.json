@@ -1,0 +1,16 @@
+{
+  "name": "@surplusflow/contracts",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "lint:openapi": "redocly lint openapi.yaml",
+    "validate:fixtures": "node scripts/validate-fixtures.mjs",
+    "test": "pnpm run lint:openapi && pnpm run validate:fixtures"
+  },
+  "devDependencies": {
+    "@redocly/cli": "^2.51.1",
+    "ajv": "^8.20.0",
+    "ajv-formats": "^3.0.1"
+  }
+}

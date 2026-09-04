@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://surplusflow.local/contracts/agent-run.schema.json",
+  "title": "AgentRun",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "runId",
+    "status",
+    "goal",
+    "offers",
+    "deliveryQuotes",
+    "plans",
+    "decisions",
+    "reservations",
+    "deliveryBookings",
+    "spend",
+    "events",
+    "createdAt",
+    "updatedAt"
+  ],
+  "properties": {
+    "runId": {"$ref": "common.schema.json#/$defs/Identifier"},
+    "status": {"$ref": "common.schema.json#/$defs/RunStatus"},
+    "goal": {"$ref": "procurement-goal.schema.json"},
+    "offers": {"type": "array", "items": {"$ref": "food-offer.schema.json"}},
+    "deliveryQuotes": {"type": "array", "items": {"$ref": "delivery-quote.schema.json"}},
+    "plans": {"type": "array", "items": {"$ref": "procurement-plan.schema.json"}},
+    "selectedPlanId": {"$ref": "common.schema.json#/$defs/Identifier"},
+    "decisions": {"type": "array", "items": {"$ref": "agent-decision.schema.json"}},
+    "reservations": {"type": "array", "items": {"$ref": "reservation.schema.json"}},
+    "deliveryBookings": {"type": "array", "items": {"$ref": "delivery-booking.schema.json"}},
+    "spend": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["foodDrops", "deliveryDrops", "totalDrops", "remainingDrops"],
+      "properties": {
+        "foodDrops": {"$ref": "common.schema.json#/$defs/Drops"},
+        "deliveryDrops": {"$ref": "common.schema.json#/$defs/Drops"},
+        "totalDrops": {"$ref": "common.schema.json#/$defs/Drops"},
+        "remainingDrops": {"$ref": "common.schema.json#/$defs/Drops"}
+      }
+    },
+    "events": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["sequence", "eventType", "message", "createdAt"],
+        "properties": {
+          "sequence": {"type": "integer", "minimum": 1},
+          "eventType": {
+            "type": "string",
+            "enum": [
+              "goal_parsed",
+              "offers_discovered",
+              "offer_rejected",
+              "plans_built",
+              "plan_selected",
+              "provider_failed",
+              "replanning_started",
+              "payment_required",
+              "payment_authorized",
+              "payment_settled",
+              "reservation_confirmed",
+              "delivery_confirmed",
+              "run_fulfilled",
+              "run_failed"
+            ]
+          },
+          "message": {"type": "string", "minLength": 1, "maxLength": 500},
+          "relatedId": {"$ref": "common.schema.json#/$defs/Identifier"},
+          "createdAt": {"type": "string", "format": "date-time"}
+        }
+      }
+    },
+    "failure": {"$ref": "api-error.schema.json"},
+    "createdAt": {"type": "string", "format": "date-time"},
+    "updatedAt": {"type": "string", "format": "date-time"}
+  }
+}
