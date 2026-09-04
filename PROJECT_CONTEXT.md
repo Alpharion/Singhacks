@@ -31,13 +31,14 @@ Customer need
 - The prototype must execute at least one successful XRPL transaction.
 - The final submission must include the validated transaction hash or explorer link.
 
-### Recommended technology
+### Required challenge components
 
-- XRPL AI Starter Kit or its agent wallet/payment patterns
-- An agentic payment standard such as x402 or MPP
+- XRPL AI Starter Kit and its agent wallet/payment patterns
+- x402 machine-to-machine payments
+- XRP Ledger settlement
 - XRPL Testnet during development
 
-x402, MPP, and the Starter Kit are recommended rather than hard requirements in the current repository instructions. SurplusFlow will nevertheless use x402 because it makes the machine-to-machine commercial loop explicit.
+The current upstream challenge instructions require the XRPL AI Starter Kit, x402, and XRPL in the core product experience. SurplusFlow uses all three directly.
 
 The XRPL AI Starter Kit is a curated collection of agent-payment tools, documentation, wallet/payment skills, and integrations rather than a single application framework that the whole product must import. SurplusFlow uses its intended build path through:
 
@@ -347,7 +348,7 @@ Use XRP for the MVP because it avoids RLUSD trust-line and issuer configuration.
 - `requests`
 - `python-dotenv`
 
-Seller and courier services use the `x402_xrpl.server.require_payment` FastAPI middleware pattern. The buyer uses `x402_xrpl.clients.x402_requests` with an `xrpl:1` network filter.
+Seller and courier services use the `x402_xrpl.server.require_payment` FastAPI middleware pattern through the shared provider adapter. The buyer uses `x402_xrpl.clients.x402_purchase` with an `xrpl:1` network filter and an exact-match policy selector.
 
 ### Required payment controls
 
@@ -365,6 +366,7 @@ Seller and courier services use the `x402_xrpl.server.require_payment` FastAPI m
 - Wait for validated settlement before returning the purchased resource.
 - Keep private food, buyer, address, and dietary data off-chain.
 - Put only an opaque invoice reference and agent attribution metadata on-chain.
+- Use XRPL `SourceTag` `20260530` for hackathon attribution on every MVP payment.
 
 ### No escrow in the MVP
 

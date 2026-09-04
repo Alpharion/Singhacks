@@ -12,7 +12,7 @@ customer need -> agent discovery -> agent decision -> payment -> value delivered
 
 The payment must be economically meaningful, not a normal checkout triggered by a human. The user should define a goal, budget, and restrictions, while the AI decides which services are worth purchasing within that authority.
 
-All blockchain activity must use the XRP Ledger. The prototype must complete at least one real XRPL Testnet transaction and show its validated transaction hash or explorer link. x402 and the XRPL AI Starter Kit patterns are recommended and will be used by this project.
+All blockchain activity must use the XRP Ledger. The prototype must complete at least one real XRPL Testnet transaction and show its validated transaction hash or explorer link. The current challenge requires the XRPL AI Starter Kit, x402, and XRPL in the core product experience; this project uses all three.
 
 Judges primarily care about:
 

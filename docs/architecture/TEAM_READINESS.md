@@ -43,9 +43,14 @@ Can build the buyer-agent state machine and Pydantic models from the schemas. Pr
 
 Can build marketplace, seller, and courier services from the OpenAPI paths. Payment verification can begin behind a stub that returns the frozen receipt shape.
 
-### Person 4: ready, with immediate integration work remaining
+### Person 4: independent foundation complete
 
-The contracts are created. Next implementation priorities are the real `x402-xrpl` adapter, a standalone Testnet payment proof, root orchestration, and the E2E test.
+The contracts, real `x402-xrpl` buyer/provider adapters, deterministic wallet
+policy, durable invoice/payment journals, receipt normalization, transaction
+status lookup, standalone provider, dependency lock, and offline test suite are
+created. The remaining Person 4 work requires integration or live credentials:
+a funded standalone Testnet payment, root orchestration once service commands
+exist, and the complete E2E test.
 
 ## Items intentionally not blocking parallel work
 
@@ -58,7 +63,7 @@ The contracts are created. Next implementation priorities are the real `x402-xrp
 
 The project becomes demo-ready, rather than merely development-ready, only when:
 
-1. Person 4 completes a real x402 XRPL Testnet payment.
+1. Person 4 completes a real x402 XRPL Testnet payment using the implemented adapter.
 2. Person 3 replaces the payment stub with Person 4's adapter.
 3. Person 2 calls the live provider APIs and demonstrates replanning.
 4. Person 1 connects the UI to `GET /api/runs/{runId}`.
