@@ -9,6 +9,8 @@ file directly; the buyer agent and web app must go through HTTP.
 
 from __future__ import annotations
 
+import contextlib
+import fcntl
 import os
 from collections.abc import Iterator
 from pathlib import Path
@@ -22,7 +24,8 @@ class Base(DeclarativeBase):
 
 
 def _default_db_path() -> str:
-    root = Path(__file__).resolve().parents[3]
+    # db.py -> surplusflow_provider_common -> common -> providers -> services -> repo root
+    root = Path(__file__).resolve().parents[4]
     data_dir = root / "data"
     data_dir.mkdir(parents=True, exist_ok=True)
     return str(data_dir / "surplusflow.db")
@@ -62,6 +65,27 @@ def get_session_factory() -> sessionmaker[Session]:
     if _SessionLocal is None:
         _SessionLocal = sessionmaker(bind=get_engine(), autoflush=False, expire_on_commit=False)
     return _SessionLocal
+
+
+@contextlib.contextmanager
+def startup_lock() -> Iterator[None]:
+    """Serializes table creation and demo-data seeding across the six
+    processes (marketplace, 3 sellers, 2 couriers) that start against the
+    same SQLite file at roughly the same time. Without this, two processes
+    can both see "table missing" / "no sellers yet" and race each other
+    into a `CREATE TABLE` or duplicate-insert failure.
+    """
+
+    db_path = get_database_url().removeprefix("sqlite:///")
+    # ".db" suffix so the root .gitignore's "*.db" pattern covers it too.
+    lock_path = f"{db_path.removesuffix('.db')}.startup-lock.db"
+    Path(lock_path).parent.mkdir(parents=True, exist_ok=True)
+    with open(lock_path, "w") as lock_file:
+        fcntl.flock(lock_file, fcntl.LOCK_EX)
+        try:
+            yield
+        finally:
+            fcntl.flock(lock_file, fcntl.LOCK_UN)
 
 
 def init_db() -> None:
