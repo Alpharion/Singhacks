@@ -49,11 +49,11 @@ const TONE_TEXT = {
 
 const TONE_RING = {
   neutral: "bg-surface-raised ring-border",
-  rescue: "bg-rescue-dim ring-rescue/30",
-  settled: "bg-settled-dim ring-settled/30",
-  caution: "bg-caution-dim ring-caution/30",
-  rejected: "bg-rejected-dim ring-rejected/30",
-  pending: "bg-pending-dim ring-pending/30",
+  rescue: "bg-rescue-dim ring-rescue/40",
+  settled: "bg-settled-dim ring-settled/40",
+  caution: "bg-caution-dim ring-caution/40",
+  rejected: "bg-rejected-dim ring-rejected/40",
+  pending: "bg-pending-dim ring-pending/40",
 } as const;
 
 /**

@@ -58,11 +58,11 @@ export function RunDashboard({ runId }: { runId: string }) {
       <div className="grid gap-4 lg:grid-cols-[minmax(0,380px)_minmax(0,1fr)]">
         {/* Left rail: what the agent did, in order. */}
         <div className="space-y-4">
-          <Panel title="Agent activity" subtitle="Live decision timeline">
+          <Panel title="What the agent is doing" subtitle="Every step, as it happens">
             <AgentTimeline events={run.events} />
           </Panel>
 
-          <Panel title="Budget" subtitle="Delegated authority against actual spend">
+          <Panel title="Where the money went" subtitle="Against the ceiling you set">
             <SpendChart run={run} />
           </Panel>
         </div>
@@ -70,25 +70,25 @@ export function RunDashboard({ runId }: { runId: string }) {
         {/* Right: the evidence behind each step. */}
         <div className="space-y-4">
           <Panel
-            title="Discovery"
-            subtitle="Offers and quotes the agent considered, and what it turned down"
+            title="What's on the shelf"
+            subtitle="Everything the agent found, and what it turned down"
           >
             <OfferTable run={run} />
           </Panel>
 
-          <Panel title="Plans compared" subtitle="Multi-seller combinations, ranked">
+          <Panel title="Ways to fill the order" subtitle="No single kitchen has 100 meals, so it combines them">
             <PlanComparison run={run} />
           </Panel>
 
-          <Panel title="Decisions" subtitle="Why each choice was made, and what was rejected">
+          <Panel title="Why it chose what it chose" subtitle="Each call, with the alternatives it passed on">
             <DecisionList decisions={run.decisions} />
           </Panel>
 
-          <Panel title="Payments" subtitle="x402 challenges and validated XRPL settlement">
+          <Panel title="Payments" subtitle="Asked for payment over x402, settled on XRPL">
             <PaymentPanel run={run} challenge={paymentChallenge} />
           </Panel>
 
-          <Panel title="Value delivered" subtitle="What the payments actually bought">
+          <Panel title="Food secured" subtitle="What the money actually bought">
             <FulfilmentPanel run={run} />
           </Panel>
         </div>

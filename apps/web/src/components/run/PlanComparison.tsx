@@ -1,6 +1,7 @@
 import { Check } from "lucide-react";
 import type { AgentRun, ProcurementPlan } from "@/lib/contracts/types";
-import { formatXrp, formatXrpCompact } from "@/lib/format/drops";
+import { formatDual, formatSgd } from "@/lib/format/money";
+import { Money } from "@/components/common/Money";
 import { formatClock } from "@/lib/format/time";
 import { Badge } from "@/components/common/Badge";
 import { EmptyState } from "@/components/common/Panel";
@@ -15,7 +16,7 @@ import { cn } from "@/lib/cn";
  */
 export function PlanComparison({ run }: { run: AgentRun }) {
   if (run.plans.length === 0) {
-    return <EmptyState>No plans have been built yet.</EmptyState>;
+    return <EmptyState>The agent has not worked out the combinations yet.</EmptyState>;
   }
 
   const sellerNameFor = (offerId: string) =>
@@ -66,21 +67,18 @@ function PlanCard({
     <article
       className={cn(
         "rounded-xl border p-4 transition-colors",
-        isSelected ? "border-rescue/50 bg-rescue-dim/30" : "border-border bg-canvas/40",
+        isSelected ? "border-rescue/50 bg-rescue-dim/30" : "border-border bg-canvas",
       )}
     >
       <header className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           <code className="font-mono text-xs text-ink-subtle">{plan.planId}</code>
-          <div className="mt-1.5 flex items-baseline gap-2">
-            <span
-              className={cn(
-                "text-2xl font-semibold tabular-nums",
-                isSelected ? "text-rescue" : "text-ink",
-              )}
-            >
-              {formatXrp(plan.totalCostDrops)}
-            </span>
+          <div className="mt-1.5">
+            <Money
+              drops={plan.totalCostDrops}
+              size="xl"
+              tone={isSelected ? "text-rescue" : "text-ink"}
+            />
           </div>
         </div>
         {isSelected && (
@@ -102,8 +100,8 @@ function PlanCard({
       </div>
 
       <dl className="mt-4 space-y-1.5 text-sm">
-        <Line label="Food" value={formatXrpCompact(plan.foodCostDrops)} />
-        <Line label="Delivery" value={formatXrpCompact(plan.deliveryCostDrops)} />
+        <Line label="Food" value={formatDual(plan.foodCostDrops)} />
+        <Line label="Delivery" value={formatDual(plan.deliveryCostDrops)} />
         <Line label="Meals" value={`${plan.totalMeals}`} />
         <Line label="Arrives" value={formatClock(plan.expectedDeliveryAt)} />
         <Line label="Risk score" value={plan.riskScore.toFixed(1)} />
@@ -123,14 +121,14 @@ function PlanCard({
                 {sellerNameFor(allocation.offerId)}
               </span>
               <span className="shrink-0 tabular-nums text-ink">
-                {allocation.quantity} × {formatXrpCompact(allocation.unitPriceDrops)}
+                {allocation.quantity} × {formatSgd(allocation.unitPriceDrops)}
               </span>
             </li>
           ))}
           <li className="flex items-baseline justify-between gap-3 text-xs">
             <span className="truncate text-ink-muted">{courierName}</span>
             <span className="shrink-0 tabular-nums text-ink">
-              {formatXrpCompact(plan.deliveryCostDrops)}
+              {formatDual(plan.deliveryCostDrops)}
             </span>
           </li>
         </ul>

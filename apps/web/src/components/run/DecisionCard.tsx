@@ -1,7 +1,7 @@
 import { ArrowRight, ShieldCheck, X } from "lucide-react";
 import type { AgentDecision } from "@/lib/contracts/types";
 import { decisionHash } from "@/lib/contracts/types";
-import { formatXrp } from "@/lib/format/drops";
+import { formatSgd } from "@/lib/format/money";
 import { formatClock } from "@/lib/format/time";
 import { Badge } from "@/components/common/Badge";
 import { DECISION_LABEL, DECISION_TONE } from "@/components/common/status";
@@ -35,7 +35,7 @@ function DecisionCard({ decision }: { decision: AgentDecision }) {
   const hash = decisionHash(decision);
 
   return (
-    <article className="animate-beat-in rounded-xl border border-border bg-canvas/40 p-4">
+    <article className="animate-beat-in rounded-xl border border-border bg-canvas p-4">
       <header className="flex flex-wrap items-center justify-between gap-2">
         <Badge tone={DECISION_TONE[decision.decisionType]}>
           {DECISION_LABEL[decision.decisionType]}
@@ -91,7 +91,7 @@ function DecisionCard({ decision }: { decision: AgentDecision }) {
         <span className="text-ink-subtle">
           Budget left{" "}
           <span className="font-medium tabular-nums text-ink">
-            {formatXrp(decision.remainingBudgetDrops)}
+            {formatSgd(decision.remainingBudgetDrops)}
           </span>
         </span>
         <span className="inline-flex items-center gap-1.5 text-ink-subtle">

@@ -1,7 +1,8 @@
 import { CheckCircle2 } from "lucide-react";
 import type { AgentRun } from "@/lib/contracts/types";
 import { explorerUrl, receiptHash } from "@/lib/contracts/types";
-import { formatXrp } from "@/lib/format/drops";
+import { formatDual, formatSgd, formatSgdPerUnit } from "@/lib/format/money";
+import { Money, RateFootnote } from "@/components/common/Money";
 import { formatClock } from "@/lib/format/time";
 import { ExplorerLink } from "@/components/common/Xrpl";
 import { FixtureBadge } from "@/components/common/FixtureBadge";
@@ -39,13 +40,22 @@ export function OutcomeSummary({ run }: { run: AgentRun }) {
       </header>
 
       <div className="grid gap-x-6 gap-y-5 px-5 py-5 sm:grid-cols-2 lg:grid-cols-4">
-        <Figure label="Food cost" value={formatXrp(run.spend.foodDrops)} />
-        <Figure label="Delivery cost" value={formatXrp(run.spend.deliveryDrops)} />
-        <Figure label="Total spent" value={formatXrp(run.spend.totalDrops)} tone />
+        <Figure label="Food cost" drops={run.spend.foodDrops} />
+        <Figure label="Delivery cost" drops={run.spend.deliveryDrops} />
         <Figure
-          label="Unspent authority"
-          value={formatXrp(run.spend.remainingDrops)}
-          hint={`of ${formatXrp(run.goal.maxTotalSpendDrops)}`}
+          label="Total spent"
+          drops={run.spend.totalDrops}
+          tone
+          hint={
+            mealsSecured > 0
+              ? `${formatSgdPerUnit(run.spend.totalDrops, mealsSecured)} per meal`
+              : undefined
+          }
+        />
+        <Figure
+          label="Never spent"
+          drops={run.spend.remainingDrops}
+          hint={`of ${formatSgd(run.goal.maxTotalSpendDrops)} authorised`}
         />
         {arrival && <Figure label="Expected arrival" value={formatClock(arrival)} />}
         <Figure label="Food rescued" value={`${mealsSecured} meals`} tone />
@@ -68,26 +78,30 @@ export function OutcomeSummary({ run }: { run: AgentRun }) {
         <ul className="mt-2.5 space-y-1.5">
           {receipts.map((receipt) => (
             <li key={receiptHash(receipt)} className="flex items-center gap-3 text-xs">
-              <span className="w-20 shrink-0 tabular-nums text-ink-muted">
-                {formatXrp(receipt.amountDrops)}
+              <span className="w-32 shrink-0 tabular-nums text-ink-muted">
+                {formatDual(receipt.amountDrops, "xrp")}
               </span>
               <ExplorerLink url={explorerUrl(receipt)} hash={receiptHash(receipt)} />
             </li>
           ))}
         </ul>
+        <RateFootnote className="mt-3" />
       </div>
     </section>
   );
 }
 
+/** Pass `drops` for a money figure, or `value` for anything else. */
 function Figure({
   label,
   value,
+  drops,
   hint,
   tone,
 }: {
   label: string;
-  value: string;
+  value?: string;
+  drops?: string;
   hint?: string;
   tone?: boolean;
 }) {
@@ -96,10 +110,16 @@ function Figure({
       <div className="text-[0.7rem] font-medium uppercase tracking-[0.09em] text-ink-subtle">
         {label}
       </div>
-      <div
-        className={`mt-1 text-2xl font-semibold tabular-nums ${tone ? "text-rescue" : "text-ink"}`}
-      >
-        {value}
+      <div className="mt-1">
+        {drops ? (
+          <Money drops={drops} size="xl" tone={tone ? "text-rescue" : "text-ink"} />
+        ) : (
+          <span
+            className={`text-3xl font-semibold tabular-nums ${tone ? "text-rescue" : "text-ink"}`}
+          >
+            {value}
+          </span>
+        )}
       </div>
       {hint && <div className="mt-0.5 text-xs text-ink-subtle">{hint}</div>}
     </div>

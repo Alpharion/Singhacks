@@ -18,7 +18,7 @@ export function PlaybackControls({ note }: { note?: string }) {
   const progress = stepCount === 0 ? 0 : (step / stepCount) * 100;
 
   return (
-    <div className="rounded-panel border border-border bg-surface/80 px-4 py-3 backdrop-blur-sm">
+    <div className="rounded-panel border border-border bg-surface px-4 py-3">
       <div className="flex items-center gap-3">
         <div className="flex items-center gap-1">
           <ControlButton label="Previous step" onClick={previous} disabled={step === 0}>

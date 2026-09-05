@@ -1,40 +1,42 @@
 @import "tailwindcss";
 
 /**
- * SurplusFlow design tokens.
+ * SurplusFlow design tokens - warm food market.
  *
- * A single dark "mission control" theme, committed to deliberately: the demo is
- * presented on one screen and recorded once, so a fixed palette keeps every
- * screenshot consistent rather than depending on the viewer's OS setting.
+ * A single committed light theme: the demo is presented on one screen and recorded once,
+ * so a fixed palette keeps every screenshot consistent rather than depending on the
+ * viewer's OS setting.
  *
- * Semantic names, not colour names - `--color-settled` survives a palette change,
- * `--color-green-400` does not.
+ * Names are semantic, not colour words - `--color-settled` survives a palette change,
+ * `--color-teal-700` does not. Every accent is checked to at least 4.5:1 against the
+ * surfaces it is used on, because a light theme fails on contrast long before it fails
+ * to compile.
  */
 @theme {
-  /* Surfaces, darkest to lightest */
-  --color-canvas: #080b10;
-  --color-surface: #0e131a;
-  --color-surface-raised: #151c25;
-  --color-surface-hover: #1c2530;
-  --color-border: #232d3a;
-  --color-border-strong: #33404f;
+  /* Surfaces - warm paper, not white */
+  --color-canvas: #fdf9f3;
+  --color-surface: #fffdfa;
+  --color-surface-raised: #f6efe4;
+  --color-surface-hover: #efe6d8;
+  --color-border: #e8dcc9;
+  --color-border-strong: #d3c2a9;
 
-  /* Text */
-  --color-ink: #e8edf4;
-  --color-ink-muted: #94a3b5;
-  --color-ink-subtle: #5f6f82;
+  /* Text - warm browns rather than neutral greys */
+  --color-ink: #2b211a;
+  --color-ink-muted: #6b5b4c;
+  --color-ink-subtle: #7d6c5b;
 
   /* Semantic accents */
-  --color-rescue: #4ade80; /* the product's own colour: food saved */
-  --color-rescue-dim: #16351f;
-  --color-settled: #38bdf8; /* XRPL settlement, payments, hashes */
-  --color-settled-dim: #0c2c3e;
-  --color-caution: #fbbf24; /* provider failure, replanning */
-  --color-caution-dim: #3a2c08;
-  --color-rejected: #f87171; /* rejected offers, errors */
-  --color-rejected-dim: #3a1517;
-  --color-pending: #a78bfa; /* awaiting payment */
-  --color-pending-dim: #261c44;
+  --color-rescue: #2e7d4f; /* the product's own colour: food saved from the bin */
+  --color-rescue-dim: #e6f2ea;
+  --color-settled: #1f6f6b; /* XRPL settlement, payments, hashes */
+  --color-settled-dim: #deeeec;
+  --color-caution: #a85a28; /* terracotta: provider failure, replanning */
+  --color-caution-dim: #faeadf;
+  --color-rejected: #b4462f; /* burnt red: rejected offers, errors */
+  --color-rejected-dim: #fbe5e0;
+  --color-pending: #6d51a3; /* awaiting payment */
+  --color-pending-dim: #ede8f7;
 
   --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, "SF Mono", monospace;
@@ -43,7 +45,7 @@
 }
 
 html {
-  color-scheme: dark;
+  color-scheme: light;
 }
 
 body {
@@ -53,11 +55,11 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* A quiet grid so large empty panels do not read as unfinished. */
+/* A quiet grid so large empty areas read as paper rather than as unfinished. */
 .bg-grid {
   background-image:
-    linear-gradient(to right, color-mix(in srgb, var(--color-border) 45%, transparent) 1px, transparent 1px),
-    linear-gradient(to bottom, color-mix(in srgb, var(--color-border) 45%, transparent) 1px, transparent 1px);
+    linear-gradient(to right, color-mix(in srgb, var(--color-border) 55%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in srgb, var(--color-border) 55%, transparent) 1px, transparent 1px);
   background-size: 44px 44px;
 }
 
@@ -79,7 +81,7 @@ body {
 
 @keyframes pulse-ring {
   0% {
-    box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-settled) 45%, transparent);
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-settled) 35%, transparent);
   }
   70% {
     box-shadow: 0 0 0 10px transparent;
@@ -101,5 +103,5 @@ body {
 }
 
 ::selection {
-  background: color-mix(in srgb, var(--color-rescue) 30%, transparent);
+  background: color-mix(in srgb, var(--color-rescue) 22%, transparent);
 }

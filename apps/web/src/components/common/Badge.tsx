@@ -5,11 +5,11 @@ export type Tone = "neutral" | "rescue" | "settled" | "caution" | "rejected" | "
 
 const TONES: Record<Tone, string> = {
   neutral: "bg-surface-raised text-ink-muted ring-border-strong",
-  rescue: "bg-rescue-dim text-rescue ring-rescue/30",
-  settled: "bg-settled-dim text-settled ring-settled/30",
-  caution: "bg-caution-dim text-caution ring-caution/30",
-  rejected: "bg-rejected-dim text-rejected ring-rejected/30",
-  pending: "bg-pending-dim text-pending ring-pending/30",
+  rescue: "bg-rescue-dim text-rescue ring-rescue/40",
+  settled: "bg-settled-dim text-settled ring-settled/40",
+  caution: "bg-caution-dim text-caution ring-caution/40",
+  rejected: "bg-rejected-dim text-rejected ring-rejected/40",
+  pending: "bg-pending-dim text-pending ring-pending/40",
 };
 
 export function Badge({

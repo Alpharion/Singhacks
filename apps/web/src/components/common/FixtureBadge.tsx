@@ -14,7 +14,7 @@ export function FixtureBadge() {
 
   return (
     <span
-      className="inline-flex items-center gap-1.5 rounded-full bg-caution-dim px-2.5 py-1 text-xs font-medium text-caution ring-1 ring-inset ring-caution/30"
+      className="inline-flex items-center gap-1.5 rounded-full bg-caution-dim px-2.5 py-1 text-xs font-medium text-caution ring-1 ring-inset ring-caution/40"
       title="Replayed contract fixtures. Transaction hashes are synthetic placeholders and no XRPL settlement has occurred."
     >
       <FlaskConical className="size-3.5" aria-hidden />

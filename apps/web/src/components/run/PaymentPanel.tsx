@@ -1,7 +1,7 @@
 import { Receipt } from "lucide-react";
 import type { AgentRun, PaymentReceipt, PaymentRequirement } from "@/lib/contracts/types";
 import { explorerUrl, receiptHash } from "@/lib/contracts/types";
-import { formatXrp } from "@/lib/format/drops";
+import { Money } from "@/components/common/Money";
 import { formatDateTime } from "@/lib/format/time";
 import { Badge } from "@/components/common/Badge";
 import { EmptyState } from "@/components/common/Panel";
@@ -35,7 +35,7 @@ export function PaymentPanel({
   ];
 
   if (!challenge && receipts.length === 0) {
-    return <EmptyState>No payment has been requested yet.</EmptyState>;
+    return <EmptyState>Nobody has asked for payment yet.</EmptyState>;
   }
 
   return (
@@ -84,7 +84,9 @@ function ChallengeCard({ challenge }: { challenge: PaymentRequirement }) {
       </p>
 
       <dl className="mt-3.5 grid grid-cols-2 gap-x-5 gap-y-2.5 text-xs sm:grid-cols-3">
-        <Field label="Amount" value={formatXrp(accept.amount)} emphasis />
+        {/* XRP leads on settlement figures: this is what the ledger is being
+            asked to move, and it has to be checkable against the explorer. */}
+        <Field label="Amount" value={<Money drops={accept.amount} lead="xrp" size="sm" />} />
         <Field label="Scheme" value={accept.scheme} />
         <Field label="Network" value={accept.network} />
         <Field label="Pay to" value={<XrplAddr address={accept.payTo} />} />
@@ -124,7 +126,7 @@ function ReceiptCard({
       <p className="mt-1.5 text-xs text-ink-subtle">{forWhat}</p>
 
       <dl className="mt-3.5 grid grid-cols-2 gap-x-5 gap-y-2.5 text-xs sm:grid-cols-3">
-        <Field label="Amount" value={formatXrp(receipt.amountDrops)} emphasis />
+        <Field label="Amount" value={<Money drops={receipt.amountDrops} lead="xrp" size="sm" />} />
         <Field label="From" value={<XrplAddr address={receipt.payer} />} />
         <Field label="To" value={<XrplAddr address={receipt.payee} />} />
         <Field label="Settled" value={formatDateTime(receipt.validatedAt)} />

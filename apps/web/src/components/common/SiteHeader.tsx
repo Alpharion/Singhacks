@@ -7,7 +7,7 @@ export function SiteHeader() {
     <header className="sticky top-0 z-30 border-b border-border bg-canvas/85 backdrop-blur">
       <div className="mx-auto flex max-w-[1400px] items-center gap-4 px-6 py-3">
         <Link href="/" className="flex items-center gap-2.5 group">
-          <span className="grid size-8 place-items-center rounded-lg bg-rescue-dim ring-1 ring-inset ring-rescue/25">
+          <span className="grid size-8 place-items-center rounded-lg bg-rescue-dim ring-1 ring-inset ring-rescue/40">
             <Sprout className="size-4 text-rescue" aria-hidden />
           </span>
           <span className="flex flex-col leading-none">

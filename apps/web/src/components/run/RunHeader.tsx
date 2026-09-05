@@ -1,5 +1,7 @@
 import type { AgentRun } from "@/lib/contracts/types";
-import { dropsRatio, formatXrp } from "@/lib/format/drops";
+import { dropsRatio } from "@/lib/format/drops";
+import { formatSgd, formatSgdPerUnit } from "@/lib/format/money";
+import { Money } from "@/components/common/Money";
 import { formatClock } from "@/lib/format/time";
 import { Badge, Stat } from "@/components/common/Badge";
 import { RUN_STATUS_LABEL, RUN_STATUS_TONE } from "@/components/common/status";
@@ -19,7 +21,7 @@ export function RunHeader({ run }: { run: AgentRun }) {
     .reduce((total, reservation) => total + reservation.quantity, 0);
 
   return (
-    <div className="rounded-panel border border-border bg-surface/80 backdrop-blur-sm">
+    <div className="rounded-panel border border-border bg-surface">
       <div className="flex flex-wrap items-start justify-between gap-4 border-b border-border px-5 py-4">
         <div className="min-w-0">
           <div className="flex items-center gap-2.5">
@@ -38,7 +40,7 @@ export function RunHeader({ run }: { run: AgentRun }) {
           <p className="mt-2.5 max-w-3xl text-[0.95rem] leading-relaxed text-ink">
             {goal.mealCount} {goal.dietaryTags.join(" / ")} meals to {goal.destination.zone},
             delivered by {formatClock(goal.deliveryDeadline)}, within{" "}
-            {formatXrp(goal.maxTotalSpendDrops)}.
+            {formatSgd(goal.maxTotalSpendDrops)}.
           </p>
         </div>
       </div>
@@ -51,15 +53,18 @@ export function RunHeader({ run }: { run: AgentRun }) {
           hint={mealsSecured >= goal.mealCount ? "Target met" : "Reserved so far"}
         />
         <Stat
-          label="Committed"
-          value={formatXrp(spend.totalDrops)}
-          tone="settled"
-          hint={`Food ${formatXrp(spend.foodDrops, { suffix: false })} · delivery ${formatXrp(spend.deliveryDrops, { suffix: false })}`}
+          label="Spent"
+          value={<Money drops={spend.totalDrops} size="lg" tone="text-settled" />}
+          hint={
+            mealsSecured > 0
+              ? `${formatSgdPerUnit(spend.totalDrops, mealsSecured)} per meal rescued`
+              : `Food ${formatSgd(spend.foodDrops)} · delivery ${formatSgd(spend.deliveryDrops)}`
+          }
         />
         <Stat
-          label="Remaining"
-          value={formatXrp(spend.remainingDrops)}
-          hint={`of ${formatXrp(goal.maxTotalSpendDrops)} authorised`}
+          label="Still available"
+          value={<Money drops={spend.remainingDrops} size="lg" />}
+          hint={`of ${formatSgd(goal.maxTotalSpendDrops)} authorised`}
         />
         <div className="col-span-2 sm:col-span-1">
           <div className="text-[0.7rem] font-medium uppercase tracking-[0.09em] text-ink-subtle">

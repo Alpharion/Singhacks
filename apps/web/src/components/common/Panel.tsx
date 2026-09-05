@@ -19,10 +19,7 @@ export function Panel({
 }) {
   return (
     <section
-      className={cn(
-        "rounded-panel border border-border bg-surface/80 backdrop-blur-sm",
-        className,
-      )}
+      className={cn("rounded-panel border border-border bg-surface", className)}
     >
       {(title || action) && (
         <header className="flex items-start justify-between gap-4 border-b border-border px-5 py-3.5">

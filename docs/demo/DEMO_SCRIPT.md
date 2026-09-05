@@ -24,17 +24,17 @@ header are **⏮ back · ▶/⏸ play/pause · ⏭ forward** — pause on any be
 |---|---|---|---|
 | 1 | Goal parsed | "One sentence in. The agent turns it into typed constraints — quantity, diet, deadline, budget." | AI role |
 | 2 | Offers discovered | "Three sellers, two couriers, three zones. Discovery is free — nothing has been paid yet." | Provider discovery |
-| 3 | **Offer rejected** | "Central Grill is the cheapest thing on the board at 0.4 XRP. The agent refuses it — it isn't vegetarian. That's a hard rule in code, not something the model can talk itself out of." | Rejects invalid offer |
+| 3 | **Offer rejected** | "Central Grill is the cheapest thing on the board at S$1.20 a meal. The agent refuses it — it isn't vegetarian. That's a hard rule in code, not something the model can talk itself out of." | Rejects invalid offer |
 | 4 | Plans built | "No single seller has 100 meals, so it combines two." | Comparison |
-| 5 | **Plan selected** | "Two valid plans, 74 against 74.5 XRP. It takes the cheaper one and says why — same meals, same arrival, more budget left for a fallback." | Explained economic decision |
+| 5 | **Plan selected** | "Two valid plans, S$222 against S$223.50. It takes the cheaper one and says why — same meals, same arrival, more budget left for a fallback." | Explained economic decision |
 | 6 | **Provider failed** | "And here's the problem. Economy Van just dropped out." | Failure handling |
-| 7 | **Replanning** | "No human touched that. It re-planned onto FastRoute, still inside the 120 XRP." | Autonomous recovery |
+| 7 | **Replanning** | "No human touched that. It re-planned onto FastRoute, still inside the S$360." | Autonomous recovery |
 | 8 | **HTTP 402** | "This is x402. The bakery answers the reservation request with a price, not the goods. Machine to machine." | x402 |
 | 9 | Payment authorised | "Deterministic policy checks: approved payee, under the per-transaction cap, invoice unique. The language model never signs anything." | Spending controls |
 | 10 | Payment settled | "Settled on XRPL. The hash is the receipt." | XRPL settlement |
 | 11 | Reservations confirmed | "And payment bought something real — an exclusive hold on the inventory. There's the pickup QR." | Useful value returned |
 | 12 | Delivery confirmed | "Three payments, three providers, one delegated budget." | Full loop |
-| 13 | **Outcome** | "100 meals secured. 74 XRP of a 120 XRP authority. 46 XRP never left the wallet." | Close |
+| 13 | **Outcome** | "100 meals secured for S$222 — that's S$2.22 a meal. Of a S$360 authority, S$138 never left the wallet." | Close |
 
 Bold beats are the ones worth pausing on.
 
@@ -42,14 +42,26 @@ Bold beats are the ones worth pausing on.
 
 ```
 100 vegetarian meals secured
-Food cost          62 XRP
-Delivery cost      12 XRP
-Total spent        74 XRP
-Unspent authority  46 XRP of 120 XRP
-Expected arrival   5:35 pm
-Food rescued       100 meals
+Food cost        S$186.00   (62 XRP)
+Delivery cost    S$36.00    (12 XRP)
+Total spent      S$222.00   (74 XRP)  ->  S$2.22 per meal
+Never spent      S$138.00   of the S$360.00 authorised
+Expected arrival 5:35 pm
+Food rescued     100 meals
 XRPL transactions  3 explorer links
 ```
+
+## A note on the two currencies
+
+Every amount is shown in both. Business figures lead in dollars, because a kitchen
+manager and a bakery owner think in dollars. Settlement figures — payment receipts, the
+x402 challenge, transaction amounts — lead in XRP, because that is what the ledger
+actually moved and what a judge can check against the explorer.
+
+Converted at an indicative **S$3.00 / XRP**, labelled as such on screen. Nothing is stored
+in dollars: every value in the contract stays an integer drops string, and the conversion
+is display-only. Production would read the rate from XRPL's own `PriceOracle` (XLS-47),
+which is enabled on mainnet today.
 
 ## If asked "what makes this agentic and not a checkout?"
 

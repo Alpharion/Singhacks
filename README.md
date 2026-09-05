@@ -2,11 +2,14 @@
 
 **Community kitchens can't buy surplus food fast enough. So we gave the job to an agent.**
 
-A procurement manager states one sentence — *"100 vegetarian meals, delivered by 6 PM, no
-more than 120 XRP including delivery"* — and an AI buyer agent discovers surplus across
+A procurement manager states one sentence — *"100 vegetarian meals, delivered by 6 PM,
+no more than S$360 including delivery"* — and an AI buyer agent discovers surplus across
 several providers, decides which combination to buy, pays each seller and courier over
 x402 on the XRP Ledger, and hands back confirmed reservations before the food is thrown
 away.
+
+In the demo it secures all 100 meals for **S$222 — S$2.22 a meal** — and leaves S$138 of
+the authorised budget unspent.
 
 Ripple SingHacks 2026 · AI-Native Business on XRPL
 
@@ -87,7 +90,7 @@ one sentence  →  discovery  →  rejection  →  plan comparison  →  provide
 | | |
 |---|---|
 | Rejects an invalid offer | Central Grill is the cheapest option and gets refused — not vegetarian. A hard rule in code, not model discretion. |
-| Compares real alternatives | No single seller has 100 meals. Two multi-seller plans at 74 vs 74.5 XRP, with the reasoning shown. |
+| Compares real alternatives | No single seller has 100 meals. Two multi-seller plans at S$222 vs S$223.50, with the reasoning shown. |
 | Recovers from failure | A courier becomes unavailable after the plan is chosen. The agent replans without a human and stays inside budget. |
 | Pays machine-to-machine | The seller answers the reservation request with HTTP 402 and x402 payment requirements. |
 | Settles on XRPL | Three validated Testnet payments, each with an explorer link. |
@@ -134,6 +137,12 @@ uniqueness before the wallet is asked for a signature.
 ## XRPL and x402
 
 - **Network** XRPL Testnet (`xrpl:1`) · **Asset** XRP, denominated in drops
+- **Display** every amount is shown in both SGD and XRP. Business figures lead in
+  dollars — a kitchen manager does not think in XRP; settlement figures lead in XRP,
+  because that is what the ledger moved. Conversion is display-only at an indicative
+  S$3.00/XRP; every stored value stays an integer drops string. Production reads the rate
+  from XRPL's own `PriceOracle` (XLS-47), enabled on mainnet today, rather than an
+  external price API.
 - **Protocol** x402 `exact` scheme over HTTP 402, hosted Testnet facilitator
 - **Transaction type** standard `Payment`. No escrow — the paid product is a short-lived
   exclusive reservation, and escrow would add dispute complexity without improving the

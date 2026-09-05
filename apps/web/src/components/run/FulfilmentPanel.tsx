@@ -1,12 +1,13 @@
 "use client";
 
 import QRCode from "react-qr-code";
-import { PackageCheck, Truck } from "lucide-react";
+import { Truck } from "lucide-react";
 import type { AgentRun, DeliveryBooking, Reservation } from "@/lib/contracts/types";
 import { formatWindow, formatClock } from "@/lib/format/time";
-import { formatXrp } from "@/lib/format/drops";
+import { formatDual } from "@/lib/format/money";
 import { Badge, type Tone } from "@/components/common/Badge";
 import { EmptyState } from "@/components/common/Panel";
+import { providerIcon } from "@/components/common/providerIcon";
 
 const RESERVATION_TONE: Record<Reservation["status"], Tone> = {
   confirmed: "rescue",
@@ -32,7 +33,7 @@ const BOOKING_TONE: Record<DeliveryBooking["status"], Tone> = {
  */
 export function FulfilmentPanel({ run }: { run: AgentRun }) {
   if (run.reservations.length === 0 && run.deliveryBookings.length === 0) {
-    return <EmptyState>Nothing has been reserved yet.</EmptyState>;
+    return <EmptyState>No food is held yet.</EmptyState>;
   }
 
   const sellerNameFor = (sellerId: string) =>
@@ -69,37 +70,41 @@ function ReservationCard({
   reservation: Reservation;
   sellerName: string;
 }) {
+  const { icon: SellerIcon } = providerIcon(reservation.sellerId);
+
   return (
-    <article className="animate-beat-in flex flex-wrap items-start gap-4 rounded-xl border border-border bg-canvas/40 p-4">
+    <article className="animate-beat-in flex flex-wrap items-start gap-4 rounded-xl border border-border bg-canvas p-4">
       <div className="min-w-0 flex-1">
         <header className="flex flex-wrap items-center gap-2">
-          <PackageCheck className="size-4 text-rescue" aria-hidden />
+          <SellerIcon className="size-4 text-rescue" aria-hidden />
           <span className="text-sm font-semibold text-ink">{sellerName}</span>
           <Badge tone={RESERVATION_TONE[reservation.status]}>{reservation.status}</Badge>
         </header>
 
         <p className="mt-2 text-sm text-ink">
-          <span className="font-semibold tabular-nums">{reservation.quantity}</span> meals held
-          for collection
+          <span className="font-semibold tabular-nums">{reservation.quantity}</span> meals
+          held for collection
         </p>
 
         <dl className="mt-2.5 space-y-1 text-xs">
           <Row label="Pickup window" value={formatWindow(reservation.pickupWindow)} />
-          <Row label="Paid" value={formatXrp(reservation.paymentReceipt.amountDrops)} />
+          <Row label="Paid" value={formatDual(reservation.paymentReceipt.amountDrops)} />
           <Row label="Reservation" value={reservation.reservationId} mono />
         </dl>
       </div>
 
       {reservation.pickupToken && (
         <figure className="shrink-0 text-center">
-          {/* Rendered white-on-white so scanners read it reliably off a dark UI. */}
-          <div className="rounded-lg bg-white p-2">
+          {/* Kept pure black-on-white regardless of the surrounding palette - a
+              scanner needs maximum contrast, and a tinted QR code is a support
+              ticket waiting to happen. */}
+          <div className="rounded-lg border border-border bg-white p-2">
             <QRCode
               value={reservation.pickupToken}
               size={84}
               level="M"
               bgColor="#ffffff"
-              fgColor="#080b10"
+              fgColor="#000000"
             />
           </div>
           <figcaption className="mt-1.5 text-[0.62rem] uppercase tracking-[0.08em] text-ink-subtle">
@@ -119,7 +124,7 @@ function DeliveryCard({
   courierName: string;
 }) {
   return (
-    <article className="animate-beat-in rounded-xl border border-border bg-canvas/40 p-4">
+    <article className="animate-beat-in rounded-xl border border-border bg-canvas p-4">
       <header className="flex flex-wrap items-center gap-2">
         <Truck className="size-4 text-settled" aria-hidden />
         <span className="text-sm font-semibold text-ink">{courierName}</span>
@@ -129,7 +134,7 @@ function DeliveryCard({
       <dl className="mt-2.5 space-y-1 text-xs">
         <Row label="Collects" value={formatClock(booking.pickupEta)} />
         <Row label="Arrives" value={formatClock(booking.deliveryEta)} />
-        <Row label="Paid" value={formatXrp(booking.paymentReceipt.amountDrops)} />
+        <Row label="Paid" value={formatDual(booking.paymentReceipt.amountDrops)} />
         <Row label="Tracking" value={booking.trackingCode} mono />
       </dl>
     </article>

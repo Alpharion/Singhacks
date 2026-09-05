@@ -1,6 +1,6 @@
 import { Clock, Leaf, ShieldCheck, Wallet } from "lucide-react";
 import type { ProcurementGoal, PolicySnapshot } from "@/lib/contracts/types";
-import { formatXrp } from "@/lib/format/drops";
+import { formatDual } from "@/lib/format/money";
 import { formatClock } from "@/lib/format/time";
 import { XrplAddr } from "@/components/common/Xrpl";
 
@@ -22,8 +22,10 @@ export function AuthorityCard({
     {
       icon: Wallet,
       label: "Total budget",
-      value: formatXrp(goal.maxTotalSpendDrops),
-      detail: `Max ${formatXrp(policy.maxTransactionSpendDrops)} in any single transaction`,
+      // Both currencies here: the request is written in XRP, so showing only
+      // dollars would leave the card contradicting the sentence above it.
+      value: formatDual(goal.maxTotalSpendDrops),
+      detail: `Max ${formatDual(policy.maxTransactionSpendDrops)} in any single transaction`,
     },
     {
       icon: Clock,
@@ -63,7 +65,7 @@ export function AuthorityCard({
         ))}
       </dl>
 
-      <div className="rounded-lg border border-border bg-canvas/60 p-3.5">
+      <div className="rounded-lg border border-border bg-canvas p-3.5">
         <div className="flex items-center gap-2">
           <ShieldCheck className="size-3.5 text-rescue" aria-hidden />
           <span className="text-[0.7rem] font-medium uppercase tracking-[0.09em] text-ink-subtle">

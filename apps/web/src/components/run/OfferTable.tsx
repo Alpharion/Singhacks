@@ -1,9 +1,10 @@
 import { Ban } from "lucide-react";
 import type { AgentRun, DeliveryQuote, FoodOffer } from "@/lib/contracts/types";
-import { formatXrpCompact } from "@/lib/format/drops";
+import { formatDual } from "@/lib/format/money";
 import { formatClock } from "@/lib/format/time";
 import { Badge } from "@/components/common/Badge";
 import { EmptyState } from "@/components/common/Panel";
+import { providerIcon } from "@/components/common/providerIcon";
 import { cn } from "@/lib/cn";
 
 /**
@@ -29,7 +30,7 @@ export function OfferTable({ run }: { run: AgentRun }) {
   const rejections = rejectionsFrom(run);
 
   if (run.offers.length === 0 && run.deliveryQuotes.length === 0) {
-    return <EmptyState>Discovery has not run yet.</EmptyState>;
+    return <EmptyState>Nothing found yet.</EmptyState>;
   }
 
   const selectedPlan = run.plans.find((plan) => plan.planId === run.selectedPlanId);
@@ -40,7 +41,7 @@ export function OfferTable({ run }: { run: AgentRun }) {
   return (
     <div className="space-y-6">
       {run.offers.length > 0 && (
-        <Section title="Food offers" count={run.offers.length}>
+        <Section title="On the shelf" count={run.offers.length}>
           {run.offers.map((offer) => (
             <OfferRow
               key={offer.offerId}
@@ -56,7 +57,7 @@ export function OfferTable({ run }: { run: AgentRun }) {
       )}
 
       {run.deliveryQuotes.length > 0 && (
-        <Section title="Courier quotes" count={run.deliveryQuotes.length}>
+        <Section title="Getting it there" count={run.deliveryQuotes.length}>
           {run.deliveryQuotes.map((quote) => (
             <QuoteRow
               key={quote.quoteId}
@@ -105,10 +106,12 @@ function RowShell({
       className={cn(
         "rounded-xl border px-4 py-3 transition-colors",
         isChosen
-          ? "border-rescue/40 bg-rescue-dim/40"
+          ? "border-rescue/50 bg-rescue-dim"
           : isRejected
-            ? "border-border bg-canvas/40 opacity-70"
-            : "border-border bg-canvas/40",
+            ? // Muted rather than faded: `opacity` would wash out the rejection
+              // reason too, and that reason is the whole point of the row.
+              "border-border bg-surface-raised/60"
+            : "border-border bg-canvas",
       )}
     >
       {children}
@@ -141,19 +144,22 @@ function OfferRow({
   chosenQuantity?: number;
 }) {
   const isRejected = Boolean(rejectionReasons?.length);
+  const { icon: SellerIcon, kind } = providerIcon(offer.sellerId);
 
   return (
     <RowShell isChosen={isChosen} isRejected={isRejected}>
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-2">
+            <SellerIcon className="size-4 shrink-0 text-ink-muted" aria-hidden />
             <span className="text-sm font-semibold text-ink">{offer.sellerName}</span>
+            <span className="text-xs text-ink-subtle">{kind}</span>
             {isChosen && (
               <Badge tone="rescue">
                 Selected{chosenQuantity ? ` · ${chosenQuantity} meals` : ""}
               </Badge>
             )}
-            {isRejected && <Badge tone="rejected">Rejected</Badge>}
+            {isRejected && <Badge tone="rejected">Not suitable</Badge>}
           </div>
           <p className="mt-1 text-xs text-ink-muted">{offer.title}</p>
           <div className="mt-1.5 flex flex-wrap gap-1.5">
@@ -169,7 +175,7 @@ function OfferRow({
         </div>
 
         <dl className="flex shrink-0 gap-5 text-right">
-          <Metric label="Unit" value={formatXrpCompact(offer.unitPriceDrops)} />
+          <Metric label="Unit" value={formatDual(offer.unitPriceDrops)} />
           <Metric label="Available" value={`${offer.quantityAvailable}`} />
           <Metric
             label="Reliability"
@@ -194,6 +200,7 @@ function QuoteRow({
   isChosen: boolean;
 }) {
   const isUnavailable = quote.status !== "available";
+  const { icon: CourierIcon } = providerIcon(quote.providerId);
   const isRejected = Boolean(rejectionReasons?.length) || isUnavailable;
 
   return (
@@ -201,6 +208,7 @@ function QuoteRow({
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-2">
+            <CourierIcon className="size-4 shrink-0 text-ink-muted" aria-hidden />
             <span className="text-sm font-semibold text-ink">{quote.providerName}</span>
             {isChosen && <Badge tone="rescue">Booked</Badge>}
             {isUnavailable && <Badge tone="caution">{quote.status}</Badge>}
@@ -211,7 +219,7 @@ function QuoteRow({
         </div>
 
         <dl className="flex shrink-0 gap-5 text-right">
-          <Metric label="Price" value={formatXrpCompact(quote.priceDrops)} />
+          <Metric label="Price" value={formatDual(quote.priceDrops)} />
           <Metric label="Capacity" value={`${quote.capacityMeals}`} />
           <Metric
             label="Reliability"

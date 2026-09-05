@@ -27,8 +27,10 @@ test("a buyer can state a goal and dispatch the agent", async ({ page }) => {
   ).toBeVisible();
 
   // The delegated authority is stated before anything is spent.
-  await expect(page.getByText("120 XRP").first()).toBeVisible();
-  await expect(page.getByText(/max 70 xrp in any single transaction/i)).toBeVisible();
+  await expect(page.getByText("S$360.00 · 120 XRP").first()).toBeVisible();
+  await expect(
+    page.getByText("Max S$210.00 · 70 XRP in any single transaction"),
+  ).toBeVisible();
 
   await page.getByRole("button", { name: /dispatch buyer agent/i }).click();
   await expect(page).toHaveURL(/\/runs\//);
@@ -64,8 +66,8 @@ test("the agent's work plays through the full demo script", async ({ page }) => 
 
   // 4-5: two plans are compared and the cheaper one wins.
   await stepTo(page, 5);
-  await expect(page.getByText("74 XRP").first()).toBeVisible();
-  await expect(page.getByText("74.5 XRP").first()).toBeVisible();
+  await expect(page.getByText("S$222.00").first()).toBeVisible();
+  await expect(page.getByText("S$223.50").first()).toBeVisible();
   await expect(page.getByText("Selected").first()).toBeVisible();
 
   // 6-7: a provider drops out and the agent replans without a human.
@@ -89,7 +91,7 @@ test("the agent's work plays through the full demo script", async ({ page }) => 
     page.getByRole("heading", { name: /100 vegetarian meals secured/i }),
   ).toBeVisible();
   await expect(page.getByText("Total spent")).toBeVisible();
-  await expect(page.getByText("Unspent authority")).toBeVisible();
+  await expect(page.getByText("Never spent")).toBeVisible();
 
   // Three distinct settlements - two sellers and one courier. Each is linked
   // from both the payments panel and the outcome summary, so dedupe by href.
@@ -104,7 +106,8 @@ test("spend never exceeds the delegated budget", async ({ page }) => {
   await page.getByRole("button", { name: "Pause" }).click();
   await stepTo(page, 13);
 
-  // 74 spent + 46 unspent = the 120 authorised.
-  await expect(page.getByText("46 XRP").first()).toBeVisible();
-  await expect(page.getByText(/of 120 XRP/).first()).toBeVisible();
+  // S$222 spent + S$138 unspent = the S$360 authorised.
+  await expect(page.getByText("S$222.00").first()).toBeVisible();
+  await expect(page.getByText("S$138.00").first()).toBeVisible();
+  await expect(page.getByText("of S$360.00 authorised").first()).toBeVisible();
 });

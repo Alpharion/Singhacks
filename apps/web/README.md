@@ -61,6 +61,13 @@ string. `src/lib/format/drops.ts` does all arithmetic in `BigInt` and formats by
 the decimal point, so no value passes through a float. Use it; do not `parseFloat` a
 drops string.
 
+**Amounts are shown in both currencies.** `src/lib/format/money.ts` converts drops to SGD
+cents in BigInt (display only - nothing is ever stored in dollars), and
+`components/common/Money.tsx` renders the pair. Business figures lead in dollars
+(`<Money drops={...} />`); settlement figures lead in XRP (`lead="xrp"`), because the
+ledger moved XRP and a judge has to check it against the explorer. The rate is one
+constant, labelled in the UI as an indicative demo assumption.
+
 **Explorer URLs come from the backend.** `PaymentReceipt.explorerUrl` is rendered as
 given. The frontend does not build explorer links — picking the network prefix belongs to
 the payment layer.

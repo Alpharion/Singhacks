@@ -2,35 +2,39 @@
 
 import { Bar, BarChart, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import type { AgentRun } from "@/lib/contracts/types";
-import { dropsToXrpString, formatXrp } from "@/lib/format/drops";
+import { dropsToSgdCents, formatSgd } from "@/lib/format/money";
+import { formatXrp } from "@/lib/format/drops";
 
 /**
  * Where the delegated budget went.
  *
- * Drops are converted to XRP only at the very last step, purely so Recharts has
- * a number to scale bars with. Every label still comes from the exact drops
+ * Drops become a plain number only at the very last step, purely so Recharts has
+ * something to scale bars with. Every label still comes from the exact drops
  * string, so nothing displayed has been through a float.
  */
 export function SpendChart({ run }: { run: AgentRun }) {
+  // Bars are scaled in dollars, since that is what the axis is labelled in.
+  const asDollars = (drops: string) => Number(dropsToSgdCents(drops)) / 100;
+
   const data = [
     {
       key: "food",
       name: "Food",
-      xrp: Number(dropsToXrpString(run.spend.foodDrops)),
+      sgd: asDollars(run.spend.foodDrops),
       drops: run.spend.foodDrops,
       fill: "var(--color-rescue)",
     },
     {
       key: "delivery",
       name: "Delivery",
-      xrp: Number(dropsToXrpString(run.spend.deliveryDrops)),
+      sgd: asDollars(run.spend.deliveryDrops),
       drops: run.spend.deliveryDrops,
       fill: "var(--color-settled)",
     },
     {
       key: "remaining",
       name: "Unspent",
-      xrp: Number(dropsToXrpString(run.spend.remainingDrops)),
+      sgd: asDollars(run.spend.remainingDrops),
       drops: run.spend.remainingDrops,
       fill: "var(--color-border-strong)",
     },
@@ -52,8 +56,8 @@ export function SpendChart({ run }: { run: AgentRun }) {
               tickLine={false}
               axisLine={false}
               tick={{ fill: "var(--color-ink-subtle)", fontSize: 11 }}
-              width={38}
-              unit=""
+              tickFormatter={(value: number) => `$${value}`}
+              width={46}
             />
             <Tooltip
               cursor={{ fill: "var(--color-surface-hover)", opacity: 0.5 }}
@@ -65,11 +69,11 @@ export function SpendChart({ run }: { run: AgentRun }) {
               }}
               labelStyle={{ color: "var(--color-ink)" }}
               formatter={(_value, _name, item) => [
-                formatXrp(item.payload.drops),
+                `${formatSgd(item.payload.drops)} · ${formatXrp(item.payload.drops)}`,
                 item.payload.name,
               ]}
             />
-            <Bar dataKey="xrp" radius={[4, 4, 0, 0]} isAnimationActive={false}>
+            <Bar dataKey="sgd" radius={[4, 4, 0, 0]} isAnimationActive={false}>
               {data.map((entry) => (
                 <Cell key={entry.key} fill={entry.fill} />
               ))}
@@ -89,7 +93,12 @@ export function SpendChart({ run }: { run: AgentRun }) {
               />
               {entry.name}
             </dt>
-            <dd className="mt-1 font-medium tabular-nums text-ink">{formatXrp(entry.drops)}</dd>
+            <dd className="mt-1 font-medium tabular-nums text-ink">
+              {formatSgd(entry.drops)}
+            </dd>
+            <dd className="text-[0.68rem] tabular-nums text-ink-subtle">
+              {formatXrp(entry.drops)}
+            </dd>
           </div>
         ))}
       </dl>
