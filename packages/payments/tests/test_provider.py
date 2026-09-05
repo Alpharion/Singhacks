@@ -37,7 +37,15 @@ def test_health_is_public(tmp_path) -> None:
 
 
 def test_paid_resource_issues_bound_x402_challenge(tmp_path) -> None:
-    response = build_client(tmp_path).post("/paid/demo")
+    invoice_id = "inv:provider_demo_001"
+    response = build_client(tmp_path).post(
+        "/paid/demo",
+        headers={"Idempotency-Key": "idem:provider_demo_001"},
+        json={
+            "invoiceId": invoice_id,
+            "idempotencyKey": "idem:provider_demo_001",
+        },
+    )
 
     assert response.status_code == 402
     challenge = decode_payment_required(response.headers["PAYMENT-REQUIRED"])
@@ -48,13 +56,43 @@ def test_paid_resource_issues_bound_x402_challenge(tmp_path) -> None:
     assert option.pay_to == PAYEE
     assert option.amount == "5000"
     assert option.extra.source_tag == SOURCE_TAG
-    assert option.extra.invoice_id
+    assert option.extra.invoice_id == invoice_id
+
+
+def test_identical_unsigned_retry_reuses_invoice_safely(tmp_path) -> None:
+    client = build_client(tmp_path)
+    headers = {"Idempotency-Key": "idem:provider_demo_001"}
+    payload = {
+        "invoiceId": "inv:provider_demo_001",
+        "idempotencyKey": "idem:provider_demo_001",
+    }
+
+    first = client.post("/paid/demo", headers=headers, json=payload)
+    second = client.post("/paid/demo", headers=headers, json=payload)
+
+    assert first.status_code == 402
+    assert second.status_code == 402
+    first_challenge = decode_payment_required(
+        first.headers["PAYMENT-REQUIRED"]
+    )
+    second_challenge = decode_payment_required(
+        second.headers["PAYMENT-REQUIRED"]
+    )
+    assert first_challenge.accepts[0].extra.invoice_id == payload["invoiceId"]
+    assert second_challenge.accepts[0].extra.invoice_id == payload["invoiceId"]
 
 
 def test_options_preflight_is_not_charged(tmp_path) -> None:
     response = build_client(tmp_path).options("/paid/demo")
 
     assert response.status_code != 402
+
+
+def test_paid_resource_requires_idempotency_key(tmp_path) -> None:
+    response = build_client(tmp_path).post("/paid/demo")
+
+    assert response.status_code == 422
+    assert response.json()["error"] == "invalid_request"
 
 
 @pytest.mark.parametrize(

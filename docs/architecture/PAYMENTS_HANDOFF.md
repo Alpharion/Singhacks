@@ -19,9 +19,11 @@ without editing files owned by Person 4.
 - Settlement receipt validation and normalization
 - Provider-side `require_payment` middleware adapter
 - Persistent provider invoice store
+- Invoice binding to the exact `PurchaseIntent.invoiceId`
+- Idempotent replay of paid provider responses without another settlement
 - XRPL transaction-status lookup for reconciliation
 - Standalone FastAPI paid-resource example
-- Offline test suite with no ledger writes
+- Offline end-to-end commercial-loop test with no ledger writes
 
 ## Payment sequence
 
@@ -86,7 +88,8 @@ Person 3 adds middleware to each seller or courier FastAPI app:
 from surplusflow_payments import (
     ProviderPaymentConfig,
     SQLiteInvoiceStore,
-    build_provider_middleware,
+    SQLiteProviderResponseStore,
+    install_provider_payment,
 )
 
 payment_config = ProviderPaymentConfig(
@@ -96,11 +99,11 @@ payment_config = ProviderPaymentConfig(
     facilitator_url=settings.xrpl_facilitator_url,
 )
 
-app.middleware("http")(
-    build_provider_middleware(
-        payment_config,
-        SQLiteInvoiceStore(".data/x402-invoices.sqlite3"),
-    )
+install_provider_payment(
+    app,
+    payment_config,
+    SQLiteInvoiceStore(".data/x402-invoices.sqlite3"),
+    SQLiteProviderResponseStore(".data/provider-responses.sqlite3"),
 )
 ```
 
@@ -108,6 +111,9 @@ The SDK middleware owns `PAYMENT-REQUIRED`, `PAYMENT-SIGNATURE`, facilitator
 verification, settlement, and `PAYMENT-RESPONSE`. The route handler must still
 perform an atomic inventory/capacity lock and honor the same `Idempotency-Key`.
 It returns the reservation or booking only after the middleware confirms payment.
+The complete installer binds the x402 invoice to `PurchaseIntent.invoiceId` and
+caches the paid response outside the settlement middleware, allowing a lost HTTP
+response to be retried without paying twice.
 
 ## Verification commands
 
@@ -122,6 +128,15 @@ make run-payment-provider
 The standalone provider returns HTTP 402 without a signature. Tests never fund,
 sign, or submit a live ledger transaction.
 
+After configuring ignored Testnet wallet variables, this read-only command checks
+validated public balances without signing:
+
+```text
+cd packages/payments
+uv run python examples/check_testnet_readiness.py \
+  --provider-env XRPL_BAKERY_PAY_TO
+```
+
 ## Remaining live/integration gates
 
 These cannot be completed safely before teammate code or credentials exist:
@@ -131,7 +146,8 @@ These cannot be completed safely before teammate code or credentials exist:
 3. Connect Person 3's atomic inventory lock behind the provider middleware.
 4. Connect Person 2's state machine to the executor and reconciliation path.
 5. Add Docker Compose commands after all service entry points are known.
-6. Run the full procurement E2E path and expose explorer links to Person 1.
+6. Replace the completed offline payment E2E fakes with teammate services and
+   expose real explorer links to Person 1.
 
 Never commit wallet seeds or a populated `.env` file. A signed or uncertain
 invoice must be reconciled; it must not be automatically paid again.

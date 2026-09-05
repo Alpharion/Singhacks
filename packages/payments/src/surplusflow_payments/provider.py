@@ -9,6 +9,11 @@ from x402_xrpl.server import require_payment
 
 from .invoice_store import SQLiteInvoiceStore
 from .models import validate_classic_address
+from .provider_idempotency import (
+    ProviderIdempotencyMiddleware,
+    SQLiteProviderResponseStore,
+    current_request_invoice_id,
+)
 
 
 class ProviderPaymentConfig(BaseModel):
@@ -50,6 +55,11 @@ def build_provider_middleware(
     *,
     facilitator: Any | None = None,
 ):
+    """Build the low-level x402 middleware.
+
+    Prefer ``install_provider_payment`` so invoice context and response replay
+    are always installed in the correct order.
+    """
     kwargs: dict[str, Any] = {
         "path": config.protected_paths,
         "price": config.price_drops,
@@ -61,6 +71,7 @@ def build_provider_middleware(
         "source_tag": config.source_tag,
         "invoice_store": invoice_store,
         "invoice_ttl_seconds": config.invoice_ttl_seconds,
+        "invoice_id_factory": current_request_invoice_id,
     }
     if facilitator is None:
         kwargs["facilitator_url"] = str(config.facilitator_url)
@@ -69,15 +80,16 @@ def build_provider_middleware(
     return require_payment(**kwargs)
 
 
-def create_standalone_provider_app(
+def install_provider_payment(
+    app: FastAPI,
     config: ProviderPaymentConfig,
     invoice_store: SQLiteInvoiceStore,
+    response_store: SQLiteProviderResponseStore,
     *,
     facilitator: Any | None = None,
-) -> FastAPI:
-    """Minimal provider used before Person 3's services exist."""
+) -> None:
+    """Install the complete provider boundary in the required middleware order."""
 
-    app = FastAPI(title="SurplusFlow standalone paid provider")
     app.middleware("http")(
         build_provider_middleware(
             config,
@@ -85,12 +97,39 @@ def create_standalone_provider_app(
             facilitator=facilitator,
         )
     )
+    app.add_middleware(
+        ProviderIdempotencyMiddleware,
+        store=response_store,
+        protected_paths=config.protected_paths,
+    )
+
+
+def create_standalone_provider_app(
+    config: ProviderPaymentConfig,
+    invoice_store: SQLiteInvoiceStore,
+    *,
+    response_store: SQLiteProviderResponseStore | None = None,
+    facilitator: Any | None = None,
+) -> FastAPI:
+    """Minimal provider used before Person 3's services exist."""
+
+    app = FastAPI(title="SurplusFlow standalone paid provider")
+    install_provider_payment(
+        app,
+        config,
+        invoice_store,
+        response_store
+        or SQLiteProviderResponseStore(
+            invoice_store.path.with_name("provider-responses.sqlite3")
+        ),
+        facilitator=facilitator,
+    )
 
     @app.get("/health")
     async def health() -> dict[str, str]:
         return {"status": "ok"}
 
-    @app.post("/paid/demo")
+    @app.post("/paid/demo", status_code=201)
     async def paid_demo() -> dict[str, str]:
         return {
             "reservationId": "reservation_standalone_001",

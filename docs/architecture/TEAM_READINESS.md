@@ -46,9 +46,10 @@ Can build marketplace, seller, and courier services from the OpenAPI paths. Paym
 ### Person 4: independent foundation complete
 
 The contracts, real `x402-xrpl` buyer/provider adapters, deterministic wallet
-policy, durable invoice/payment journals, receipt normalization, transaction
-status lookup, standalone provider, dependency lock, and offline test suite are
-created. The remaining Person 4 work requires integration or live credentials:
+policy, durable invoice/payment journals, paid-response replay, receipt
+normalization, transaction status lookup, standalone provider, dependency lock,
+system architecture, and an offline end-to-end x402 loop are created. The
+remaining Person 4 work requires integration or live credentials:
 a funded standalone Testnet payment, root orchestration once service commands
 exist, and the complete E2E test.
 

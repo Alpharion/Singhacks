@@ -427,3 +427,27 @@ def test_wallet_loader_failures_are_sanitized_and_recorded(
         executor.execute(intent, already_spent_drops=0)
 
     assert journal.get(intent.invoice_id).error_code == "wallet_configuration_error"
+
+
+def test_payer_configuration_failure_is_sanitized_and_recorded(
+    tmp_path,
+    buyer_wallet,
+    intent,
+) -> None:
+    journal = PaymentJournal(tmp_path / "payments.sqlite3")
+
+    def broken_payer_factory(wallet, network, rpc_url):
+        del wallet, network, rpc_url
+        raise ValueError("internal signer details")
+
+    executor = PaymentExecutor(
+        PaymentSettings(),
+        journal,
+        wallet_loader=lambda: buyer_wallet,
+        payer_factory=broken_payer_factory,
+    )
+
+    with pytest.raises(PaymentExecutionError, match="could not be configured"):
+        executor.execute(intent, already_spent_drops=0)
+
+    assert journal.get(intent.invoice_id).error_code == "payer_configuration_error"

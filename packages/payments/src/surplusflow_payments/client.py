@@ -98,11 +98,17 @@ class PaymentExecutor:
             ) from None
 
         payer_address = wallet.classic_address
-        payer = self.payer_factory(
-            wallet,
-            self.settings.xrpl_network,
-            self.settings.rpc_url,
-        )
+        try:
+            payer = self.payer_factory(
+                wallet,
+                self.settings.xrpl_network,
+                self.settings.rpc_url,
+            )
+        except Exception:
+            self.journal.record_failed(intent.invoice_id, "payer_configuration_error")
+            raise PaymentExecutionError(
+                "x402 payer could not be configured"
+            ) from None
         persisting_factory = PersistingPaymentHeaderFactory(
             payer.create_payment_header,
             self.journal,

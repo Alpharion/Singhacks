@@ -1,13 +1,34 @@
 from pathlib import Path
 from typing import Literal
 
+from dotenv import load_dotenv
 from pydantic import Field, HttpUrl
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
+def find_project_env_file() -> Path:
+    candidates = [Path.cwd(), *Path.cwd().parents]
+    candidates.extend(Path(__file__).resolve().parents)
+    seen: set[Path] = set()
+    for directory in candidates:
+        if directory in seen:
+            continue
+        seen.add(directory)
+        if (directory / ".env.example").is_file():
+            return directory / ".env"
+    return Path.cwd() / ".env"
+
+
+PROJECT_ENV_FILE = find_project_env_file()
+
+
+def load_project_environment() -> None:
+    load_dotenv(PROJECT_ENV_FILE)
+
+
 class PaymentSettings(BaseSettings):
     model_config = SettingsConfigDict(
-        env_file=".env",
+        env_file=PROJECT_ENV_FILE,
         env_file_encoding="utf-8",
         extra="ignore",
         frozen=True,

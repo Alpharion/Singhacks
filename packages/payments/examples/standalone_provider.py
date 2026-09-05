@@ -3,11 +3,15 @@
 import os
 from pathlib import Path
 
+from surplusflow_payments.config import load_project_environment
 from surplusflow_payments.invoice_store import SQLiteInvoiceStore
 from surplusflow_payments.provider import (
     ProviderPaymentConfig,
     create_standalone_provider_app,
 )
+from surplusflow_payments.provider_idempotency import SQLiteProviderResponseStore
+
+load_project_environment()
 
 pay_to_address = os.environ.get(
     "XRPL_PROVIDER_ADDRESS",
@@ -24,4 +28,7 @@ config = ProviderPaymentConfig(
 app = create_standalone_provider_app(
     config,
     SQLiteInvoiceStore(Path(".data/provider-invoices.sqlite3")),
+    response_store=SQLiteProviderResponseStore(
+        Path(".data/provider-responses.sqlite3")
+    ),
 )

@@ -1,4 +1,4 @@
-.PHONY: doctor-person4 setup-contracts setup-payments test-contracts test-payments test-person4 run-payment-provider
+.PHONY: doctor-person4 setup-contracts setup-payments test-contracts test-payments test-e2e-offline test-person4 run-payment-provider
 
 doctor-person4:
 	@command -v node
@@ -22,7 +22,10 @@ test-contracts:
 test-payments: setup-payments
 	cd packages/payments && .venv/bin/pytest
 
-test-person4: test-contracts test-payments
+test-e2e-offline: setup-payments
+	packages/payments/.venv/bin/pytest -q tests/e2e
+
+test-person4: test-contracts test-payments test-e2e-offline
 
 run-payment-provider:
 	cd packages/payments && .venv/bin/uvicorn examples.standalone_provider:app --port 8011

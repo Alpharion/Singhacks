@@ -12,6 +12,8 @@ Person 4's isolated XRPL/x402 package. It provides the financial safety boundary
 - Normalize `PAYMENT-RESPONSE` into the frozen `PaymentReceipt` contract.
 - Persist invoice and transaction status without storing wallet seeds or signed blobs.
 - Expose a reusable FastAPI provider-middleware adapter.
+- Replay a completed paid response on an identical idempotent retry without
+  settling the invoice twice.
 
 The package does not choose providers, optimize meal plans, or let an LLM sign transactions.
 
@@ -34,6 +36,17 @@ curl -i -X POST http://localhost:8011/paid/demo
 
 The second command intentionally returns HTTP `402` plus a
 `PAYMENT-REQUIRED` challenge. It does not submit a transaction.
+
+Once ignored environment variables contain a Testnet buyer wallet and provider
+address, check their validated public account state without signing:
+
+```text
+uv run python examples/check_testnet_readiness.py \
+  --provider-env XRPL_BAKERY_PAY_TO
+```
+
+The output contains public addresses and balances only. This is a readiness
+check, not a payment command.
 
 From the repository root, `make test-person4` validates both the shared
 contracts and this package.
@@ -65,8 +78,8 @@ Application code works with normalized Pydantic objects and never constructs a c
 
 - The orchestrator constructs a validated `PurchaseIntent` and passes it to
   `PaymentExecutor.execute(...)` only after its selection decision is final.
-- Seller and courier services call `build_provider_middleware(...)` with their
-  protected reservation or booking path.
+- Seller and courier services call `install_provider_payment(...)` with their
+  protected reservation or booking path and both persistent stores.
 - The API layer returns `PaymentExecutionResult.receipt` using the frozen
   `PaymentReceipt` contract.
 - Uncertain transactions are reconciled with `TransactionStatusClient`; they

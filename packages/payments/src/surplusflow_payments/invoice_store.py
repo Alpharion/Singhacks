@@ -43,15 +43,40 @@ class SQLiteInvoiceStore:
             separators=(",", ":"),
             sort_keys=True,
         )
+        now = time.time()
         with self._connect() as connection:
-            connection.execute(
+            connection.execute("BEGIN IMMEDIATE")
+            existing = connection.execute(
                 """
-                INSERT INTO x402_invoices (
-                    invoice_id, requirements_json, expires_at, consumed
-                ) VALUES (?, ?, ?, 0)
+                SELECT requirements_json, expires_at, consumed
+                FROM x402_invoices WHERE invoice_id = ?
                 """,
-                (invoice_id, payload, time.time() + ttl_seconds),
-            )
+                (invoice_id,),
+            ).fetchone()
+            if existing is None:
+                connection.execute(
+                    """
+                    INSERT INTO x402_invoices (
+                        invoice_id, requirements_json, expires_at, consumed
+                    ) VALUES (?, ?, ?, 0)
+                    """,
+                    (invoice_id, payload, now + ttl_seconds),
+                )
+                return
+            if existing[0] != payload:
+                raise ValueError(
+                    "invoice id was reused with different payment requirements"
+                )
+            if existing[2]:
+                raise ValueError("invoice has already been consumed")
+            if existing[1] <= now:
+                connection.execute(
+                    """
+                    UPDATE x402_invoices SET expires_at = ?, consumed = 0
+                    WHERE invoice_id = ?
+                    """,
+                    (now + ttl_seconds, invoice_id),
+                )
 
     async def get(
         self,
