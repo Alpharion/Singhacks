@@ -31,13 +31,22 @@ Customer need
 - The prototype must execute at least one successful XRPL transaction.
 - The final submission must include the validated transaction hash or explorer link.
 
-### Recommended technology
+### Required and selected components
 
-- XRPL AI Starter Kit or its agent wallet/payment patterns
+The challenge requires:
+
+- XRP Ledger settlement or transaction activity
+- At least one successful XRPL transaction
+- XRPL-only blockchain activity; the XRPL EVM Sidechain does not qualify
+
+The challenge recommends, but does not require:
+
+- XRPL AI Starter Kit and its agent wallet/payment patterns
 - An agentic payment standard such as x402 or MPP
-- XRPL Testnet during development
 
-x402, MPP, and the Starter Kit are recommended rather than hard requirements in the current repository instructions. SurplusFlow will nevertheless use x402 because it makes the machine-to-machine commercial loop explicit.
+SurplusFlow deliberately selects the XRPL AI Starter Kit guidance, x402, XRP,
+and XRPL Testnet because they fit its autonomous procurement flow. It does not
+use MPP or every tool listed in the challenge resources.
 
 The XRPL AI Starter Kit is a curated collection of agent-payment tools, documentation, wallet/payment skills, and integrations rather than a single application framework that the whole product must import. SurplusFlow uses its intended build path through:
 
@@ -46,7 +55,10 @@ The XRPL AI Starter Kit is a curated collection of agent-payment tools, document
 - x402 payments using XRP on XRPL
 - Transaction confirmation and attribution through hashes, invoice IDs, and source tags
 
-The project must describe these concrete integrations in the submission; it must not claim that an unspecified package called "the Starter Kit" powers the application.
+Because SurplusFlow chooses these recommended components, the submission should
+describe their concrete use. It must not imply that the Starter Kit or x402 was
+mandatory, or claim that an unspecified package called "the Starter Kit" powers
+the application.
 
 ### Product requirements
 
@@ -347,7 +359,7 @@ Use XRP for the MVP because it avoids RLUSD trust-line and issuer configuration.
 - `requests`
 - `python-dotenv`
 
-Seller and courier services use the `x402_xrpl.server.require_payment` FastAPI middleware pattern. The buyer uses `x402_xrpl.clients.x402_requests` with an `xrpl:1` network filter.
+Seller and courier services use the `x402_xrpl.server.require_payment` FastAPI middleware pattern through the shared provider adapter. The buyer uses `x402_xrpl.clients.x402_purchase` with an `xrpl:1` network filter and an exact-match policy selector.
 
 ### Required payment controls
 
@@ -365,6 +377,7 @@ Seller and courier services use the `x402_xrpl.server.require_payment` FastAPI m
 - Wait for validated settlement before returning the purchased resource.
 - Keep private food, buyer, address, and dietary data off-chain.
 - Put only an opaque invoice reference and agent attribution metadata on-chain.
+- Use XRPL `SourceTag` `20260530` for hackathon attribution on every MVP payment.
 
 ### No escrow in the MVP
 
