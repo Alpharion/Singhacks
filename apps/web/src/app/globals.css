@@ -1,0 +1,105 @@
+@import "tailwindcss";
+
+/**
+ * SurplusFlow design tokens.
+ *
+ * A single dark "mission control" theme, committed to deliberately: the demo is
+ * presented on one screen and recorded once, so a fixed palette keeps every
+ * screenshot consistent rather than depending on the viewer's OS setting.
+ *
+ * Semantic names, not colour names - `--color-settled` survives a palette change,
+ * `--color-green-400` does not.
+ */
+@theme {
+  /* Surfaces, darkest to lightest */
+  --color-canvas: #080b10;
+  --color-surface: #0e131a;
+  --color-surface-raised: #151c25;
+  --color-surface-hover: #1c2530;
+  --color-border: #232d3a;
+  --color-border-strong: #33404f;
+
+  /* Text */
+  --color-ink: #e8edf4;
+  --color-ink-muted: #94a3b5;
+  --color-ink-subtle: #5f6f82;
+
+  /* Semantic accents */
+  --color-rescue: #4ade80; /* the product's own colour: food saved */
+  --color-rescue-dim: #16351f;
+  --color-settled: #38bdf8; /* XRPL settlement, payments, hashes */
+  --color-settled-dim: #0c2c3e;
+  --color-caution: #fbbf24; /* provider failure, replanning */
+  --color-caution-dim: #3a2c08;
+  --color-rejected: #f87171; /* rejected offers, errors */
+  --color-rejected-dim: #3a1517;
+  --color-pending: #a78bfa; /* awaiting payment */
+  --color-pending-dim: #261c44;
+
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, "SF Mono", monospace;
+
+  --radius-panel: 0.875rem;
+}
+
+html {
+  color-scheme: dark;
+}
+
+body {
+  background: var(--color-canvas);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* A quiet grid so large empty panels do not read as unfinished. */
+.bg-grid {
+  background-image:
+    linear-gradient(to right, color-mix(in srgb, var(--color-border) 45%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in srgb, var(--color-border) 45%, transparent) 1px, transparent 1px);
+  background-size: 44px 44px;
+}
+
+@keyframes beat-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Each timeline beat arrives rather than appearing, so the eye follows it. */
+.animate-beat-in {
+  animation: beat-in 320ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes pulse-ring {
+  0% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-settled) 45%, transparent);
+  }
+  70% {
+    box-shadow: 0 0 0 10px transparent;
+  }
+  100% {
+    box-shadow: 0 0 0 0 transparent;
+  }
+}
+
+.animate-pulse-ring {
+  animation: pulse-ring 1.8s ease-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-beat-in,
+  .animate-pulse-ring {
+    animation: none;
+  }
+}
+
+::selection {
+  background: color-mix(in srgb, var(--color-rescue) 30%, transparent);
+}

@@ -1,0 +1,24 @@
+{
+  "reservationId": "reservation_bakery_001",
+  "runId": "run_demo_001",
+  "sellerId": "seller_bakery_001",
+  "offerId": "offer_bakery_001",
+  "quantity": 60,
+  "status": "confirmed",
+  "pickupWindow": {"start": "2026-09-05T07:00:00Z", "end": "2026-09-05T08:30:00Z"},
+  "pickupToken": "pickup_bakery_demo_001",
+  "paymentReceipt": {
+    "success": true,
+    "transaction": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    "network": "xrpl:1",
+    "payer": "rBuyer1111111111111111111111111",
+    "payee": "rFoodA1111111111111111111111111",
+    "amountDrops": "36000000",
+    "invoiceId": "inv:run_demo_001:offer_bakery_001:v1",
+    "validated": true,
+    "validatedAt": "2026-09-05T06:02:30Z",
+    "explorerUrl": "https://testnet.xrpl.org/transactions/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+  },
+  "createdAt": "2026-09-05T06:02:31Z",
+  "expiresAt": "2026-09-05T08:30:00Z"
+}

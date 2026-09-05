@@ -1,0 +1,260 @@
+{
+  "runId": "run_demo_001",
+  "status": "fulfilled",
+  "goal": {
+    "goalId": "goal_demo_001",
+    "buyerId": "buyer_kitchen_001",
+    "mealCount": 100,
+    "dietaryTags": ["vegetarian"],
+    "destination": {"zone": "Queenstown", "addressLine": "Demo Community Kitchen"},
+    "deliveryDeadline": "2026-09-05T10:00:00Z",
+    "maxTotalSpendDrops": "120000000",
+    "minSellerReliability": 0.85,
+    "optimizationPriority": "balanced",
+    "walletPolicyId": "policy_demo_001",
+    "approvedSellerIds": ["seller_bakery_001", "seller_hotel_001", "seller_grill_001"],
+    "approvedCourierIds": ["courier_fast_001", "courier_economy_001"],
+    "createdAt": "2026-09-05T06:00:00Z"
+  },
+  "offers": [],
+  "deliveryQuotes": [],
+  "plans": [
+    {
+      "planId": "plan_final_001",
+      "goalId": "goal_demo_001",
+      "foodAllocations": [
+        {
+          "sellerId": "seller_bakery_001",
+          "offerId": "offer_bakery_001",
+          "quantity": 60,
+          "unitPriceDrops": "600000",
+          "lineTotalDrops": "36000000",
+          "reliabilityScore": 0.94
+        },
+        {
+          "sellerId": "seller_hotel_001",
+          "offerId": "offer_hotel_001",
+          "quantity": 40,
+          "unitPriceDrops": "650000",
+          "lineTotalDrops": "26000000",
+          "reliabilityScore": 0.91
+        }
+      ],
+      "deliveryQuoteId": "quote_fast_001",
+      "totalMeals": 100,
+      "foodCostDrops": "62000000",
+      "deliveryCostDrops": "12000000",
+      "totalCostDrops": "74000000",
+      "expectedDeliveryAt": "2026-09-05T09:35:00Z",
+      "validUntil": "2026-09-05T06:15:00Z",
+      "riskScore": 14.5,
+      "feasible": true,
+      "rejectionReasons": []
+    },
+    {
+      "planId": "plan_alt_001",
+      "goalId": "goal_demo_001",
+      "foodAllocations": [
+        {
+          "sellerId": "seller_bakery_001",
+          "offerId": "offer_bakery_001",
+          "quantity": 50,
+          "unitPriceDrops": "600000",
+          "lineTotalDrops": "30000000",
+          "reliabilityScore": 0.94
+        },
+        {
+          "sellerId": "seller_hotel_001",
+          "offerId": "offer_hotel_001",
+          "quantity": 50,
+          "unitPriceDrops": "650000",
+          "lineTotalDrops": "32500000",
+          "reliabilityScore": 0.91
+        }
+      ],
+      "deliveryQuoteId": "quote_fast_001",
+      "totalMeals": 100,
+      "foodCostDrops": "62500000",
+      "deliveryCostDrops": "12000000",
+      "totalCostDrops": "74500000",
+      "expectedDeliveryAt": "2026-09-05T09:35:00Z",
+      "validUntil": "2026-09-05T06:15:00Z",
+      "riskScore": 14.0,
+      "feasible": true,
+      "rejectionReasons": []
+    }
+  ],
+  "selectedPlanId": "plan_final_001",
+  "decisions": [
+    {
+      "decisionId": "decision_reject_001",
+      "runId": "run_demo_001",
+      "decisionType": "reject_offer",
+      "objective": "Acquire 100 vegetarian meals before the deadline and within budget.",
+      "alternativesConsidered": ["offer_bakery_001", "offer_hotel_001", "offer_grill_001"],
+      "reasons": ["Central Grill does not satisfy the vegetarian requirement."],
+      "rejectedAlternatives": [
+        {"optionId": "offer_grill_001", "reasons": ["Missing required vegetarian dietary tag."]}
+      ],
+      "remainingBudgetDrops": "120000000",
+      "walletPolicyId": "policy_demo_001",
+      "createdAt": "2026-09-05T06:00:30Z"
+    },
+    {
+      "decisionId": "decision_replan_001",
+      "runId": "run_demo_001",
+      "decisionType": "replan",
+      "objective": "Recover from the unavailable economy courier without breaking the deadline.",
+      "selectedOptionId": "quote_fast_001",
+      "alternativesConsidered": ["quote_economy_001", "quote_fast_001"],
+      "reasons": ["FastRoute remains available, arrives before 6 PM, and keeps total spend below 120 XRP."],
+      "rejectedAlternatives": [
+        {"optionId": "quote_economy_001", "reasons": ["Provider reported vehicle unavailability."]}
+      ],
+      "remainingBudgetDrops": "46000000",
+      "walletPolicyId": "policy_demo_001",
+      "createdAt": "2026-09-05T06:01:30Z"
+    },
+    {
+      "decisionId": "decision_payment_001",
+      "runId": "run_demo_001",
+      "decisionType": "authorize_payment",
+      "objective": "Purchase the selected bakery reservation within delegated wallet limits.",
+      "selectedOptionId": "offer_bakery_001",
+      "alternativesConsidered": ["offer_bakery_001"],
+      "reasons": ["The 36 XRP charge matches the selected allocation and approved seller address."],
+      "rejectedAlternatives": [],
+      "remainingBudgetDrops": "84000000",
+      "walletPolicyId": "policy_demo_001",
+      "transactionHash": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+      "createdAt": "2026-09-05T06:02:30Z"
+    }
+  ],
+  "reservations": [
+    {
+      "reservationId": "reservation_bakery_001",
+      "runId": "run_demo_001",
+      "sellerId": "seller_bakery_001",
+      "offerId": "offer_bakery_001",
+      "quantity": 60,
+      "status": "confirmed",
+      "pickupWindow": {"start": "2026-09-05T07:00:00Z", "end": "2026-09-05T08:30:00Z"},
+      "pickupToken": "pickup_bakery_demo_001",
+      "paymentReceipt": {
+        "success": true,
+        "transaction": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+        "network": "xrpl:1",
+        "payer": "rBuyer1111111111111111111111111",
+        "payee": "rFoodA1111111111111111111111111",
+        "amountDrops": "36000000",
+        "invoiceId": "inv:run_demo_001:offer_bakery_001:v1",
+        "validated": true,
+        "validatedAt": "2026-09-05T06:02:30Z",
+        "explorerUrl": "https://testnet.xrpl.org/transactions/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+      },
+      "createdAt": "2026-09-05T06:02:31Z",
+      "expiresAt": "2026-09-05T08:30:00Z"
+    },
+    {
+      "reservationId": "reservation_hotel_001",
+      "runId": "run_demo_001",
+      "sellerId": "seller_hotel_001",
+      "offerId": "offer_hotel_001",
+      "quantity": 40,
+      "status": "confirmed",
+      "pickupWindow": {"start": "2026-09-05T07:30:00Z", "end": "2026-09-05T09:00:00Z"},
+      "pickupToken": "pickup_hotel_demo_001",
+      "paymentReceipt": {
+        "success": true,
+        "transaction": "CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC",
+        "network": "xrpl:1",
+        "payer": "rBuyer1111111111111111111111111",
+        "payee": "rFoodB1111111111111111111111111",
+        "amountDrops": "26000000",
+        "invoiceId": "inv:run_demo_001:offer_hotel_001:v1",
+        "validated": true,
+        "validatedAt": "2026-09-05T06:03:30Z",
+        "explorerUrl": "https://testnet.xrpl.org/transactions/CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC"
+      },
+      "createdAt": "2026-09-05T06:03:31Z",
+      "expiresAt": "2026-09-05T09:00:00Z"
+    }
+  ],
+  "deliveryBookings": [
+    {
+      "bookingId": "booking_fast_001",
+      "runId": "run_demo_001",
+      "providerId": "courier_fast_001",
+      "quoteId": "quote_fast_001",
+      "status": "confirmed",
+      "pickupEta": "2026-09-05T08:00:00Z",
+      "deliveryEta": "2026-09-05T09:35:00Z",
+      "trackingCode": "track_fast_demo_001",
+      "paymentReceipt": {
+        "success": true,
+        "transaction": "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB",
+        "network": "xrpl:1",
+        "payer": "rBuyer1111111111111111111111111",
+        "payee": "rRideA1111111111111111111111111",
+        "amountDrops": "12000000",
+        "invoiceId": "inv:run_demo_001:quote_fast_001:v1",
+        "validated": true,
+        "validatedAt": "2026-09-05T06:04:30Z",
+        "explorerUrl": "https://testnet.xrpl.org/transactions/BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"
+      },
+      "createdAt": "2026-09-05T06:04:31Z"
+    }
+  ],
+  "spend": {
+    "foodDrops": "62000000",
+    "deliveryDrops": "12000000",
+    "totalDrops": "74000000",
+    "remainingDrops": "46000000"
+  },
+  "events": [
+    {
+      "sequence": 1,
+      "eventType": "goal_parsed",
+      "message": "Parsed a request for 100 vegetarian meals before 6 PM within 120 XRP.",
+      "relatedId": "goal_demo_001",
+      "createdAt": "2026-09-05T06:00:05Z"
+    },
+    {
+      "sequence": 2,
+      "eventType": "offer_rejected",
+      "message": "Rejected Central Grill because it is not vegetarian.",
+      "relatedId": "offer_grill_001",
+      "createdAt": "2026-09-05T06:00:30Z"
+    },
+    {
+      "sequence": 3,
+      "eventType": "provider_failed",
+      "message": "Economy Van became unavailable before booking.",
+      "relatedId": "quote_economy_001",
+      "createdAt": "2026-09-05T06:01:20Z"
+    },
+    {
+      "sequence": 4,
+      "eventType": "replanning_started",
+      "message": "Replanning delivery with the remaining valid courier quote.",
+      "relatedId": "quote_fast_001",
+      "createdAt": "2026-09-05T06:01:21Z"
+    },
+    {
+      "sequence": 5,
+      "eventType": "payment_settled",
+      "message": "XRPL payments validated for both food reservations and delivery.",
+      "relatedId": "plan_final_001",
+      "createdAt": "2026-09-05T06:04:30Z"
+    },
+    {
+      "sequence": 6,
+      "eventType": "run_fulfilled",
+      "message": "100 vegetarian meals and delivery are confirmed within budget.",
+      "relatedId": "run_demo_001",
+      "createdAt": "2026-09-05T06:04:31Z"
+    }
+  ],
+  "createdAt": "2026-09-05T06:00:00Z",
+  "updatedAt": "2026-09-05T06:04:31Z"
+}
