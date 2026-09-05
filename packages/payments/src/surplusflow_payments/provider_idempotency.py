@@ -6,11 +6,12 @@ import re
 import sqlite3
 import time
 import uuid
-from collections.abc import Sequence
+from collections.abc import Mapping, Sequence
 from contextvars import ContextVar
 from dataclasses import dataclass
 from enum import StrEnum
 from pathlib import Path
+from types import MappingProxyType
 
 from starlette.responses import JSONResponse
 from starlette.types import ASGIApp, Message, Receive, Scope, Send
@@ -19,6 +20,22 @@ _IDEMPOTENCY_KEY = re.compile(r"^[A-Za-z0-9._:-]{8,128}$")
 _INVOICE_ID = re.compile(r"^[A-Za-z0-9._:-]{8,128}$")
 _request_invoice_id: ContextVar[str | None] = ContextVar(
     "surplusflow_request_invoice_id",
+    default=None,
+)
+@dataclass(frozen=True)
+class ProviderRequestContext:
+    """Validated request metadata available to provider payment callbacks."""
+
+    method: str
+    path: str
+    payload: Mapping[str, object]
+    invoice_id: str
+    idempotency_key: str
+    fingerprint: str
+
+
+_provider_request_context: ContextVar[ProviderRequestContext | None] = ContextVar(
+    "surplusflow_provider_request_context",
     default=None,
 )
 
@@ -31,6 +48,16 @@ def current_request_invoice_id() -> str:
             "SurplusFlow provider payment stack"
         )
     return invoice_id
+
+
+def current_provider_request() -> ProviderRequestContext:
+    context = _provider_request_context.get()
+    if context is None:
+        raise RuntimeError(
+            "provider request context is unavailable; install the complete "
+            "SurplusFlow provider payment stack"
+        )
+    return context
 
 
 class ClaimStatus(StrEnum):
@@ -367,7 +394,16 @@ class ProviderIdempotencyMiddleware:
         async def capture(message: Message) -> None:
             response_messages.append(message)
 
+        context = ProviderRequestContext(
+            method=str(scope.get("method", "")).upper(),
+            path=str(scope.get("path", "")),
+            payload=MappingProxyType(dict(payload)),
+            invoice_id=invoice_id,
+            idempotency_key=idempotency_key,
+            fingerprint=fingerprint,
+        )
         invoice_token = _request_invoice_id.set(invoice_id)
+        context_token = _provider_request_context.set(context)
         try:
             await self.app(
                 scope,
@@ -378,6 +414,7 @@ class ProviderIdempotencyMiddleware:
             self.store.release(idempotency_key, fingerprint)
             raise
         finally:
+            _provider_request_context.reset(context_token)
             _request_invoice_id.reset(invoice_token)
 
         start = next(

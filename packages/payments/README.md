@@ -12,6 +12,8 @@ Person 4's isolated XRPL/x402 package. It provides the financial safety boundary
 - Normalize `PAYMENT-RESPONSE` into the frozen `PaymentReceipt` contract.
 - Persist invoice and transaction status without storing wallet seeds or signed blobs.
 - Expose a reusable FastAPI provider-middleware adapter.
+- Calculate request-scoped prices from trusted provider inventory or quote data.
+- Bind each invoice to the exact provider-request fingerprint before settlement.
 - Replay a completed paid response on an identical idempotent retry without
   settling the invoice twice.
 
@@ -87,7 +89,9 @@ Application code works with normalized Pydantic objects and never constructs a c
 - The orchestrator constructs a validated `PurchaseIntent` and passes it to
   `PaymentExecutor.execute(...)` only after its selection decision is final.
 - Seller and courier services call `install_provider_payment(...)` with their
-  protected reservation or booking path and both persistent stores.
+  protected reservation or booking path, both persistent stores, and a trusted
+  `price_resolver` for quantity- or quote-dependent prices. Truly fixed-price
+  resources may continue to use `ProviderPaymentConfig.price_drops`.
 - The API layer returns `PaymentExecutionResult.receipt` using the frozen
   `PaymentReceipt` contract.
 - Uncertain transactions are reconciled with `TransactionStatusClient`; they

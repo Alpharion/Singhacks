@@ -68,7 +68,8 @@ Live proof: `77766F4E2E4B1AD39D7EA21F7188E3D8615886110D6676570F1F9949C8A0E173`
 The project becomes demo-ready, rather than merely development-ready, only when:
 
 1. Complete: Person 4 proved a real x402 XRPL Testnet payment using the implemented adapter.
-2. Person 3 replaces the payment stub with Person 4's adapter.
+2. Person 3 replaces the payment stub with Person 4's adapter and supplies
+   trusted request-price resolvers for seller quantities and courier quotes.
 3. Person 2 calls the live provider APIs and demonstrates replanning.
 4. Person 1 connects the UI to `GET /api/runs/{runId}`.
 5. The E2E path returns paid reservations, delivery confirmation, and explorer links.
