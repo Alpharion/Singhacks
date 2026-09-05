@@ -35,3 +35,15 @@ export const RUN_POLL_INTERVAL_MS = 1500;
 
 /** How long each demo beat holds before the next one plays. */
 export const DEMO_BEAT_INTERVAL_MS = 2200;
+
+/**
+ * How long each event of a live run holds before the next is revealed.
+ *
+ * The agent finishes a simulated run in under a second, so without this the
+ * dashboard jumps straight to the outcome and there is nothing to narrate. Set
+ * `NEXT_PUBLIC_LIVE_REVEAL_MS=0` to disable the pacing and render each run the
+ * instant it arrives.
+ */
+export const LIVE_REVEAL_INTERVAL_MS = Number(
+  process.env.NEXT_PUBLIC_LIVE_REVEAL_MS ?? 900,
+);

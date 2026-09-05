@@ -44,7 +44,7 @@ const EXPECTED = [
   ["the payment settles", /payment settled/i],
   ["a reservation comes back", /reservation confirmed/i],
   ["delivery is confirmed", /delivery confirmed/i],
-  ["the run reaches its outcome", /meals secured/i],
+  ["the run reaches its outcome", /food rescued/i],
 ];
 
 const failures = [];
@@ -81,11 +81,13 @@ try {
     (await page.getByRole("progressbar", { name: "Demo progress" }).count()) === 0,
   );
 
-  // The agent is genuinely working; wait for it to finish rather than polling.
+  // The agent is genuinely working, and the dashboard then reveals its events
+  // on a clock so the run can be followed. Wait for the closing beat rather than
+  // for any text that is on the page from the start.
   await page
-    .getByText(/meals secured/i)
+    .getByText(/food rescued/i)
     .first()
-    .waitFor({ state: "visible", timeout: 90_000 });
+    .waitFor({ state: "visible", timeout: 120_000 });
 
   for (const [label, pattern] of EXPECTED) {
     check(label, (await page.getByText(pattern).count()) > 0);
