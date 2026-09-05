@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Sprout } from "lucide-react";
 import { FixtureBadge } from "./FixtureBadge";
+import { SideToggle } from "./SideToggle";
 
 export function SiteHeader() {
   return (
@@ -21,6 +22,7 @@ export function SiteHeader() {
         </Link>
 
         <div className="ml-auto flex items-center gap-3">
+          <SideToggle />
           <FixtureBadge />
         </div>
       </div>

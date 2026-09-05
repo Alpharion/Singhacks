@@ -33,6 +33,14 @@ export const isFixtureMode = DATA_SOURCE === "fixtures";
 /** How often to re-read a running run. The contract has no streaming endpoint. */
 export const RUN_POLL_INTERVAL_MS = 1500;
 
+/**
+ * How often to re-read an open listing.
+ *
+ * Faster than the run poll because a listing's price is genuinely moving while
+ * it is on screen, and a stale price is the one thing this view must not show.
+ */
+export const LISTING_POLL_INTERVAL_MS = 1000;
+
 /** How long each demo beat holds before the next one plays. */
 export const DEMO_BEAT_INTERVAL_MS = 2200;
 

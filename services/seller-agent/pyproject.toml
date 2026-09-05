@@ -1,0 +1,34 @@
+[project]
+name = "surplusflow-seller-agent"
+version = "1.0.0"
+description = "SurplusFlow seller agent: autonomous dynamic pricing for perishable surplus, inside a seller's floor price."
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi>=0.115",
+    "uvicorn[standard]>=0.30",
+    "pydantic>=2.9",
+    "httpx>=0.27",
+    "openai>=1.50",
+    "python-dotenv>=1.0",
+    # Windows ships no system tz database, so zoneinfo cannot resolve
+    # SURPLUSFLOW_TIMEZONE. Harmless where the OS already provides one.
+    "tzdata>=2024.1",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.3",
+    "pytest-asyncio>=0.24",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/seller_agent"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+asyncio_mode = "auto"

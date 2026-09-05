@@ -6,6 +6,9 @@ import type { NextConfig } from "next";
  */
 const BUYER_AGENT_ORIGIN = process.env.BUYER_AGENT_ORIGIN ?? "http://localhost:8001";
 
+/** Where the seller agent is listening, as seen from the Next server. */
+const SELLER_AGENT_ORIGIN = process.env.SELLER_AGENT_ORIGIN ?? "http://localhost:8003";
+
 const nextConfig: NextConfig = {
   /**
    * Proxy the contract's API surface to the buyer agent.
@@ -25,6 +28,13 @@ const nextConfig: NextConfig = {
    */
   async rewrites() {
     return [
+      // The seller rule must come first: rewrites match in order, and the buyer
+      // rule below would otherwise swallow /api/seller/* and send a listing
+      // request to the buyer agent.
+      {
+        source: "/api/seller/:path*",
+        destination: `${SELLER_AGENT_ORIGIN}/api/seller/:path*`,
+      },
       {
         source: "/api/:path*",
         destination: `${BUYER_AGENT_ORIGIN}/api/:path*`,
