@@ -1,0 +1,37 @@
+{
+  "quotes": [
+    {
+      "quoteId": "quote_fast_001",
+      "providerId": "courier_fast_001",
+      "providerName": "FastRoute Courier",
+      "bookingEndpoint": "http://localhost:8021/api/delivery/courier_fast_001/book",
+      "payTo": "rRideA1111111111111111111111111",
+      "pickupSellerIds": ["seller_bakery_001", "seller_hotel_001"],
+      "destinationZone": "Queenstown",
+      "capacityMeals": 150,
+      "priceDrops": "12000000",
+      "pickupEta": "2026-09-05T08:00:00Z",
+      "deliveryEta": "2026-09-05T09:35:00Z",
+      "validUntil": "2026-09-05T06:15:00Z",
+      "reliabilityScore": 0.96,
+      "status": "available"
+    },
+    {
+      "quoteId": "quote_economy_001",
+      "providerId": "courier_economy_001",
+      "providerName": "Economy Van",
+      "bookingEndpoint": "http://localhost:8022/api/delivery/courier_economy_001/book",
+      "payTo": "rRideB1111111111111111111111111",
+      "pickupSellerIds": ["seller_bakery_001", "seller_hotel_001"],
+      "destinationZone": "Queenstown",
+      "capacityMeals": 120,
+      "priceDrops": "10000000",
+      "pickupEta": "2026-09-05T08:30:00Z",
+      "deliveryEta": "2026-09-05T09:50:00Z",
+      "validUntil": "2026-09-05T06:10:00Z",
+      "reliabilityScore": 0.82,
+      "status": "unavailable"
+    }
+  ],
+  "generatedAt": "2026-09-05T06:00:00Z"
+}

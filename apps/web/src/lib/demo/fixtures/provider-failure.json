@@ -1,0 +1,10 @@
+{
+  "error": "provider_unavailable",
+  "message": "Economy Van cannot accept the route because its remaining vehicle became unavailable.",
+  "retryable": true,
+  "requestId": "request_demo_failure_001",
+  "details": {
+    "providerId": "courier_economy_001",
+    "quoteId": "quote_economy_001"
+  }
+}

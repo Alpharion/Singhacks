@@ -1,0 +1,17 @@
+{
+  "x402Version": 2,
+  "accepts": [
+    {
+      "scheme": "exact",
+      "network": "xrpl:1",
+      "asset": "XRP",
+      "payTo": "rFoodA1111111111111111111111111",
+      "amount": "36000000",
+      "maxTimeoutSeconds": 600,
+      "extra": {
+        "invoiceId": "inv:run_demo_001:offer_bakery_001:v1",
+        "sourceTag": 20260530
+      }
+    }
+  ]
+}

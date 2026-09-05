@@ -1,0 +1,28 @@
+{
+  "intentId": "intent_bakery_001",
+  "runId": "run_demo_001",
+  "goalId": "goal_demo_001",
+  "resourceType": "food_reservation",
+  "providerId": "seller_bakery_001",
+  "resourceId": "offer_bakery_001",
+  "targetUrl": "http://localhost:8011/api/sellers/seller_bakery_001/offers/offer_bakery_001/reserve",
+  "quantity": 60,
+  "amountDrops": "36000000",
+  "payTo": "rFoodA1111111111111111111111111",
+  "network": "xrpl:1",
+  "asset": "XRP",
+  "invoiceId": "inv:run_demo_001:offer_bakery_001:v1",
+  "idempotencyKey": "idem:run_demo_001:offer_bakery_001:v1",
+  "expiresAt": "2026-09-05T06:10:00Z",
+  "rationale": "This allocation supplies 60 compatible meals and keeps the full plan within the approved budget.",
+  "policySnapshot": {
+    "walletPolicyId": "policy_demo_001",
+    "maxOrderSpendDrops": "120000000",
+    "maxTransactionSpendDrops": "70000000",
+    "allowedPayees": [
+      "rFoodA1111111111111111111111111",
+      "rFoodB1111111111111111111111111",
+      "rRideA1111111111111111111111111"
+    ]
+  }
+}

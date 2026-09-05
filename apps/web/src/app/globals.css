@@ -1,0 +1,107 @@
+@import "tailwindcss";
+
+/**
+ * SurplusFlow design tokens - warm food market.
+ *
+ * A single committed light theme: the demo is presented on one screen and recorded once,
+ * so a fixed palette keeps every screenshot consistent rather than depending on the
+ * viewer's OS setting.
+ *
+ * Names are semantic, not colour words - `--color-settled` survives a palette change,
+ * `--color-teal-700` does not. Every accent is checked to at least 4.5:1 against the
+ * surfaces it is used on, because a light theme fails on contrast long before it fails
+ * to compile.
+ */
+@theme {
+  /* Surfaces - warm paper, not white */
+  --color-canvas: #fdf9f3;
+  --color-surface: #fffdfa;
+  --color-surface-raised: #f6efe4;
+  --color-surface-hover: #efe6d8;
+  --color-border: #e8dcc9;
+  --color-border-strong: #d3c2a9;
+
+  /* Text - warm browns rather than neutral greys */
+  --color-ink: #2b211a;
+  --color-ink-muted: #6b5b4c;
+  --color-ink-subtle: #7d6c5b;
+
+  /* Semantic accents */
+  --color-rescue: #2e7d4f; /* the product's own colour: food saved from the bin */
+  --color-rescue-dim: #e6f2ea;
+  --color-settled: #1f6f6b; /* XRPL settlement, payments, hashes */
+  --color-settled-dim: #deeeec;
+  --color-caution: #a85a28; /* terracotta: provider failure, replanning */
+  --color-caution-dim: #faeadf;
+  --color-rejected: #b4462f; /* burnt red: rejected offers, errors */
+  --color-rejected-dim: #fbe5e0;
+  --color-pending: #6d51a3; /* awaiting payment */
+  --color-pending-dim: #ede8f7;
+
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, "SF Mono", monospace;
+
+  --radius-panel: 0.875rem;
+}
+
+html {
+  color-scheme: light;
+}
+
+body {
+  background: var(--color-canvas);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* A quiet grid so large empty areas read as paper rather than as unfinished. */
+.bg-grid {
+  background-image:
+    linear-gradient(to right, color-mix(in srgb, var(--color-border) 55%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in srgb, var(--color-border) 55%, transparent) 1px, transparent 1px);
+  background-size: 44px 44px;
+}
+
+@keyframes beat-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Each timeline beat arrives rather than appearing, so the eye follows it. */
+.animate-beat-in {
+  animation: beat-in 320ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes pulse-ring {
+  0% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-settled) 35%, transparent);
+  }
+  70% {
+    box-shadow: 0 0 0 10px transparent;
+  }
+  100% {
+    box-shadow: 0 0 0 0 transparent;
+  }
+}
+
+.animate-pulse-ring {
+  animation: pulse-ring 1.8s ease-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-beat-in,
+  .animate-pulse-ring {
+    animation: none;
+  }
+}
+
+::selection {
+  background: color-mix(in srgb, var(--color-rescue) 22%, transparent);
+}

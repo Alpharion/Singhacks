@@ -1,0 +1,12 @@
+{
+  "success": true,
+  "transaction": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+  "network": "xrpl:1",
+  "payer": "rBuyer1111111111111111111111111",
+  "payee": "rFoodA1111111111111111111111111",
+  "amountDrops": "36000000",
+  "invoiceId": "inv:run_demo_001:offer_bakery_001:v1",
+  "validated": true,
+  "validatedAt": "2026-09-05T06:02:30Z",
+  "explorerUrl": "https://testnet.xrpl.org/transactions/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+}
