@@ -1,0 +1,42 @@
+[project]
+name = "surplusflow-payments"
+version = "0.1.0"
+description = "Policy-controlled x402 payments on XRPL for SurplusFlow"
+readme = "README.md"
+requires-python = ">=3.11,<3.13"
+dependencies = [
+  "fastapi>=0.115,<1",
+  "httpx>=0.27,<1",
+  "pydantic>=2.10,<3",
+  "pydantic-settings>=2.7,<3",
+  "python-dotenv>=1,<2",
+  "requests>=2.32,<3",
+  "uvicorn[standard]>=0.30,<0.31",
+  "x402-xrpl>=0.1,<1",
+  "xrpl-py>=4.1,<5",
+]
+
+[dependency-groups]
+dev = [
+  "pytest>=8.3,<9",
+  "pytest-cov>=6,<7",
+  "respx>=0.22,<1",
+]
+
+[build-system]
+requires = ["hatchling>=1.27"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/surplusflow_payments"]
+
+[tool.pytest.ini_options]
+addopts = "-q --strict-markers --disable-warnings --cov=surplusflow_payments --cov-report=term-missing"
+testpaths = ["tests"]
+
+[tool.coverage.run]
+branch = true
+
+[tool.coverage.report]
+fail_under = 85
+show_missing = true
