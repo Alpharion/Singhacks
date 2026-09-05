@@ -3,17 +3,17 @@
 The thirteen beats the UI plays through, mapped to what the judges should be looking at
 and which requirement each one satisfies.
 
-Runs entirely on frozen contract fixtures, so it works with no backend. The dashboard
-labels itself **"Demo data — no XRPL settlement"** while in that mode; the badge
-disappears once `NEXT_PUBLIC_DATA_SOURCE=live` points it at the real buyer agent.
+There are two honest demo modes. Fixture mode works with no backend and labels itself
+**"Demo data — no XRPL settlement"**. The full-stack rehearsal uses the real buyer,
+marketplace and provider discovery APIs but defaults to simulated payments, which are
+labelled **"Simulated — not settled on XRPL"**. Real x402 settlement is a separate,
+explicitly authorized mode.
 
 ## Running it
 
-```bash
-cd apps/web
-pnpm install
-pnpm dev            # http://localhost:3000
-```
+For the full-stack rehearsal, run `make run-stack` from the repository root and open
+<http://localhost:3000>. For fixture-only playback, run
+`cd apps/web && NEXT_PUBLIC_DATA_SOURCE=fixtures corepack pnpm dev`.
 
 Open `/`, press **Dispatch buyer agent**, and the run plays itself. Controls under the
 header are **⏮ back · ▶/⏸ play/pause · ⏭ forward** — pause on any beat to talk over it.
@@ -31,7 +31,7 @@ header are **⏮ back · ▶/⏸ play/pause · ⏭ forward** — pause on any be
 | 7 | **Replanning** | "No human touched that. It re-planned onto FastRoute, still inside the S$360." | Autonomous recovery |
 | 8 | **HTTP 402** | "This is x402. The bakery answers the reservation request with a price, not the goods. Machine to machine." | x402 |
 | 9 | Payment authorised | "Deterministic policy checks: approved payee, under the per-transaction cap, invoice unique. The language model never signs anything." | Spending controls |
-| 10 | Payment settled | "Settled on XRPL. The hash is the receipt." | XRPL settlement |
+| 10 | Payment settled | In live x402 mode: "Settled on XRPL. The hash is the receipt." In rehearsal mode: "This is a simulated receipt; our separate Testnet proof is linked below." | XRPL settlement / honest fallback |
 | 11 | Reservations confirmed | "And payment bought something real — an exclusive hold on the inventory. There's the pickup QR." | Useful value returned |
 | 12 | Delivery confirmed | "Three payments, three providers, one delegated budget." | Full loop |
 | 13 | **Outcome** | "100 meals secured for S$222 — that's S$2.22 a meal. Of a S$360 authority, S$138 never left the wallet." | Close |
@@ -48,7 +48,7 @@ Total spent      S$222.00   (74 XRP)  ->  S$2.22 per meal
 Never spent      S$138.00   of the S$360.00 authorised
 Expected arrival 5:35 pm
 Food rescued     100 meals
-XRPL transactions  3 explorer links
+Payment receipts     3 (validated explorer links in x402 mode; labelled simulations otherwise)
 ```
 
 ## A note on the two currencies
@@ -79,12 +79,11 @@ running. Filenames map to beats: `01-request`, `02-discovery`, `03-rejection`, `
 
 ## Before judging
 
-Replace the fixture screenshots with live ones once Person 4's Testnet payment lands:
+Run `make test-all`, then `make test-integration`. The automated browser check asserts
+that the complete journey is visible and that simulated receipts never claim XRPL
+validation.
 
-```bash
-cd apps/web
-NEXT_PUBLIC_DATA_SOURCE=live pnpm dev
-pnpm screenshots
-```
-
-The demo-data badge disappears and the explorer links resolve to real transactions.
+The real x402 proof is already validated on Testnet:
+[`77766F4E…E173`](https://testnet.xrpl.org/transactions/77766F4E2E4B1AD39D7EA21F7188E3D8615886110D6676570F1F9949C8A0E173).
+Only enable `BUYER_AGENT_PAYMENT_MODE=x402` for the integrated demo after checking all
+five provider addresses, wallet funding and receiving explicit authorization to spend.

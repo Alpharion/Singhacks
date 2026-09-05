@@ -92,8 +92,8 @@ one sentence  →  discovery  →  rejection  →  plan comparison  →  provide
 | Rejects an invalid offer | Central Grill is the cheapest option and gets refused — not vegetarian. A hard rule in code, not model discretion. |
 | Compares real alternatives | No single seller has 100 meals. Two multi-seller plans at S$222 vs S$223.50, with the reasoning shown. |
 | Recovers from failure | A courier becomes unavailable after the plan is chosen. The agent replans without a human and stays inside budget. |
-| Pays machine-to-machine | The seller answers the reservation request with HTTP 402 and x402 payment requirements. |
-| Settles on XRPL | Three validated Testnet payments, each with an explorer link. |
+| Pays machine-to-machine | Provider middleware answers a paid request with HTTP 402 and x402 payment requirements; the validated standalone proof exercises that wire loop for real. |
+| Settles on XRPL | One completed x402 commercial loop is validated on Testnet below. The full multi-provider rehearsal defaults to clearly labelled simulated receipts unless live spending is explicitly enabled. |
 | Returns real value | Exclusive reservations with pickup tokens, and a booked courier — not just a hash. |
 
 Full beat-by-beat narration: [docs/demo/DEMO_SCRIPT.md](./docs/demo/DEMO_SCRIPT.md).
@@ -164,9 +164,18 @@ identity and delivery addresses stay off-chain.
 
 ### Validated transaction
 
-> **Pending.** To be filled in from Person 4's Testnet run before submission — hash plus
-> `testnet.xrpl.org` link. The dashboard currently displays the contract's synthetic
-> fixture hashes and labels itself **"Demo data — no XRPL settlement"** while it does.
+On 2026-09-05, a provider-issued HTTP 402 challenge completed the real x402 loop for an
+exclusive food reservation. The buyer signed locally, the facilitator settled it, XRPL
+validated it with `tesSUCCESS`, and the provider returned the paid reservation.
+
+- **Transaction:** [`77766F4E2E4B1AD39D7EA21F7188E3D8615886110D6676570F1F9949C8A0E173`](https://testnet.xrpl.org/transactions/77766F4E2E4B1AD39D7EA21F7188E3D8615886110D6676570F1F9949C8A0E173)
+- **Ledger:** `20495875`
+- **Amount:** `10000` drops (0.01 Test XRP)
+- **Value delivered:** confirmed exclusive demo food reservation
+
+This hash proves the real payment loop. It is separate from the default full-stack
+rehearsal, whose synthetic receipts are visibly labelled **"Simulated — not settled on
+XRPL"** and must not be presented as ledger evidence.
 
 ## Run it
 
@@ -178,10 +187,34 @@ pnpm install
 pnpm dev            # http://localhost:3000
 ```
 
-**Full stack** — see [docs/architecture/](./docs/architecture/) and the root
-`.env.example`. Requires an OpenAI key and a funded XRPL Testnet wallet.
+**Full stack** — starts the web app, buyer agent, marketplace, three sellers and two
+couriers. The safe default uses live service discovery and simulated settlement, so it
+needs neither an OpenAI key nor a funded wallet:
 
-Requirements: Node 20+, pnpm 9+, Python 3.11+, `uv`.
+```bash
+make run-stack       # http://localhost:3000
+```
+
+Run the repeatable browser integration gate (it starts and stops the stack itself):
+
+```bash
+make setup-all
+make test-integration
+```
+
+Real multi-provider settlement is deliberately opt-in because it signs and submits
+payments. Configure all receiving addresses and the buyer seed in the ignored `.env`,
+obtain explicit authorization for that run, then use:
+
+```bash
+XRPL_WALLET_ENV_FILE=.env BUYER_AGENT_PAYMENT_MODE=x402 docker compose up
+```
+
+Do not use that live command as a routine health check. The default rehearsal and all
+automated tests submit no XRPL transaction.
+
+Requirements: Docker Compose for the full stack; Node 20+, pnpm 9+, Python 3.11+ and
+`uv` for direct local development.
 
 ## Repository
 

@@ -193,16 +193,20 @@ This was a provider-issued HTTP 402 challenge followed by a locally signed
 the provider's paid response. Faucet funding is not being used as the commercial
 transaction proof.
 
-## Remaining live/integration gates
+## Final integration status
 
-The standalone live-payment gates are complete. The remaining work depends on
-teammate service implementations:
+- Person 3's atomic inventory and trusted request-scoped prices are connected behind
+  the provider middleware.
+- Person 2's state machine calls the executor and halts uncertain payments for
+  reconciliation instead of paying again.
+- Root Docker Compose and Make targets start all eight processes.
+- Person 1's live UI exposes receipt links and labels simulated settlement honestly.
+- The cross-service browser gate passes in simulated mode; the standalone x402 proof
+  above remains the ledger evidence.
 
-1. Connect Person 3's atomic inventory lock behind the provider middleware.
-2. Connect Person 2's state machine to the executor and reconciliation path.
-3. Add Docker Compose commands after all service entry points are known.
-4. Replace the completed offline payment E2E fakes with teammate services and
-   expose real explorer links to Person 1.
+A full multi-provider x402 rehearsal is intentionally not an automated gate because it
+would sign and submit three additional Testnet payments. It must be explicitly
+authorized and funded before use.
 
 Never commit wallet seeds or a populated `.env` file. A signed or uncertain
 invoice must be reconciled; it must not be automatically paid again.

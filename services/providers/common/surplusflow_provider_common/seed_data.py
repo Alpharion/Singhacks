@@ -41,25 +41,37 @@ def _pay_to(env_var: str, fixture_placeholder: str) -> str:
     return os.environ.get(env_var) or fixture_placeholder
 
 
+def _base_url(env_var: str, local_default: str) -> str:
+    """Allow container orchestration to advertise routable provider URLs."""
+
+    return os.environ.get(env_var) or local_default
+
+
 def _sellers() -> list[dict]:
     return [
         {
             "seller_id": "seller_bakery_001",
             "seller_name": "Green Oven Bakery",
             "pay_to": _pay_to("XRPL_BAKERY_PAY_TO", "rsqFz7Ctvh2yKGAJ171o5sWwifMRnLLmZa"),
-            "base_url": "http://localhost:8011",
+            "base_url": _base_url(
+                "BAKERY_PROVIDER_BASE_URL", "http://localhost:8011"
+            ),
         },
         {
             "seller_id": "seller_hotel_001",
             "seller_name": "Harbour Hotel Kitchen",
             "pay_to": _pay_to("XRPL_HOTEL_PAY_TO", "rBNu67NF8xwMTnyeT5uWFAKsnkF4pc28AA"),
-            "base_url": "http://localhost:8012",
+            "base_url": _base_url(
+                "HOTEL_PROVIDER_BASE_URL", "http://localhost:8012"
+            ),
         },
         {
             "seller_id": "seller_grill_001",
             "seller_name": "Central Grill",
             "pay_to": _pay_to("XRPL_GRILL_PAY_TO", "rUopuBPM9Njay2xkRv7R3yauSUutYem6KS"),
-            "base_url": "http://localhost:8013",
+            "base_url": _base_url(
+                "GRILL_PROVIDER_BASE_URL", "http://localhost:8013"
+            ),
         },
     ]
 
@@ -70,13 +82,17 @@ def _couriers() -> list[dict]:
             "provider_id": "courier_fast_001",
             "provider_name": "FastRoute Courier",
             "pay_to": _pay_to("XRPL_FAST_COURIER_PAY_TO", "rh9mJwT6fVV3bwt1APGfXoAa94vb6YBuMQ"),
-            "base_url": "http://localhost:8021",
+            "base_url": _base_url(
+                "FAST_COURIER_BASE_URL", "http://localhost:8021"
+            ),
         },
         {
             "provider_id": "courier_economy_001",
             "provider_name": "Economy Van",
             "pay_to": _pay_to("XRPL_ECONOMY_COURIER_PAY_TO", "rh1p5es2WiK6Ane1x9QGpCF4QsMX2ESZjg"),
-            "base_url": "http://localhost:8022",
+            "base_url": _base_url(
+                "ECONOMY_COURIER_BASE_URL", "http://localhost:8022"
+            ),
         },
     ]
 

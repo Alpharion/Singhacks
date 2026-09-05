@@ -2,7 +2,8 @@
 
 ## Current status
 
-The project is ready for the four contributors to begin independent implementation against Contract Freeze v1.0.0.
+Final integration is complete on top of Contract Freeze v1.0.0. All four contributor
+branches are merged into the integration line, and the release gates below pass.
 
 Completed foundations:
 
@@ -31,27 +32,29 @@ Before coding, all four people must agree to:
 
 ## Person-specific start status
 
-### Person 1: ready
+### Person 1: integrated
 
-Can build the entire UI using the frozen `AgentRun`, offer, quote, reservation, booking, and failure fixtures. No backend dependency is required to begin.
+The UI supports both frozen fixtures and live polling of the buyer-agent API.
 
-### Person 2: ready
+### Person 2: integrated
 
-Can build the buyer-agent state machine and Pydantic models from the schemas. Provider discovery and payment calls can begin as fixture-backed adapters.
+The state machine uses live marketplace discovery, the payment boundary, deterministic
+policy checks and courier replanning.
 
-### Person 3: ready
+### Person 3: integrated
 
-Can build marketplace, seller, and courier services from the OpenAPI paths. Payment verification can begin behind a stub that returns the frozen receipt shape.
+The marketplace, three sellers and two couriers share inventory state and use Person 4's
+request-scoped x402 pricing middleware.
 
-### Person 4: independent foundation complete
+### Person 4: integration complete
 
 The contracts, real `x402-xrpl` buyer/provider adapters, deterministic wallet
 policy, durable invoice/payment journals, paid-response replay, receipt
 normalization, transaction status lookup, standalone provider, dependency lock,
-system architecture, and an offline end-to-end x402 loop are created. The
-funded standalone x402 payment is validated on XRPL Testnet. The remaining
-Person 4 work is root orchestration once service commands exist and the complete
-cross-service E2E test.
+system architecture, offline x402 loop, Docker Compose orchestration and cross-service
+browser gate are created. The funded standalone x402 payment is validated on XRPL
+Testnet. The full-stack simulated rehearsal has also passed without submitting another
+transaction.
 
 Live proof: `77766F4E2E4B1AD39D7EA21F7188E3D8615886110D6676570F1F9949C8A0E173`
 ([Testnet explorer](https://testnet.xrpl.org/transactions/77766F4E2E4B1AD39D7EA21F7188E3D8615886110D6676570F1F9949C8A0E173)).
@@ -65,11 +68,10 @@ Live proof: `77766F4E2E4B1AD39D7EA21F7188E3D8615886110D6676570F1F9949C8A0E173`
 
 ## Integration gate
 
-The project becomes demo-ready, rather than merely development-ready, only when:
-
-1. Complete: Person 4 proved a real x402 XRPL Testnet payment using the implemented adapter.
-2. Person 3 replaces the payment stub with Person 4's adapter and supplies
-   trusted request-price resolvers for seller quantities and courier quotes.
-3. Person 2 calls the live provider APIs and demonstrates replanning.
-4. Person 1 connects the UI to `GET /api/runs/{runId}`.
-5. The E2E path returns paid reservations, delivery confirmation, and explorer links.
+1. Complete: real standalone x402 payment validated on XRPL Testnet.
+2. Complete: provider stubs replaced by trusted request-price resolvers.
+3. Complete: buyer agent calls the live marketplace and demonstrates replanning.
+4. Complete: UI polls `GET /api/runs/{runId}`.
+5. Complete: the full-stack browser gate returns reservations and delivery confirmation.
+6. Optional and spend-bearing: repeat the full multi-provider path in x402 mode only
+   after all five payees are configured, funded as needed and the run is authorized.

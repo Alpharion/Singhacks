@@ -1,0 +1,240 @@
+name: surplusflow
+
+x-python-environment: &python-environment
+  PYTHONUNBUFFERED: "1"
+  PYTHONDONTWRITEBYTECODE: "1"
+  UV_CACHE_DIR: /var/cache/uv
+  UV_PROJECT_ENVIRONMENT: /opt/venv
+  SURPLUSFLOW_DB_PATH: /data/surplusflow.sqlite3
+  XRPL_NETWORK: xrpl:1
+  XRPL_TESTNET_RPC_URL: ${XRPL_TESTNET_RPC_URL:-https://s.altnet.rippletest.net:51234/}
+  XRPL_FACILITATOR_URL: ${XRPL_FACILITATOR_URL:-https://xrpl-facilitator-testnet.t54.ai}
+  XRPL_SOURCE_TAG: ${XRPL_SOURCE_TAG:-20260530}
+  PAYMENT_JOURNAL_PATH: /data/payments.sqlite3
+  MAX_ORDER_SPEND_DROPS: ${MAX_ORDER_SPEND_DROPS:-120000000}
+  MAX_TRANSACTION_SPEND_DROPS: ${MAX_TRANSACTION_SPEND_DROPS:-70000000}
+  XRPL_BAKERY_PAY_TO: ${XRPL_BAKERY_PAY_TO:-rsqFz7Ctvh2yKGAJ171o5sWwifMRnLLmZa}
+  XRPL_HOTEL_PAY_TO: ${XRPL_HOTEL_PAY_TO:-rBNu67NF8xwMTnyeT5uWFAKsnkF4pc28AA}
+  XRPL_GRILL_PAY_TO: ${XRPL_GRILL_PAY_TO:-rUopuBPM9Njay2xkRv7R3yauSUutYem6KS}
+  XRPL_FAST_COURIER_PAY_TO: ${XRPL_FAST_COURIER_PAY_TO:-rh9mJwT6fVV3bwt1APGfXoAa94vb6YBuMQ}
+  XRPL_ECONOMY_COURIER_PAY_TO: ${XRPL_ECONOMY_COURIER_PAY_TO:-rh1p5es2WiK6Ane1x9QGpCF4QsMX2ESZjg}
+  BAKERY_PROVIDER_BASE_URL: http://seller-bakery:8011
+  HOTEL_PROVIDER_BASE_URL: http://seller-hotel:8012
+  GRILL_PROVIDER_BASE_URL: http://seller-grill:8013
+  FAST_COURIER_BASE_URL: http://courier-fast:8021
+  ECONOMY_COURIER_BASE_URL: http://courier-economy:8022
+
+x-python-service: &python-service
+  image: ghcr.io/astral-sh/uv:python3.11-bookworm-slim
+  working_dir: /workspace
+  volumes:
+    - .:/workspace:ro
+    - ./.env.example:/workspace/.env:ro
+    - surplusflow-data:/data
+    - uv-cache:/var/cache/uv
+  environment:
+    <<: *python-environment
+  restart: "no"
+
+x-python-healthcheck: &python-healthcheck
+  interval: 3s
+  timeout: 2s
+  retries: 40
+  start_period: 45s
+
+services:
+  marketplace:
+    <<: *python-service
+    command:
+      - sh
+      - -c
+      - >-
+        cd services/marketplace &&
+        uv sync --locked &&
+        exec uv run uvicorn app.main:app --host 0.0.0.0 --port 8002
+    ports:
+      - "8002:8002"
+    healthcheck:
+      <<: *python-healthcheck
+      test: ["CMD", "/opt/venv/bin/python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8002/health', timeout=1)"]
+
+  seller-bakery:
+    <<: *python-service
+    command:
+      - sh
+      - -c
+      - >-
+        cd services/providers/sellers &&
+        uv sync --locked &&
+        exec uv run uvicorn app.main:app --host 0.0.0.0 --port 8011
+    environment:
+      <<: *python-environment
+      SELLER_ID: seller_bakery_001
+      PORT: "8011"
+    ports:
+      - "8011:8011"
+    healthcheck:
+      <<: *python-healthcheck
+      test: ["CMD", "/opt/venv/bin/python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8011/health', timeout=1)"]
+
+  seller-hotel:
+    <<: *python-service
+    command:
+      - sh
+      - -c
+      - >-
+        cd services/providers/sellers &&
+        uv sync --locked &&
+        exec uv run uvicorn app.main:app --host 0.0.0.0 --port 8012
+    environment:
+      <<: *python-environment
+      SELLER_ID: seller_hotel_001
+      PORT: "8012"
+    ports:
+      - "8012:8012"
+    healthcheck:
+      <<: *python-healthcheck
+      test: ["CMD", "/opt/venv/bin/python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8012/health', timeout=1)"]
+
+  seller-grill:
+    <<: *python-service
+    command:
+      - sh
+      - -c
+      - >-
+        cd services/providers/sellers &&
+        uv sync --locked &&
+        exec uv run uvicorn app.main:app --host 0.0.0.0 --port 8013
+    environment:
+      <<: *python-environment
+      SELLER_ID: seller_grill_001
+      PORT: "8013"
+    ports:
+      - "8013:8013"
+    healthcheck:
+      <<: *python-healthcheck
+      test: ["CMD", "/opt/venv/bin/python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8013/health', timeout=1)"]
+
+  courier-fast:
+    <<: *python-service
+    command:
+      - sh
+      - -c
+      - >-
+        cd services/providers/delivery &&
+        uv sync --locked &&
+        exec uv run uvicorn app.main:app --host 0.0.0.0 --port 8021
+    environment:
+      <<: *python-environment
+      PROVIDER_ID: courier_fast_001
+      PORT: "8021"
+      DEMO_ECONOMY_COURIER_FAILURE: ${DEMO_ECONOMY_COURIER_FAILURE:-true}
+    ports:
+      - "8021:8021"
+    healthcheck:
+      <<: *python-healthcheck
+      test: ["CMD", "/opt/venv/bin/python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8021/health', timeout=1)"]
+
+  courier-economy:
+    <<: *python-service
+    command:
+      - sh
+      - -c
+      - >-
+        cd services/providers/delivery &&
+        uv sync --locked &&
+        exec uv run uvicorn app.main:app --host 0.0.0.0 --port 8022
+    environment:
+      <<: *python-environment
+      PROVIDER_ID: courier_economy_001
+      PORT: "8022"
+      DEMO_ECONOMY_COURIER_FAILURE: ${DEMO_ECONOMY_COURIER_FAILURE:-true}
+    ports:
+      - "8022:8022"
+    healthcheck:
+      <<: *python-healthcheck
+      test: ["CMD", "/opt/venv/bin/python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8022/health', timeout=1)"]
+
+  buyer-agent:
+    <<: *python-service
+    command:
+      - sh
+      - -c
+      - >-
+        cd services/buyer-agent &&
+        uv sync --locked --extra x402 &&
+        exec uv run uvicorn buyer_agent.main:app --host 0.0.0.0 --port 8001
+    environment:
+      <<: *python-environment
+      MARKETPLACE_BASE_URL: http://marketplace:8002
+      BUYER_AGENT_DISCOVERY_MODE: http
+      BUYER_AGENT_PAYMENT_MODE: ${BUYER_AGENT_PAYMENT_MODE:-simulated}
+      BUYER_AGENT_SIMULATED_FAILURES: ${BUYER_AGENT_SIMULATED_FAILURES:-courier_economy_001}
+      BUYER_AGENT_MAX_REPLANS: ${BUYER_AGENT_MAX_REPLANS:-4}
+      BUYER_AGENT_MAX_TX_DROPS: ${BUYER_AGENT_MAX_TX_DROPS:-70000000}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      OPENAI_MODEL: ${OPENAI_MODEL:-}
+      XRPL_WALLET_ENV_FILE: /run/secrets/buyer-wallet-env
+    secrets:
+      - buyer-wallet-env
+    depends_on:
+      marketplace:
+        condition: service_healthy
+      seller-bakery:
+        condition: service_healthy
+      seller-hotel:
+        condition: service_healthy
+      seller-grill:
+        condition: service_healthy
+      courier-fast:
+        condition: service_healthy
+      courier-economy:
+        condition: service_healthy
+    ports:
+      - "8001:8001"
+    healthcheck:
+      <<: *python-healthcheck
+      test: ["CMD", "/opt/venv/bin/python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8001/health', timeout=1)"]
+
+  web:
+    image: node:22-bookworm-slim
+    working_dir: /workspace/apps/web
+    command:
+      - sh
+      - -c
+      - >-
+        corepack enable &&
+        corepack prepare pnpm@9.15.9 --activate &&
+        pnpm config set store-dir /pnpm/store --global &&
+        pnpm install --frozen-lockfile &&
+        exec pnpm dev --hostname 0.0.0.0
+    environment:
+      BUYER_AGENT_ORIGIN: http://buyer-agent:8001
+      NEXT_PUBLIC_DATA_SOURCE: live
+    volumes:
+      - ./apps/web:/workspace/apps/web
+      - web-node-modules:/workspace/apps/web/node_modules
+      - web-next:/workspace/apps/web/.next
+      - pnpm-store:/pnpm/store
+    depends_on:
+      buyer-agent:
+        condition: service_healthy
+    ports:
+      - "3000:3000"
+    healthcheck:
+      interval: 3s
+      timeout: 2s
+      retries: 40
+      start_period: 60s
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000').then(r => { if (!r.ok) process.exit(1) }).catch(() => process.exit(1))"]
+
+secrets:
+  buyer-wallet-env:
+    file: ${XRPL_WALLET_ENV_FILE:-.env.example}
+
+volumes:
+  surplusflow-data:
+  uv-cache:
+  web-node-modules:
+  web-next:
+  pnpm-store:

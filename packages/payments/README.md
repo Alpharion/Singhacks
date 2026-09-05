@@ -70,7 +70,11 @@ XRPL_FACILITATOR_URL=https://xrpl-facilitator-testnet.t54.ai
 XRPL_BUYER_SEED=<ignored secret>
 ```
 
-Do not pass `XRPL_BUYER_SEED` through a command argument, API body, log, fixture, or model prompt. It belongs only in an ignored `.env` file or a future external signer.
+Do not pass `XRPL_BUYER_SEED` through a command argument, API body, log, fixture, or
+model prompt. It belongs only in an ignored `.env` file or a future external signer.
+`PaymentExecutor` reads that file lazily at the signing boundary; it does not export the
+seed into the buyer-agent environment. In containers, `XRPL_WALLET_ENV_FILE` may point
+the boundary at a mounted secret file.
 
 ## x402 wire boundary
 
