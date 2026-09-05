@@ -25,10 +25,17 @@ from .time_utils import now_utc
 
 def _pay_to(env_var: str, fixture_placeholder: str) -> str:
     """Prefer a real funded Testnet address from `.env.example` over the
-    synthetic fixture placeholder, per `packages/contracts/README.md`:
+    synthetic fallback address, per `packages/contracts/README.md`:
     "The XRPL addresses... in fixtures are synthetic shape-valid examples,
     not funded accounts... Real Testnet values must come from ignored
     environment configuration."
+
+    The fallback must be a real, checksum-valid (but unfunded) classic
+    address, not just regex-shaped: `packages/payments`'s
+    `ProviderPaymentConfig`/`PurchaseIntent` validate `payTo` with
+    `xrpl.core.addresscodec.is_valid_classic_address`, which the
+    contract's own fixture placeholders (e.g. `rFoodA111...1`) do not
+    satisfy.
     """
 
     return os.environ.get(env_var) or fixture_placeholder
@@ -39,19 +46,19 @@ def _sellers() -> list[dict]:
         {
             "seller_id": "seller_bakery_001",
             "seller_name": "Green Oven Bakery",
-            "pay_to": _pay_to("XRPL_BAKERY_PAY_TO", "rFoodA1111111111111111111111111"),
+            "pay_to": _pay_to("XRPL_BAKERY_PAY_TO", "rsqFz7Ctvh2yKGAJ171o5sWwifMRnLLmZa"),
             "base_url": "http://localhost:8011",
         },
         {
             "seller_id": "seller_hotel_001",
             "seller_name": "Harbour Hotel Kitchen",
-            "pay_to": _pay_to("XRPL_HOTEL_PAY_TO", "rFoodB1111111111111111111111111"),
+            "pay_to": _pay_to("XRPL_HOTEL_PAY_TO", "rBNu67NF8xwMTnyeT5uWFAKsnkF4pc28AA"),
             "base_url": "http://localhost:8012",
         },
         {
             "seller_id": "seller_grill_001",
             "seller_name": "Central Grill",
-            "pay_to": _pay_to("XRPL_GRILL_PAY_TO", "rFoodC1111111111111111111111111"),
+            "pay_to": _pay_to("XRPL_GRILL_PAY_TO", "rUopuBPM9Njay2xkRv7R3yauSUutYem6KS"),
             "base_url": "http://localhost:8013",
         },
     ]
@@ -62,13 +69,13 @@ def _couriers() -> list[dict]:
         {
             "provider_id": "courier_fast_001",
             "provider_name": "FastRoute Courier",
-            "pay_to": _pay_to("XRPL_FAST_COURIER_PAY_TO", "rRideA1111111111111111111111111"),
+            "pay_to": _pay_to("XRPL_FAST_COURIER_PAY_TO", "rh9mJwT6fVV3bwt1APGfXoAa94vb6YBuMQ"),
             "base_url": "http://localhost:8021",
         },
         {
             "provider_id": "courier_economy_001",
             "provider_name": "Economy Van",
-            "pay_to": _pay_to("XRPL_ECONOMY_COURIER_PAY_TO", "rRideB1111111111111111111111111"),
+            "pay_to": _pay_to("XRPL_ECONOMY_COURIER_PAY_TO", "rh1p5es2WiK6Ane1x9QGpCF4QsMX2ESZjg"),
             "base_url": "http://localhost:8022",
         },
     ]
