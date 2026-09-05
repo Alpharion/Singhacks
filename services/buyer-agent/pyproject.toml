@@ -10,6 +10,10 @@ dependencies = [
     "httpx>=0.27",
     "openai>=1.50",
     "python-dotenv>=1.0",
+    # Windows ships no system tz database, so zoneinfo cannot resolve
+    # SURPLUSFLOW_TIMEZONE and every /api/procure fails with
+    # ZoneInfoNotFoundError. Harmless where the OS already provides one.
+    "tzdata>=2024.1",
 ]
 
 [project.optional-dependencies]

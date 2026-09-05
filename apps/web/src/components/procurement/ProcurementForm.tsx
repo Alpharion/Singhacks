@@ -1,10 +1,11 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ArrowRight, Loader2 } from "lucide-react";
 import { useStartProcurement } from "@/lib/queries";
 import { fixtureProcurementRequest } from "@/lib/demo/fixtures";
+import { demoRequestText } from "@/lib/demo/request";
 import { cn } from "@/lib/cn";
 
 /**
@@ -17,7 +18,22 @@ import { cn } from "@/lib/cn";
 export function ProcurementForm() {
   const router = useRouter();
   const startProcurement = useStartProcurement();
+  // Seeded with the frozen fixture text so the server and the first client
+  // render agree, then moved to a reachable deadline once mounted. Doing it in
+  // an effect keeps the clock out of the render pass, where it would hydrate
+  // mismatched.
   const [requestText, setRequestText] = useState(fixtureProcurementRequest.requestText);
+  const [edited, setEdited] = useState(false);
+
+  useEffect(() => {
+    if (edited) return;
+    // The wall clock is an external system, and one the server cannot read on
+    // our behalf: rendering it during SSR would hydrate mismatched whenever the
+    // two instants round to different half hours. Reading it once after mount
+    // is the intended pattern, and it settles before the field is ever used.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setRequestText(demoRequestText());
+  }, [edited]);
 
   const isSubmitting = startProcurement.isPending;
   const tooShort = requestText.trim().length < 10;
@@ -49,7 +65,10 @@ export function ProcurementForm() {
           name="requestText"
           rows={4}
           value={requestText}
-          onChange={(changeEvent) => setRequestText(changeEvent.target.value)}
+          onChange={(changeEvent) => {
+            setEdited(true);
+            setRequestText(changeEvent.target.value);
+          }}
           maxLength={1000}
           className={cn(
             "mt-2 w-full resize-none rounded-xl border border-border bg-canvas px-4 py-3.5",
