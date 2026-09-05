@@ -18,8 +18,9 @@ without editing files owned by Person 4.
 - Transaction hash persistence before the paid HTTP retry
 - Settlement receipt validation and normalization
 - Provider-side `require_payment` middleware adapter
+- Trusted request-scoped seller and courier pricing
 - Persistent provider invoice store
-- Invoice binding to the exact `PurchaseIntent.invoiceId`
+- Permanent invoice binding to the exact provider request fingerprint
 - Idempotent replay of paid provider responses without another settlement
 - XRPL transaction-status lookup for reconciliation
 - Standalone FastAPI paid-resource example
@@ -83,19 +84,44 @@ constructing the runtime `PurchaseIntent`.
 
 ## Person 3 integration
 
-Person 3 adds middleware to each seller or courier FastAPI app:
+Person 3 adds middleware to each seller or courier FastAPI app. Seller
+reservations and courier quotes use **trusted request-scoped pricing** because
+the same endpoint can receive different quantities or quote IDs. The resolver
+must read authoritative provider data; it must never return the
+`PurchaseIntent.amountDrops` supplied by the buyer.
 
 ```python
 from surplusflow_payments import (
     ProviderPaymentConfig,
+    ProviderPricingError,
+    ProviderRequestContext,
+    PurchaseIntent,
     SQLiteInvoiceStore,
     SQLiteProviderResponseStore,
     install_provider_payment,
 )
 
+
+def resolve_seller_price(context: ProviderRequestContext) -> int:
+    intent = PurchaseIntent.model_validate(context.payload)
+    offer = load_offer_from_provider_database(intent.resource_id)
+    if offer is None or offer.seller_id != intent.provider_id:
+        raise ProviderPricingError(
+            "Offer does not exist for this seller",
+            error="not_found",
+            status_code=404,
+        )
+    if intent.quantity is None or intent.quantity > offer.quantity_available:
+        raise ProviderPricingError(
+            "Requested quantity is unavailable",
+            error="offer_sold_out",
+            status_code=409,
+        )
+    return intent.quantity * int(offer.unit_price_drops)
+
+
 payment_config = ProviderPaymentConfig(
     protected_paths="/api/sellers/seller_bakery_001/offers/offer_001/reserve",
-    price_drops="36000000",
     pay_to_address=settings.xrpl_bakery_pay_to,
     facilitator_url=settings.xrpl_facilitator_url,
 )
@@ -105,16 +131,28 @@ install_provider_payment(
     payment_config,
     SQLiteInvoiceStore(".data/x402-invoices.sqlite3"),
     SQLiteProviderResponseStore(".data/provider-responses.sqlite3"),
+    price_resolver=resolve_seller_price,
 )
 ```
+
+Courier services use the same pattern, but their resolver loads the selected
+unexpired quote by `PurchaseIntent.resourceId` and returns its stored
+`priceDrops`. Endpoints whose price is genuinely constant may instead set
+`ProviderPaymentConfig.price_drops` and omit `price_resolver`; the two pricing
+modes are mutually exclusive.
 
 The SDK middleware owns `PAYMENT-REQUIRED`, `PAYMENT-SIGNATURE`, facilitator
 verification, settlement, and `PAYMENT-RESPONSE`. The route handler must still
 perform an atomic inventory/capacity lock and honor the same `Idempotency-Key`.
 It returns the reservation or booking only after the middleware confirms payment.
-The complete installer binds the x402 invoice to `PurchaseIntent.invoiceId` and
-caches the paid response outside the settlement middleware, allowing a lost HTTP
-response to be retried without paying twice.
+Remove the temporary payment stub and all route-owned 402/header/facilitator
+logic; `install_provider_payment` is the only payment protocol owner.
+The complete installer recalculates the trusted price before challenge and
+settlement, verifies the buyer's `amountDrops`, payee, network, and asset against
+those terms, permanently binds the x402 invoice to the exact request fingerprint,
+and caches the paid response outside the settlement middleware. Therefore a
+changed quantity or quote cannot reuse a payment challenge, while a lost paid
+HTTP response can be retried without paying twice.
 
 ## Verification commands
 
