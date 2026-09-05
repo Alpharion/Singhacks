@@ -49,9 +49,12 @@ The contracts, real `x402-xrpl` buyer/provider adapters, deterministic wallet
 policy, durable invoice/payment journals, paid-response replay, receipt
 normalization, transaction status lookup, standalone provider, dependency lock,
 system architecture, and an offline end-to-end x402 loop are created. The
-remaining Person 4 work requires integration or live credentials:
-a funded standalone Testnet payment, root orchestration once service commands
-exist, and the complete E2E test.
+funded standalone x402 payment is validated on XRPL Testnet. The remaining
+Person 4 work is root orchestration once service commands exist and the complete
+cross-service E2E test.
+
+Live proof: `77766F4E2E4B1AD39D7EA21F7188E3D8615886110D6676570F1F9949C8A0E173`
+([Testnet explorer](https://testnet.xrpl.org/transactions/77766F4E2E4B1AD39D7EA21F7188E3D8615886110D6676570F1F9949C8A0E173)).
 
 ## Items intentionally not blocking parallel work
 
@@ -64,7 +67,7 @@ exist, and the complete E2E test.
 
 The project becomes demo-ready, rather than merely development-ready, only when:
 
-1. Person 4 completes a real x402 XRPL Testnet payment using the implemented adapter.
+1. Complete: Person 4 proved a real x402 XRPL Testnet payment using the implemented adapter.
 2. Person 3 replaces the payment stub with Person 4's adapter.
 3. Person 2 calls the live provider APIs and demonstrates replanning.
 4. Person 1 connects the UI to `GET /api/runs/{runId}`.

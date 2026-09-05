@@ -1,6 +1,6 @@
 # Person 4 Payment Boundary Handoff
 
-Status: **ready for offline integration**
+Status: **standalone Testnet payment proven; ready for teammate integration**
 
 The payment package is deliberately independent of the buyer agent and provider
 implementations. Person 2 and Person 3 can integrate against its public API
@@ -24,6 +24,7 @@ without editing files owned by Person 4.
 - XRPL transaction-status lookup for reconciliation
 - Standalone FastAPI paid-resource example
 - Offline end-to-end commercial-loop test with no ledger writes
+- Validated standalone x402 payment on XRPL Testnet with value delivery
 
 ## Payment sequence
 
@@ -137,16 +138,32 @@ uv run python examples/check_testnet_readiness.py \
   --provider-env XRPL_BAKERY_PAY_TO
 ```
 
+## Validated standalone payment
+
+The live proof was completed on XRPL Testnet on 2026-09-05:
+
+- Transaction: `77766F4E2E4B1AD39D7EA21F7188E3D8615886110D6676570F1F9949C8A0E173`
+- Result: `tesSUCCESS`, validated in ledger `20495875`
+- Amount: `10000` drops (0.01 Test XRP)
+- Payer: `rPfP2WTVS3EzK7TsiZWsKmTjSUBiJetJeD`
+- Payee: `rHcvgpr6rEK97qpXPYYGURCqsiTDJA25jW`
+- Value delivered: confirmed exclusive demo food reservation
+- Explorer: <https://testnet.xrpl.org/transactions/77766F4E2E4B1AD39D7EA21F7188E3D8615886110D6676570F1F9949C8A0E173>
+
+This was a provider-issued HTTP 402 challenge followed by a locally signed
+`PAYMENT-SIGNATURE`, facilitator settlement, a validated XRPL transaction, and
+the provider's paid response. Faucet funding is not being used as the commercial
+transaction proof.
+
 ## Remaining live/integration gates
 
-These cannot be completed safely before teammate code or credentials exist:
+The standalone live-payment gates are complete. The remaining work depends on
+teammate service implementations:
 
-1. Fund separate buyer and provider wallets on XRPL Testnet.
-2. Run a user-authorized standalone x402 payment and save its validated hash.
-3. Connect Person 3's atomic inventory lock behind the provider middleware.
-4. Connect Person 2's state machine to the executor and reconciliation path.
-5. Add Docker Compose commands after all service entry points are known.
-6. Replace the completed offline payment E2E fakes with teammate services and
+1. Connect Person 3's atomic inventory lock behind the provider middleware.
+2. Connect Person 2's state machine to the executor and reconciliation path.
+3. Add Docker Compose commands after all service entry points are known.
+4. Replace the completed offline payment E2E fakes with teammate services and
    expose real explorer links to Person 1.
 
 Never commit wallet seeds or a populated `.env` file. A signed or uncertain

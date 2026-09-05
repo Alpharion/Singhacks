@@ -23,6 +23,12 @@ config = ProviderPaymentConfig(
     price_drops="10000",
     pay_to_address=pay_to_address,
     facilitator_url="https://xrpl-facilitator-testnet.t54.ai",
+    max_timeout_seconds=int(
+        os.environ.get("XRPL_PROVIDER_MAX_TIMEOUT_SECONDS", "600")
+    ),
+    invoice_ttl_seconds=int(
+        os.environ.get("XRPL_PROVIDER_INVOICE_TTL_SECONDS", "900")
+    ),
 )
 
 app = create_standalone_provider_app(

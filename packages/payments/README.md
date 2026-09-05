@@ -37,6 +37,14 @@ curl -i -X POST http://localhost:8011/paid/demo
 The second command intentionally returns HTTP `402` plus a
 `PAYMENT-REQUIRED` challenge. It does not submit a transaction.
 
+For an interactive signing ceremony, the standalone provider can extend its
+transaction and invoice windows without changing production defaults:
+
+```text
+XRPL_PROVIDER_MAX_TIMEOUT_SECONDS=3600
+XRPL_PROVIDER_INVOICE_TTL_SECONDS=3600
+```
+
 Once ignored environment variables contain a Testnet buyer wallet and provider
 address, check their validated public account state without signing:
 
@@ -88,3 +96,14 @@ Application code works with normalized Pydantic objects and never constructs a c
 ## Live-payment safety
 
 Tests use fake sessions and never touch XRPL. A live payment is a separate explicit command and requires a funded Testnet wallet, a valid Testnet recipient, a transaction preview, and current-session authorization before signing.
+
+## Validated Testnet proof
+
+On 2026-09-05, the standalone provider completed the full x402 loop for an
+exclusive demo food reservation. The buyer paid 10,000 drops (0.01 Test XRP),
+the facilitator settled the signed payment, XRPL validated it with
+`tesSUCCESS`, and the provider returned the confirmed reservation.
+
+- Transaction: `77766F4E2E4B1AD39D7EA21F7188E3D8615886110D6676570F1F9949C8A0E173`
+- Ledger: `20495875`
+- Explorer: <https://testnet.xrpl.org/transactions/77766F4E2E4B1AD39D7EA21F7188E3D8615886110D6676570F1F9949C8A0E173>
