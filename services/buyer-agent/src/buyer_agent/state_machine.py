@@ -37,11 +37,24 @@ from .models import (
     RunStatus,
     Spend,
 )
-from .payments import PaymentClient
+from .payments import PaymentClient, Recovery
 from .planner import build_plans
 from .policy import WalletPolicy
 
 log = logging.getLogger(__name__)
+
+
+@dataclass(frozen=True)
+class PurchaseFailure:
+    """Why a purchase failed, and what the run may safely do next."""
+
+    option_id: str
+    recovery: Recovery
+    error: ApiError | None = None
+
+    @property
+    def message(self) -> str:
+        return self.error.message if self.error else f"{self.option_id} could not be purchased."
 
 
 @dataclass
@@ -332,11 +345,16 @@ class ProcurementAgent:
                 self._record_selection(state, plan, feasible, now)
                 self._publish(state)
 
-                failed_offer_id = await self._secure_food(state, plan, available_offers)
-                if failed_offer_id is not None:
+                failure = await self._secure_food(state, plan, available_offers)
+                if failure is not None:
+                    if failure.recovery is Recovery.HALT:
+                        self._halt(state, failure)
+                        return
                     attempts += 1
                     available_offers = [
-                        offer for offer in available_offers if offer.offer_id != failed_offer_id
+                        offer
+                        for offer in available_offers
+                        if offer.offer_id != failure.option_id
                     ]
                     if attempts > self._settings.max_replans:
                         state.fail(
@@ -345,7 +363,7 @@ class ProcurementAgent:
                             self._clock(),
                         )
                         return
-                    self._record_replan(state, failed_offer_id, self._clock())
+                    self._record_replan(state, failure.option_id, self._clock())
                     self._publish(state)
                     continue
 
@@ -360,8 +378,11 @@ class ProcurementAgent:
                 )
                 return
 
-            booked = await self._book_delivery(state, quote)
-            if not booked:
+            failure = await self._book_delivery(state, quote)
+            if failure is not None:
+                if failure.recovery is Recovery.HALT:
+                    self._halt(state, failure)
+                    return
                 attempts += 1
                 available_quotes = [
                     item for item in available_quotes if item.quote_id != quote.quote_id
@@ -403,6 +424,36 @@ class ProcurementAgent:
         )
 
     # ----------------------------------------------------------------- helpers
+
+    def _halt(self, state: RunState, failure: PurchaseFailure) -> None:
+        """Stop the run without another payment attempt.
+
+        Reached when a payment may already be in flight or settled. Replanning
+        here could pay a second time for the same resource, so the run ends and
+        the stored transaction hash is left for reconciliation.
+        """
+        now = self._clock()
+        state.decide(
+            "stop",
+            at=now,
+            reasons=[
+                failure.message,
+                "Stopping instead of replanning: another attempt could pay twice for the "
+                "same resource.",
+                f"{drops.to_xrp_label(state.total_spent_drops)} has settled so far across "
+                f"{len(state.reservations)} reservations.",
+            ],
+            alternatives=[failure.option_id],
+            selected=None,
+        )
+        error = failure.error
+        state.fail(
+            error.error if error else "payment_failed",
+            failure.message,
+            now,
+            retryable=False,
+        )
+        self._publish(state)
 
     def _stop_without_plan(
         self, state: RunState, plans: list[ProcurementPlan], now: datetime
@@ -559,8 +610,8 @@ class ProcurementAgent:
 
     async def _secure_food(
         self, state: RunState, plan: ProcurementPlan, offers: list[FoodOffer]
-    ) -> str | None:
-        """Pay for each allocation. Returns the offer id that failed, if any."""
+    ) -> PurchaseFailure | None:
+        """Pay for each allocation. Returns the first failure, if any."""
         by_id = {offer.offer_id: offer for offer in offers}
         delivery_reserve = drops.to_int(plan.delivery_cost_drops)
 
@@ -569,7 +620,7 @@ class ProcurementAgent:
                 continue
             offer = by_id.get(allocation.offer_id)
             if offer is None:
-                return allocation.offer_id
+                return PurchaseFailure(allocation.offer_id, Recovery.REPLAN)
 
             now = self._clock()
             state.status = "awaiting_payment"
@@ -595,7 +646,7 @@ class ProcurementAgent:
                         RejectedAlternative(option_id=offer.offer_id, reasons=[rejection])
                     ],
                 )
-                return offer.offer_id
+                return PurchaseFailure(offer.offer_id, Recovery.REPLAN)
 
             intent = intents.food_intent(
                 run_id=state.run_id,
@@ -620,17 +671,25 @@ class ProcurementAgent:
             self._publish(state)
 
             state.status = "reserving"
-            outcome = await self._payments.purchase(intent, offer=offer, now=now)
+            outcome = await self._payments.purchase(
+                intent,
+                offer=offer,
+                already_spent_drops=state.total_spent_drops,
+                now=now,
+            )
             now = self._clock()
 
             if not outcome.ok or outcome.reservation is None or outcome.receipt is None:
-                message = (
+                failure = PurchaseFailure(offer.offer_id, outcome.recovery, outcome.error)
+                state.event(
+                    "provider_failed",
                     outcome.error.message
                     if outcome.error
-                    else f"{offer.seller_name} did not return a reservation."
+                    else f"{offer.seller_name} did not return a reservation.",
+                    now,
+                    related_id=offer.offer_id,
                 )
-                state.event("provider_failed", message, now, related_id=offer.offer_id)
-                return offer.offer_id
+                return failure
 
             state.food_spent_drops += drops.to_int(outcome.receipt.amount_drops)
             state.reservations.append(outcome.reservation)
@@ -664,7 +723,9 @@ class ProcurementAgent:
 
         return None
 
-    async def _book_delivery(self, state: RunState, quote: DeliveryQuote) -> bool:
+    async def _book_delivery(
+        self, state: RunState, quote: DeliveryQuote
+    ) -> PurchaseFailure | None:
         now = self._clock()
         state.status = "awaiting_payment"
         amount = drops.to_int(quote.price_drops)
@@ -679,7 +740,7 @@ class ProcurementAgent:
         rejection = self._authorize(state, amount, quote.pay_to, 0)
         if rejection is not None:
             state.event("provider_failed", rejection, now, related_id=quote.quote_id)
-            return False
+            return PurchaseFailure(quote.quote_id, Recovery.REPLAN)
 
         intent = intents.delivery_intent(
             run_id=state.run_id,
@@ -701,17 +762,24 @@ class ProcurementAgent:
         )
         self._publish(state)
 
-        outcome = await self._payments.purchase(intent, quote=quote, now=now)
+        outcome = await self._payments.purchase(
+            intent,
+            quote=quote,
+            already_spent_drops=state.total_spent_drops,
+            now=now,
+        )
         now = self._clock()
 
         if not outcome.ok or outcome.booking is None or outcome.receipt is None:
-            message = (
+            state.event(
+                "provider_failed",
                 outcome.error.message
                 if outcome.error
-                else f"{quote.provider_name} did not return a booking."
+                else f"{quote.provider_name} did not return a booking.",
+                now,
+                related_id=quote.quote_id,
             )
-            state.event("provider_failed", message, now, related_id=quote.quote_id)
-            return False
+            return PurchaseFailure(quote.quote_id, outcome.recovery, outcome.error)
 
         state.delivery_spent_drops += drops.to_int(outcome.receipt.amount_drops)
         state.delivery_bookings.append(outcome.booking)
@@ -741,7 +809,7 @@ class ProcurementAgent:
             related_id=outcome.booking.booking_id,
         )
         self._publish(state)
-        return True
+        return None
 
     def _authorize(
         self, state: RunState, amount: int, pay_to: str, reserve: int

@@ -1,38 +1,38 @@
 """The payment boundary.
 
-This module is the only place the agent touches a paid endpoint, and it is
-deliberately thin. It never builds, signs, or inspects an XRPL transaction and
-never reads a wallet seed; the x402 challenge/settle/retry cycle belongs to the
-payments package owned by Person 4.
+The only place the agent touches a paid endpoint, and deliberately thin. It
+never builds, signs, or inspects an XRPL transaction and never reads a wallet
+seed: the x402 challenge, local signing, settlement, and the paid retry all live
+in `packages/payments` (Person 4).
 
-Integration contract expected from that package (configurable with
-``BUYER_AGENT_PAYMENT_ADAPTER=module:factory``, default
-``surplusflow_payments:build_client``): a zero-argument factory returning an
-object with
+`PaymentExecutor.execute` is synchronous and uses `requests`, so it runs on a
+worker thread rather than blocking the agent's event loop.
 
-    async def purchase(intent: dict) -> dict
+Recovery is the part that matters here. Person 4's errors divide into two
+groups, and treating them alike would risk paying twice:
 
-where ``intent`` is the wire form of a PurchaseIntent and the result is
-``{"statusCode": int, "body": dict, "receipt": dict | None}``. ``body`` is the
-provider's Reservation, DeliveryBooking, or ApiError payload; ``receipt`` is the
-normalized PAYMENT-RESPONSE. Any other shape is treated as a payment failure.
+* no money moved, so another provider can be tried -- `Recovery.REPLAN`;
+* a payment may already be in flight or settled, so the run must stop and be
+  reconciled against the stored transaction hash -- `Recovery.HALT`.
 """
 
 from __future__ import annotations
 
+import asyncio
 import hashlib
-import importlib
 import logging
 import os
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Protocol
+from enum import StrEnum
+from typing import Any, Protocol
 
 from . import config, drops, ids, timeutil
 from .models import (
     ApiError,
     DeliveryBooking,
     DeliveryQuote,
+    ErrorCode,
     FoodOffer,
     PaymentReceipt,
     PurchaseIntent,
@@ -44,6 +44,13 @@ log = logging.getLogger(__name__)
 SIMULATED_PAYER = "rBuyer1111111111111111111111111"
 
 
+class Recovery(StrEnum):
+    """What the state machine may safely do after a failed purchase."""
+
+    REPLAN = "replan"
+    HALT = "halt"
+
+
 @dataclass(frozen=True)
 class PurchaseOutcome:
     ok: bool
@@ -53,6 +60,7 @@ class PurchaseOutcome:
     booking: DeliveryBooking | None = None
     error: ApiError | None = None
     simulated: bool = False
+    recovery: Recovery = Recovery.REPLAN
 
 
 class PaymentClient(Protocol):
@@ -62,10 +70,34 @@ class PaymentClient(Protocol):
         *,
         offer: FoodOffer | None = None,
         quote: DeliveryQuote | None = None,
+        already_spent_drops: int = 0,
         now: datetime | None = None,
     ) -> PurchaseOutcome: ...
 
     async def aclose(self) -> None: ...
+
+
+def _failure(
+    error: ErrorCode,
+    message: str,
+    *,
+    status_code: int,
+    recovery: Recovery,
+    retryable: bool,
+    details: dict[str, Any] | None = None,
+) -> PurchaseOutcome:
+    return PurchaseOutcome(
+        ok=False,
+        status_code=status_code,
+        recovery=recovery,
+        error=ApiError(
+            error=error,
+            message=message,
+            retryable=retryable,
+            request_id=ids.unique("request"),
+            details=details,
+        ),
+    )
 
 
 def _synthetic_hash(invoice_id: str) -> str:
@@ -75,11 +107,11 @@ def _synthetic_hash(invoice_id: str) -> str:
 
 
 class SimulatedPaymentClient:
-    """Offline stand-in for Phase 1 development and tests.
+    """Offline stand-in for development and tests.
 
-    It settles nothing. Receipts it returns carry a hash with sixteen leading
-    zeros and a localhost explorer URL, so a simulated run can never be shown as
-    evidence of an XRPL payment.
+    It settles nothing. Receipts carry a hash with sixteen leading zeros and a
+    localhost explorer URL, so a simulated run can never be shown as evidence of
+    an XRPL payment.
     """
 
     def __init__(self, failing_provider_ids: frozenset[str] | None = None) -> None:
@@ -114,6 +146,7 @@ class SimulatedPaymentClient:
         *,
         offer: FoodOffer | None = None,
         quote: DeliveryQuote | None = None,
+        already_spent_drops: int = 0,
         now: datetime | None = None,
     ) -> PurchaseOutcome:
         now = now or timeutil.now()
@@ -122,12 +155,16 @@ class SimulatedPaymentClient:
                 ok=False,
                 status_code=503,
                 simulated=True,
+                recovery=Recovery.REPLAN,
                 error=ApiError(
                     error="provider_unavailable",
                     message=f"{intent.provider_id} cannot fulfil this request right now.",
                     retryable=True,
                     request_id=ids.unique("request"),
-                    details={"providerId": intent.provider_id, "resourceId": intent.resource_id},
+                    details={
+                        "providerId": intent.provider_id,
+                        "resourceId": intent.resource_id,
+                    },
                 ),
             )
 
@@ -176,31 +213,29 @@ class SimulatedPaymentClient:
         )
 
 
-class X402PaymentClient:
-    """Delegates the real 402 challenge, settlement, and retry to Person 4."""
+class ExecutorPaymentClient:
+    """Drives Person 4's `PaymentExecutor` for real XRPL Testnet settlement."""
 
-    def __init__(self, adapter: object | None = None) -> None:
+    def __init__(self, executor: Any | None = None, timeout_seconds: float = 30.0) -> None:
         config.assert_no_seed_access()
-        self._adapter = adapter or self._load_adapter()
+        self._timeout = timeout_seconds
+        self._executor = executor if executor is not None else self._build_executor()
 
     @staticmethod
-    def _load_adapter() -> object:
-        target = os.getenv("BUYER_AGENT_PAYMENT_ADAPTER", "surplusflow_payments:build_client")
-        module_name, _, attribute = target.partition(":")
+    def _build_executor() -> Any:
         try:
-            module = importlib.import_module(module_name)
+            from surplusflow_payments import PaymentExecutor, PaymentJournal, PaymentSettings
         except ImportError as exc:
             raise RuntimeError(
-                f"x402 payment mode needs the payments package ({target}); it is not "
-                "installed yet. Run with BUYER_AGENT_PAYMENT_MODE=simulated until "
-                "Person 4 publishes the adapter."
+                "x402 payment mode needs the payments package. Install it with "
+                "`uv pip install -e ../../packages/payments`, or run with "
+                "BUYER_AGENT_PAYMENT_MODE=simulated."
             ) from exc
-        return getattr(module, attribute)()
+        settings = PaymentSettings()
+        return PaymentExecutor(settings, PaymentJournal(settings.payment_journal_path))
 
     async def aclose(self) -> None:
-        closer = getattr(self._adapter, "aclose", None)
-        if closer is not None:
-            await closer()
+        return None
 
     async def purchase(
         self,
@@ -208,64 +243,146 @@ class X402PaymentClient:
         *,
         offer: FoodOffer | None = None,
         quote: DeliveryQuote | None = None,
+        already_spent_drops: int = 0,
         now: datetime | None = None,
     ) -> PurchaseOutcome:
         try:
-            raw = await self._adapter.purchase(intent.wire())
-        except Exception as exc:  # noqa: BLE001 - a failed payment must become a replan
-            log.exception("payment adapter raised for intent %s", intent.intent_id)
-            return PurchaseOutcome(
-                ok=False,
+            payment_intent = self._to_payment_intent(intent)
+        except Exception as exc:  # noqa: BLE001 - a rejected intent must not crash the run
+            return _failure(
+                "invalid_request",
+                f"The purchase intent was rejected by the payment boundary: {exc}",
+                status_code=422,
+                recovery=Recovery.REPLAN,
+                retryable=False,
+            )
+
+        # execute() is synchronous and network-bound; keep the event loop free.
+        return await asyncio.to_thread(
+            self._execute, intent, payment_intent, already_spent_drops
+        )
+
+    @staticmethod
+    def _to_payment_intent(intent: PurchaseIntent) -> Any:
+        from surplusflow_payments.models import PurchaseIntent as PaymentPurchaseIntent
+
+        return PaymentPurchaseIntent.model_validate(intent.wire())
+
+    def _execute(
+        self, intent: PurchaseIntent, payment_intent: Any, already_spent_drops: int
+    ) -> PurchaseOutcome:
+        from surplusflow_payments.errors import (
+            DuplicatePaymentError,
+            PaymentExecutionError,
+            PaymentInProgressError,
+            PaymentReceiptError,
+            PolicyViolation,
+            WalletConfigurationError,
+        )
+
+        try:
+            result = self._executor.execute(
+                payment_intent,
+                already_spent_drops=already_spent_drops,
+                timeout_seconds=self._timeout,
+            )
+        except PolicyViolation as exc:
+            # Rejected before the journal opened, so nothing was signed.
+            return _failure(
+                "policy_rejected",
+                f"The payment boundary refused this purchase: {exc}",
+                status_code=409,
+                recovery=Recovery.REPLAN,
+                retryable=False,
+            )
+        except PaymentExecutionError as exc:
+            # No signed hash, so the same requirement may be met elsewhere.
+            return _failure(
+                "payment_failed",
+                f"Payment did not settle: {exc}",
                 status_code=502,
-                error=ApiError(
-                    error="payment_failed",
-                    message=f"Payment could not be completed: {exc}",
-                    retryable=True,
-                    request_id=ids.unique("request"),
-                ),
+                recovery=Recovery.REPLAN,
+                retryable=True,
             )
-        return self._normalize(intent, raw)
-
-    def _normalize(self, intent: PurchaseIntent, raw: dict) -> PurchaseOutcome:
-        status = int(raw.get("statusCode", 0))
-        body = raw.get("body") or {}
-        receipt_body = raw.get("receipt")
-
-        if status not in (200, 201) or not receipt_body:
-            return PurchaseOutcome(
-                ok=False,
-                status_code=status or 502,
-                error=self._as_error(body, status),
+        except PaymentInProgressError as exc:
+            return self._halt(
+                "payment_timeout",
+                f"A payment for this invoice is already in flight: {exc}. The run stops "
+                "so the stored transaction hash can be reconciled rather than paid twice.",
+                intent,
+            )
+        except DuplicatePaymentError as exc:
+            return self._halt(
+                "payment_replayed",
+                f"This invoice was already settled or its identity fields were reused: {exc}. "
+                "Reconcile before spending again.",
+                intent,
+            )
+        except PaymentReceiptError as exc:
+            return self._halt(
+                "payment_failed",
+                f"Settlement outcome is uncertain after signing: {exc}. Reconcile the stored "
+                "transaction hash before any further payment.",
+                intent,
+            )
+        except WalletConfigurationError as exc:
+            return self._halt(
+                "internal_error",
+                f"The buyer wallet is not usable: {exc}.",
+                intent,
             )
 
-        receipt = PaymentReceipt.model_validate(receipt_body)
+        return self._normalize(intent, result)
+
+    @staticmethod
+    def _halt(error: ErrorCode, message: str, intent: PurchaseIntent) -> PurchaseOutcome:
+        log.error("halting run %s on invoice %s: %s", intent.run_id, intent.invoice_id, message)
+        return _failure(
+            error,
+            message,
+            status_code=409,
+            recovery=Recovery.HALT,
+            retryable=False,
+            details={"invoiceId": intent.invoice_id, "resourceId": intent.resource_id},
+        )
+
+    def _normalize(self, intent: PurchaseIntent, result: Any) -> PurchaseOutcome:
+        receipt = PaymentReceipt.model_validate(
+            result.receipt.model_dump(mode="json", by_alias=True)
+        )
         mismatch = self._receipt_mismatch(intent, receipt)
         if mismatch:
-            # Settled money must match the authorized intent or the run stops here.
-            return PurchaseOutcome(
-                ok=False,
-                status_code=status,
-                error=ApiError(
-                    error="invoice_mismatch",
-                    message=mismatch,
-                    retryable=False,
-                    request_id=ids.unique("request"),
-                ),
+            # Money moved but not as authorized: stop rather than build on it.
+            return self._halt("invoice_mismatch", mismatch, intent)
+
+        resource = result.resource
+        if not isinstance(resource, dict):
+            return self._halt(
+                "payment_failed",
+                "The provider settled the payment but returned no usable resource body.",
+                intent,
             )
 
-        if intent.resource_type == "food_reservation":
+        try:
+            if intent.resource_type == "food_reservation":
+                return PurchaseOutcome(
+                    ok=True,
+                    status_code=result.status_code,
+                    receipt=receipt,
+                    reservation=Reservation.model_validate(resource),
+                )
             return PurchaseOutcome(
                 ok=True,
-                status_code=status,
+                status_code=result.status_code,
                 receipt=receipt,
-                reservation=Reservation.model_validate(body),
+                booking=DeliveryBooking.model_validate(resource),
             )
-        return PurchaseOutcome(
-            ok=True,
-            status_code=status,
-            receipt=receipt,
-            booking=DeliveryBooking.model_validate(body),
-        )
+        except Exception as exc:  # noqa: BLE001
+            return self._halt(
+                "payment_failed",
+                f"Paid, but the provider's response does not match the frozen contract: {exc}",
+                intent,
+            )
 
     @staticmethod
     def _receipt_mismatch(intent: PurchaseIntent, receipt: PaymentReceipt) -> str | None:
@@ -285,22 +402,10 @@ class X402PaymentClient:
             return f"Receipt settled on {receipt.network}, not {intent.network}."
         return None
 
-    @staticmethod
-    def _as_error(body: dict, status: int) -> ApiError:
-        try:
-            return ApiError.model_validate(body)
-        except Exception:  # noqa: BLE001 - providers may return an unmapped body
-            return ApiError(
-                error="payment_failed" if status >= 500 else "provider_unavailable",
-                message=f"Provider returned HTTP {status}.",
-                retryable=status >= 500 or status == 503,
-                request_id=ids.unique("request"),
-            )
-
 
 def build_payment_client(settings: config.Settings) -> PaymentClient:
     if settings.payment_mode == "x402":
-        return X402PaymentClient()
+        return ExecutorPaymentClient(timeout_seconds=settings.request_timeout_seconds)
     if settings.payment_mode == "simulated":
         log.warning(
             "payment mode is 'simulated': no XRPL transaction is submitted and receipts "

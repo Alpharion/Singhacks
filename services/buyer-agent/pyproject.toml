@@ -13,11 +13,18 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
+# Real XRPL settlement. Only needed for BUYER_AGENT_PAYMENT_MODE=x402; the agent
+# runs fully against fixtures and simulated payments without it.
+x402 = ["surplusflow-payments"]
 dev = [
     "pytest>=8.3",
     "pytest-asyncio>=0.24",
     "jsonschema>=4.23",
+    "surplusflow-payments",
 ]
+
+[tool.uv.sources]
+surplusflow-payments = { path = "../../packages/payments", editable = true }
 
 [build-system]
 requires = ["hatchling"]

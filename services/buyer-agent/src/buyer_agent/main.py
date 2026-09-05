@@ -60,6 +60,7 @@ def error_response(
 async def lifespan(app: FastAPI):
     settings = config.settings()
     config.assert_no_seed_access()
+    config.assert_payees_usable(settings)
     app.state.settings = settings
     app.state.store = RunStore()
     app.state.discovery = build_discovery_client(settings)

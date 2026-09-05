@@ -156,3 +156,75 @@ async def test_a_courier_that_cannot_reach_every_paid_seller_is_not_booked(
 
     assert state.status == "failed"
     assert state.delivery_bookings == []
+
+
+class HaltingPaymentClient:
+    """Fails one provider in a way that must never be retried."""
+
+    def __init__(self, provider_id: str, inner) -> None:
+        self._provider_id = provider_id
+        self._inner = inner
+        self.attempts: list[str] = []
+
+    async def aclose(self) -> None:
+        return None
+
+    async def purchase(self, intent, *, offer=None, quote=None, already_spent_drops=0, now=None):
+        from buyer_agent.models import ApiError
+        from buyer_agent.payments import PurchaseOutcome, Recovery
+
+        self.attempts.append(intent.provider_id)
+        if intent.provider_id == self._provider_id:
+            return PurchaseOutcome(
+                ok=False,
+                status_code=409,
+                recovery=Recovery.HALT,
+                error=ApiError(
+                    error="payment_timeout",
+                    message="A payment for this invoice is already in flight; reconcile it.",
+                    retryable=False,
+                    request_id="request_halt_001",
+                ),
+            )
+        return await self._inner.purchase(
+            intent,
+            offer=offer,
+            quote=quote,
+            already_spent_drops=already_spent_drops,
+            now=now,
+        )
+
+
+async def test_an_in_flight_payment_stops_the_run_instead_of_replanning(
+    open_goal, offers, backup_offer, wide_quotes, settings
+):
+    """A payment that may already be settled must not be replanned around:
+    trying another seller for the same meals could pay for them twice."""
+    from buyer_agent.payments import SimulatedPaymentClient
+    from buyer_agent.state_machine import ProcurementAgent, new_state
+
+    payments = HaltingPaymentClient("seller_bakery_001", SimulatedPaymentClient(frozenset()))
+    agent = ProcurementAgent(
+        discovery=StubDiscovery(offers + [backup_offer], wide_quotes),
+        payments=payments,
+        settings=settings,
+        clock=clock_from(DEMO_NOW),
+    )
+    policy = load_policy(open_goal.wallet_policy_id, open_goal.max_total_spend_drops, settings)
+    state = await agent.execute(
+        new_state(run_id="run_halt_001", goal=open_goal, policy=policy, now=DEMO_NOW)
+    )
+
+    assert state.status == "failed"
+    assert state.failure is not None
+    assert state.failure.error == "payment_timeout"
+    assert state.failure.retryable is False
+
+    # The run stopped: no replan decision, and the failing seller was tried once.
+    assert not any(decision.decision_type == "replan" for decision in state.decisions)
+    assert payments.attempts.count("seller_bakery_001") == 1
+    assert state.reservations == []
+    assert state.delivery_bookings == []
+
+    stop = next(decision for decision in state.decisions if decision.decision_type == "stop")
+    assert any("pay twice" in reason for reason in stop.reasons)

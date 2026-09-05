@@ -94,11 +94,12 @@ class HttpDiscoveryClient:
         await self._client.aclose()
 
     async def list_offers(self, goal: ProcurementGoal) -> list[FoodOffer]:
-        # The contract exposes a single dietaryTag filter; the remaining tags are
-        # enforced locally by the hard filters, which is the authoritative check.
+        # Deliberately does NOT send the marketplace's dietaryTag filter. The
+        # agent's own hard filters are the authoritative dietary check, and
+        # rejecting an incompatible offer here -- with a reason the buyer can
+        # read -- is part of what the agent is for. Server-side pre-filtering
+        # would silently hide those rejections from the decision record.
         params: dict[str, Any] = {"minQuantity": 1}
-        if goal.dietary_tags:
-            params["dietaryTag"] = goal.dietary_tags[0]
         response = await self._client.get("/api/offers", params=params)
         response.raise_for_status()
         return list(FoodOffersResponse.model_validate(response.json()).offers)

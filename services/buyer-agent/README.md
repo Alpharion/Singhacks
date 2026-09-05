@@ -86,10 +86,9 @@ can re-check the decoded x402 challenge against the same numbers.
 | --- | --- | --- |
 | `BUYER_AGENT_DISCOVERY_MODE` | `fixtures` | `fixtures` or `http` (marketplace) |
 | `BUYER_AGENT_PAYMENT_MODE` | `simulated` | `simulated` or `x402` |
-| `BUYER_AGENT_PAYMENT_ADAPTER` | `surplusflow_payments:build_client` | Person 4's factory |
 | `MARKETPLACE_BASE_URL` | `http://localhost:8002` | Marketplace service |
 | `SURPLUSFLOW_TIMEZONE` | `Asia/Singapore` | How "by 6 PM" is read |
-| `BUYER_AGENT_ALLOWED_PAYEES` | fixture payees | Approved recipient allowlist |
+| `BUYER_AGENT_ALLOWED_PAYEES` | `XRPL_*_PAY_TO`, else fixtures | Approved recipient allowlist |
 | `BUYER_AGENT_MAX_TX_DROPS` | `70000000` | Per-transaction ceiling |
 | `BUYER_AGENT_MAX_REPLANS` | `4` | Consecutive provider failures tolerated |
 | `BUYER_AGENT_SIMULATED_FAILURES` | — | Provider ids that fail, for demos and tests |
@@ -101,28 +100,51 @@ with sixteen leading zeros and a localhost explorer URL, and every timeline
 entry says so, precisely so a simulated run can never be presented as evidence
 of an XRPL payment. Real settlement needs `BUYER_AGENT_PAYMENT_MODE=x402`.
 
+**The approved payee list must hold real addresses in x402 mode.** The contract
+fixtures ship synthetic placeholders (`rFoodA111...`) that match the contract's
+address pattern but fail base58check, so the payment boundary rejects them.
+Startup refuses `x402` mode with a placeholder allowlist and names the offending
+addresses, rather than failing mid-run. Supply real ones through the
+`XRPL_*_PAY_TO` variables in your ignored `.env`.
+
+## Payment recovery
+
+Person 4's payment errors split into two groups, and treating them alike is how
+an agent pays twice:
+
+| Failure | Recovery | Why |
+| --- | --- | --- |
+| `PolicyViolation` | replan | Refused before the journal opened; nothing signed |
+| `PaymentExecutionError` | replan | No signed hash, so the requirement can be met elsewhere |
+| `PaymentInProgressError` | **halt** | A payment is in flight; retrying could pay twice |
+| `DuplicatePaymentError` | **halt** | Already settled, or identity fields reused |
+| `PaymentReceiptError` | **halt** | Outcome uncertain after signing |
+| `WalletConfigurationError` | **halt** | The wallet is unusable; further attempts are pointless |
+| Receipt mismatch | **halt** | Money moved, but not as authorized |
+
+On halt the run stops with the specific error, records a `stop` decision saying
+why it is not replanning, and leaves the stored transaction hash for
+reconciliation. It never tries another provider for the same resource.
+
 ## Handoffs
 
-**To Person 4 (payments).** Set `BUYER_AGENT_PAYMENT_ADAPTER=<module>:<factory>`.
-The factory takes no arguments and returns an object with:
+**Person 4 (payments) — integrated.** `BUYER_AGENT_PAYMENT_MODE=x402` drives
+`surplusflow_payments.PaymentExecutor`. It is synchronous and `requests`-based,
+so it runs on a worker thread rather than blocking the event loop. The agent
+passes the frozen `PurchaseIntent` plus the run's `already_spent_drops`; the 402
+challenge, policy re-validation, local signing, settlement, and the paid retry
+all happen behind that call. On success the agent re-checks the receipt's
+invoice, payee, amount, and network against the authorized intent.
 
-```python
-async def purchase(intent: dict) -> dict
-#   intent -> the wire form of a PurchaseIntent
-#   returns {"statusCode": int, "body": dict, "receipt": dict | None}
-```
+**Person 3 (marketplace) — integrated.** `BUYER_AGENT_DISCOVERY_MODE=http` calls
+`GET /api/offers` and `POST /api/delivery/quotes` on port 8002, then posts the
+`PurchaseIntent` to the `reservationEndpoint` / `bookingEndpoint` carried on each
+offer and quote, with `Idempotency-Key` equal to `PurchaseIntent.idempotencyKey`.
 
-`body` is the provider's `Reservation`, `DeliveryBooking`, or `ApiError`;
-`receipt` is the normalized `PAYMENT-RESPONSE`. The 402 challenge, policy
-re-validation, signing, settlement, and retry all live behind that call — this
-service never sees them. On success the agent re-checks the receipt's invoice,
-payee, amount, and network against the authorized intent and refuses a mismatch.
-
-**To Person 3 (marketplace).** Set `BUYER_AGENT_DISCOVERY_MODE=http`. The agent
-calls `GET /api/offers` and `POST /api/delivery/quotes`, then posts the
-`PurchaseIntent` to the `reservationEndpoint` / `bookingEndpoint` carried on
-each offer and quote, with `Idempotency-Key` equal to
-`PurchaseIntent.idempotencyKey`.
+The agent deliberately does **not** pass the marketplace's `dietaryTag` filter.
+Its own hard filters are the authoritative dietary check, and rejecting an
+incompatible offer with a stated reason is part of the decision record — letting
+the server pre-filter would hide those rejections from the buyer.
 
 **To Person 1 (frontend).** `GET /api/runs/{runId}` returns the full `AgentRun`:
 `events` is the timeline, `decisions` the reasoning, `plans` the alternatives
@@ -135,7 +157,7 @@ compared, `spend` the budget position, and every receipt carries its
 .venv/bin/python -m pytest
 ```
 
-84 tests, no network and no API key required. They assert against the frozen
+103 tests, no network and no API key required. They assert against the frozen
 contract rather than a local copy, so a contract change breaks them immediately:
 
 - every fixture in `packages/contracts/fixtures` round-trips through the models
@@ -146,8 +168,12 @@ contract rather than a local copy, so a contract change breaks them immediately:
 - replanning is covered for a seller failing before payment, a seller failing
   after a partial order is already paid for, a courier failing at booking, and
   the case where a courier cannot reach a seller that has already been paid;
-- no module reads a wallet seed or references transaction signing, and a leaked
-  seed in the environment stops the service.
+- every `PaymentExecutor` error maps to the right recovery, an in-flight payment
+  stops the run instead of replanning around it, and a receipt that disagrees
+  with the authorized intent halts rather than being accepted;
+- no module reads a wallet seed or references transaction signing, a leaked seed
+  in the environment stops the service, and a synthetic fixture address is
+  refused before any payment is attempted.
 
 ## Layout
 
