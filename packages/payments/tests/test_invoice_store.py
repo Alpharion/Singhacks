@@ -5,7 +5,10 @@ import asyncio
 import pytest
 from x402_xrpl.types import PaymentRequirements
 
-from surplusflow_payments.invoice_store import SQLiteInvoiceStore
+from surplusflow_payments.invoice_store import (
+    InvoiceRequestConflictError,
+    SQLiteInvoiceStore,
+)
 
 from conftest import PAYEE, SOURCE_TAG
 
@@ -90,3 +93,16 @@ def test_expired_invoice_can_be_reissued_with_same_terms(tmp_path) -> None:
     asyncio.run(store.put("inv:store_001", [requirement], ttl_seconds=60))
 
     assert asyncio.run(store.get("inv:store_001")) is not None
+
+
+def test_invoice_id_is_permanently_bound_to_one_request(tmp_path) -> None:
+    store = SQLiteInvoiceStore(tmp_path / "invoices.sqlite3")
+
+    store.bind_request("inv:store_001", "A" * 64)
+    store.bind_request("inv:store_001", "A" * 64)
+
+    with pytest.raises(
+        InvoiceRequestConflictError,
+        match="different provider request",
+    ):
+        store.bind_request("inv:store_001", "B" * 64)

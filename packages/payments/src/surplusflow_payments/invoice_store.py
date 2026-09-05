@@ -9,6 +9,10 @@ from collections.abc import Sequence
 from x402_xrpl.types import PaymentRequirements
 
 
+class InvoiceRequestConflictError(ValueError):
+    """An invoice identifier was reused for a different provider request."""
+
+
 class SQLiteInvoiceStore:
     """Persistent provider invoice store implementing x402-xrpl's protocol."""
 
@@ -27,9 +31,46 @@ class SQLiteInvoiceStore:
                 )
                 """
             )
+            connection.execute(
+                """
+                CREATE TABLE IF NOT EXISTS x402_invoice_request_bindings (
+                    invoice_id TEXT PRIMARY KEY,
+                    request_fingerprint TEXT NOT NULL,
+                    created_at REAL NOT NULL
+                )
+                """
+            )
 
     def _connect(self) -> sqlite3.Connection:
         return sqlite3.connect(self.path, timeout=5)
+
+    def bind_request(self, invoice_id: str, request_fingerprint: str) -> None:
+        """Permanently bind an invoice id to one canonical provider request."""
+
+        with self._connect() as connection:
+            connection.execute("BEGIN IMMEDIATE")
+            existing = connection.execute(
+                """
+                SELECT request_fingerprint
+                FROM x402_invoice_request_bindings
+                WHERE invoice_id = ?
+                """,
+                (invoice_id,),
+            ).fetchone()
+            if existing is None:
+                connection.execute(
+                    """
+                    INSERT INTO x402_invoice_request_bindings (
+                        invoice_id, request_fingerprint, created_at
+                    ) VALUES (?, ?, ?)
+                    """,
+                    (invoice_id, request_fingerprint, time.time()),
+                )
+                return
+            if existing[0] != request_fingerprint:
+                raise InvoiceRequestConflictError(
+                    "invoice id was reused for a different provider request"
+                )
 
     async def put(
         self,
