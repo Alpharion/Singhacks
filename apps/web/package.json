@@ -12,7 +12,8 @@
     "test:watch": "vitest",
     "e2e": "playwright test",
     "sync:contracts": "node scripts/sync-contracts.mjs",
-    "screenshots": "node scripts/screenshots.mjs"
+    "screenshots": "node scripts/screenshots.mjs",
+    "verify:live": "node scripts/live-check.mjs"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.102.8",

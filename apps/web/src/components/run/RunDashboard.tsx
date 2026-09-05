@@ -14,6 +14,7 @@ import { FulfilmentPanel } from "./FulfilmentPanel";
 import { SpendChart } from "./SpendChart";
 import { OutcomeSummary } from "./OutcomeSummary";
 import { FailureBanner } from "./FailureBanner";
+import { SettlementNotice } from "./SettlementNotice";
 
 /**
  * Mission control.
@@ -52,6 +53,7 @@ export function RunDashboard({ runId }: { runId: string }) {
       <RunHeader run={run} />
       <PlaybackControls note={note} />
 
+      <SettlementNotice run={run} />
       {run.failure && <FailureBanner failure={run.failure} />}
       <OutcomeSummary run={run} />
 

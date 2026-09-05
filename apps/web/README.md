@@ -7,12 +7,26 @@ Recharts · Playwright + Vitest.
 
 ## Run it
 
+The app defaults to **live** mode and talks to Person 2's buyer agent, so start that first:
+
 ```bash
+# terminal 1 - the buyer agent (Person 2), port 8001
+cd services/buyer-agent
+uv venv && uv pip install -e ".[dev]"
+.venv/bin/python -m uvicorn buyer_agent.main:app --port 8001
+
+# terminal 2 - this app
+cd apps/web
 pnpm install
 pnpm dev            # http://localhost:3000
 ```
 
-No backend needed. The app defaults to replaying the frozen contract fixtures.
+With no backend running, dispatching a request will fail. To work on the UI alone, fall
+back to the frozen fixtures:
+
+```bash
+NEXT_PUBLIC_DATA_SOURCE=fixtures pnpm dev
+```
 
 ## Scripts
 
@@ -25,6 +39,7 @@ No backend needed. The app defaults to replaying the frozen contract fixtures.
 | `pnpm e2e` | Playwright pass over the demo script |
 | `pnpm sync:contracts` | Re-read `packages/contracts` (types + fixtures) |
 | `pnpm screenshots` | Capture `docs/demo/screenshots` (needs `pnpm dev` running) |
+| `pnpm verify:live` | Walk the real journey against a running buyer agent |
 
 ## Two data sources, one interface
 
@@ -32,11 +47,30 @@ Everything reads a run through `useRun()` in `src/lib/queries.ts`, which returns
 shape either way:
 
 ```
+NEXT_PUBLIC_DATA_SOURCE=live       poll GET /api/runs/{runId}   (default, the demo path)
 NEXT_PUBLIC_DATA_SOURCE=fixtures   replay the contract fixtures in the browser
-NEXT_PUBLIC_DATA_SOURCE=live       poll GET /api/runs/{runId} on :8001
 ```
 
 Integration is that one variable. See `.env.local.example`.
+
+Fixture mode adds a playback clock and a "Demo data" badge; live mode has neither, because
+the run advances when the agent actually does something.
+
+### The API is proxied, not called cross-origin
+
+The browser calls `/api/...` on this origin, and the rewrite in `next.config.ts` forwards it
+to the buyer agent (`BUYER_AGENT_ORIGIN`, default `http://localhost:8001`). That keeps every
+request same-origin — which is what makes live mode work at all, since the buyer agent is a
+plain FastAPI app with no CORS middleware and would reject a direct `fetch` from :3000 at the
+preflight.
+
+### Simulated payments are labelled as such
+
+The buyer agent defaults to `BUYER_AGENT_PAYMENT_MODE=simulated`, which returns schema-valid
+receipts whose transaction hash carries sixteen leading zeros. `src/lib/contracts/settlement.ts`
+detects those, and the UI then refuses to say "Validated on XRPL", drops the explorer link, and
+shows a run-level warning. A screenshot of a simulated run can never be mistaken for a settled
+one — which is also why `pnpm verify:live` asserts it.
 
 ## Contracts
 

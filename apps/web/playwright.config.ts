@@ -3,8 +3,9 @@ import { defineConfig, devices } from "@playwright/test";
 /**
  * One automated pass over the demo path.
  *
- * Runs against fixture mode, so it needs no backend - which means it stays
- * green while the buyer agent is still being built.
+ * Pinned to fixture mode. The app now defaults to `live`, but this suite walks
+ * the scripted playback beats, so it must drive the fixture clock rather than a
+ * running buyer agent - which also keeps it green with no backend.
  */
 export default defineConfig({
   testDir: "./e2e",
@@ -20,7 +21,10 @@ export default defineConfig({
   webServer: {
     command: "pnpm dev",
     url: "http://localhost:3000",
-    reuseExistingServer: !process.env.CI,
+    // Never reuse a server the developer happens to have running: it is
+    // probably in live mode, and these specs would fail confusingly.
+    reuseExistingServer: false,
     timeout: 120_000,
+    env: { NEXT_PUBLIC_DATA_SOURCE: "fixtures" },
   },
 });

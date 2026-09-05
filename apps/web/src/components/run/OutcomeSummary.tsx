@@ -4,8 +4,9 @@ import { explorerUrl, receiptHash } from "@/lib/contracts/types";
 import { formatDual, formatSgd, formatSgdPerUnit } from "@/lib/format/money";
 import { Money, RateFootnote } from "@/components/common/Money";
 import { formatClock } from "@/lib/format/time";
-import { ExplorerLink } from "@/components/common/Xrpl";
+import { ExplorerLink, TxHash } from "@/components/common/Xrpl";
 import { FixtureBadge } from "@/components/common/FixtureBadge";
+import { isSimulatedReceipt } from "@/lib/contracts/settlement";
 
 /**
  * The closing screen from the demo script (PROJECT_CONTEXT.md section 14).
@@ -26,6 +27,8 @@ export function OutcomeSummary({ run }: { run: AgentRun }) {
     ...run.reservations.map((reservation) => reservation.paymentReceipt),
     ...run.deliveryBookings.map((booking) => booking.paymentReceipt),
   ];
+
+  const anySimulated = receipts.some(isSimulatedReceipt);
 
   return (
     <section className="animate-beat-in overflow-hidden rounded-panel border border-rescue/35 bg-rescue-dim/25">
@@ -73,7 +76,7 @@ export function OutcomeSummary({ run }: { run: AgentRun }) {
 
       <div className="border-t border-rescue/20 px-5 py-4">
         <h3 className="text-[0.7rem] font-medium uppercase tracking-[0.09em] text-ink-subtle">
-          XRPL transactions
+          {anySimulated ? "Transactions (simulated)" : "XRPL transactions"}
         </h3>
         <ul className="mt-2.5 space-y-1.5">
           {receipts.map((receipt) => (
@@ -81,7 +84,13 @@ export function OutcomeSummary({ run }: { run: AgentRun }) {
               <span className="w-32 shrink-0 tabular-nums text-ink-muted">
                 {formatDual(receipt.amountDrops, "xrp")}
               </span>
-              <ExplorerLink url={explorerUrl(receipt)} hash={receiptHash(receipt)} />
+              {isSimulatedReceipt(receipt) ? (
+                // A placeholder hash gets no explorer link: there is nothing on
+                // the ledger for the link to resolve to.
+                <TxHash hash={receiptHash(receipt)} className="text-caution" />
+              ) : (
+                <ExplorerLink url={explorerUrl(receipt)} hash={receiptHash(receipt)} />
+              )}
             </li>
           ))}
         </ul>

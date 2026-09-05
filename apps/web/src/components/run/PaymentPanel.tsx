@@ -1,11 +1,12 @@
-import { Receipt } from "lucide-react";
+import { FlaskConical, Receipt } from "lucide-react";
 import type { AgentRun, PaymentReceipt, PaymentRequirement } from "@/lib/contracts/types";
 import { explorerUrl, receiptHash } from "@/lib/contracts/types";
+import { isSimulatedReceipt } from "@/lib/contracts/settlement";
 import { Money } from "@/components/common/Money";
 import { formatDateTime } from "@/lib/format/time";
 import { Badge } from "@/components/common/Badge";
 import { EmptyState } from "@/components/common/Panel";
-import { ExplorerLink, XrplAddr } from "@/components/common/Xrpl";
+import { ExplorerLink, TxHash, XrplAddr } from "@/components/common/Xrpl";
 
 /**
  * Every payment this run made, plus any outstanding x402 challenge.
@@ -113,14 +114,36 @@ function ReceiptCard({
   label: string;
   forWhat: string;
 }) {
+  // A simulated receipt is schema-valid but settled nothing, so it must not be
+  // dressed in the settled colours or linked as if an explorer could show it.
+  const simulated = isSimulatedReceipt(receipt);
+
   return (
-    <article className="animate-beat-in rounded-xl border border-settled/30 bg-settled-dim/30 p-4">
+    <article
+      className={
+        simulated
+          ? "animate-beat-in rounded-xl border border-caution/30 bg-caution-dim/30 p-4"
+          : "animate-beat-in rounded-xl border border-settled/30 bg-settled-dim/30 p-4"
+      }
+    >
       <header className="flex flex-wrap items-start justify-between gap-2">
         <div className="flex items-center gap-2">
-          <Receipt className="size-4 text-settled" aria-hidden />
+          {simulated ? (
+            <FlaskConical className="size-4 text-caution" aria-hidden />
+          ) : (
+            <Receipt className="size-4 text-settled" aria-hidden />
+          )}
           <span className="text-sm font-medium text-ink">{label}</span>
         </div>
-        <Badge tone="settled">Validated on XRPL</Badge>
+        {simulated ? (
+          <Badge tone="caution" className="cursor-help">
+            <span title="The buyer agent is running in simulated payment mode. This hash is a placeholder and no XRPL transaction was submitted.">
+              Simulated — not settled on XRPL
+            </span>
+          </Badge>
+        ) : (
+          <Badge tone="settled">Validated on XRPL</Badge>
+        )}
       </header>
 
       <p className="mt-1.5 text-xs text-ink-subtle">{forWhat}</p>
@@ -138,7 +161,16 @@ function ReceiptCard({
         />
         <Field
           label="Transaction"
-          value={<ExplorerLink url={explorerUrl(receipt)} hash={receiptHash(receipt)} />}
+          value={
+            simulated ? (
+              // No explorer link: the URL points at the agent's own placeholder
+              // route, and rendering it as an explorer link would imply the
+              // ledger has something to show.
+              <TxHash hash={receiptHash(receipt)} className="text-caution" />
+            ) : (
+              <ExplorerLink url={explorerUrl(receipt)} hash={receiptHash(receipt)} />
+            )
+          }
         />
       </dl>
     </article>

@@ -1,9 +1,13 @@
 /**
  * Where the UI gets its data.
  *
- * `fixtures` replays the frozen contract fixtures in the browser - no backend
- * required, which is how the whole UI was built during Phase 1.
- * `live` talks to Person 2's buyer agent on port 8001.
+ * `live` talks to Person 2's buyer agent on port 8001. This is the default and
+ * the demo path: the run on screen is one the agent actually performed.
+ *
+ * `fixtures` replays the frozen contract fixtures in the browser with a
+ * playback clock and needs no backend. That is how the whole UI was built
+ * during Phase 1, and it is kept as a development fallback - set
+ * `NEXT_PUBLIC_DATA_SOURCE=fixtures` to get it back.
  *
  * Integration is this one variable. Nothing else in the app changes.
  */
@@ -11,10 +15,18 @@
 export type DataSource = "fixtures" | "live";
 
 export const DATA_SOURCE: DataSource =
-  process.env.NEXT_PUBLIC_DATA_SOURCE === "live" ? "live" : "fixtures";
+  process.env.NEXT_PUBLIC_DATA_SOURCE === "fixtures" ? "fixtures" : "live";
 
-export const BUYER_AGENT_BASE_URL =
-  process.env.NEXT_PUBLIC_BUYER_AGENT_BASE_URL ?? "http://localhost:8001";
+/**
+ * Base URL for the buyer agent, from the browser's point of view.
+ *
+ * Empty by default, which means "this origin" - requests go to `/api/...` and
+ * `next.config.ts` rewrites them to the agent. Same-origin, so no CORS is
+ * involved. Set `NEXT_PUBLIC_BUYER_AGENT_BASE_URL` to an absolute URL only if
+ * you want the browser to call the agent directly, which requires the agent to
+ * send CORS headers.
+ */
+export const BUYER_AGENT_BASE_URL = process.env.NEXT_PUBLIC_BUYER_AGENT_BASE_URL ?? "";
 
 export const isFixtureMode = DATA_SOURCE === "fixtures";
 
